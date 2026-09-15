@@ -1,5 +1,7 @@
 # everyday-conversations
-To use a tool that guide to everyday conversations in order to imporve english skills.
+
+Esta es una guía de estudio interactiva en HTML para practicar inglés conversacional con los 30 diálogos de "Everyday Conversations". Incluye lectura, notas, frases clave, ejercicios y quizzes, todo desde tu navegador.
+
 
 Mecánicas de estudio y práctica
 
