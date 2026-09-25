@@ -338,7 +338,7 @@ body{
   display:inline-flex;align-items:center;
 }
 
-   /* =========================================================
+/* =========================================================
    TOOLBAR
    ========================================================= */
 .toolbar{
@@ -547,8 +547,9 @@ body{
   background:var(--blue);color:#fff;
   border-color:var(--blue);
   animation:pulse 1s infinite;
-   }
-   /* =========================================================
+}
+
+/* =========================================================
    PRACTICE · CLOZE
    ========================================================= */
 .cloze-item{
@@ -820,4 +821,1361 @@ body{
     <div id="content"></div>
   </main>
 </div>
-   
+
+<script>
+/* =========================================================
+   DATA · 30 DIÁLOGOS
+   ========================================================= */
+const DATA = [
+/* ================= UNIDAD 1 ================= */
+{
+  id:"u1", title:"Unidad 1 · Introducciones y charla casual",
+  dialogues:[
+  {
+    id:"d1-1", emoji:"🤝", title:"Formal Greetings", subtitle:"Saludos formales",
+    lines:[
+      {s:"JAMES", t:"Good morning, Professor Austin, how are you doing?"},
+      {s:"PROFESSOR AUSTIN", t:"Good morning, James. I am doing well. And you?"},
+      {s:"JAMES", t:"I'm great, thank you. This is my friend Emma. She is thinking about applying to this college. She has a few questions. Would you mind telling us about the process, please?"},
+      {s:"PROFESSOR AUSTIN", t:"Hello, Emma! It's a pleasure to meet you. I'm more than happy to speak with you. Please stop by my office next week."},
+      {s:"EMMA", t:"It's a pleasure to meet you, professor. Thank you so much for helping us."},
+      {s:"PROFESSOR AUSTIN", t:"Don't mention it. Hopefully, I will be able to answer your questions!"}
+    ],
+    notes:[
+      "<em>Good morning / good afternoon / good evening</em> se usan según la hora del día. <em>Good evening</em> se usa después de las 6 p.m. o cuando ya anocheció.",
+      "<em>Good night</em> <b>no es un saludo</b>: se usa al despedirse. Ej.: <em>Thank you and good night!</em>",
+      "En Estados Unidos es costumbre dar la mano al conocer a alguien. El apretón debe ser firme y durar 2-3 segundos, el tiempo justo para decir <em>Nice to meet you</em>.",
+      "<em>Don't mention it</em> es otra forma de decir <em>You're welcome</em>. Otras respuestas informales: <em>No problem. / Happy to help.</em>",
+      "<em>It's a pleasure to meet you</em> es más formal que <em>Nice to meet you</em>."
+    ],
+    phrases:[
+      {en:"How are you doing?", es:"¿Cómo estás? (informal pero educado)"},
+      {en:"I'm more than happy to speak with you.", es:"Estoy encantado de hablar con usted."},
+      {en:"Would you mind telling us about the process?", es:"¿Le importaría explicarnos el proceso?"},
+      {en:"Please stop by my office next week.", es:"Pase por mi oficina la próxima semana."},
+      {en:"Don't mention it.", es:"No hay de qué."}
+    ]
+  },
+  {
+    id:"d1-2", emoji:"👋", title:"Informal Greetings & Farewells", subtitle:"Saludos y despedidas informales",
+    lines:[
+      {s:"JANE", t:"Hi, Helen! How's it going?"},
+      {s:"HELEN", t:"Fine, thanks – and you?"},
+      {s:"JANE", t:"Just fine. Where are you off to?"},
+      {s:"HELEN", t:"To the library. I've got a history exam next week and need to start studying. Ugh."},
+      {s:"JANE", t:"Oh, no. Well, I'll see you later then. Good luck!"},
+      {s:"HELEN", t:"Thanks. See you later."}
+    ],
+    notes:[
+      "<em>Hi</em> es la forma informal de <em>hello</em>. Alargar el sonido «i» (Hiii) muestra que te alegra mucho ver a la persona.",
+      "<em>How's it going?</em> es la versión informal de <em>How are you?</em>",
+      "En <em>Fine, thanks – and you?</em> la entonación sube al final: muestra interés por la otra persona.",
+      "<em>Where are you off to?</em> = ¿A dónde vas? Entonación descendente porque es una pregunta de información, no de sí/no.",
+      "En la respuesta <em>To the library</em> no se repite «I'm going» porque ya se dijo en la pregunta.",
+      "<em>Oh, no</em> expresa empatía. <em>See you later</em> es una despedida informal."
+    ],
+    phrases:[
+      {en:"How's it going?", es:"¿Cómo va todo?"},
+      {en:"Fine, thanks – and you?", es:"Bien, gracias, ¿y tú?"},
+      {en:"Where are you off to?", es:"¿A dónde vas?"},
+      {en:"I'll see you later then.", es:"Entonces nos vemos luego."},
+      {en:"Good luck!", es:"¡Buena suerte!"}
+    ]
+  },
+  {
+    id:"d1-3", emoji:"🎩", title:"Formal Introductions", subtitle:"Presentaciones formales",
+    lines:[
+      {s:"MARGARET", t:"Mr. Wilson, I'd like you to meet Dr. Edward Smith."},
+      {s:"MR. WILSON", t:"It's nice to meet you, Dr. Smith."},
+      {s:"DR. SMITH", t:"Pleasure to meet you, too."},
+      {s:"MARGARET", t:"Dr. Smith is an economist. He just finished writing a book on international trade."},
+      {s:"MR. WILSON", t:"Oh? That's my field, too. I work for the United Nations."},
+      {s:"DR. SMITH", t:"In the Development Program, by any chance?"},
+      {s:"MR. WILSON", t:"Yes. How did you guess?"},
+      {s:"DR. SMITH", t:"I've read your articles on technical assistance. They're excellent."}
+    ],
+    notes:[
+      "<em>I'd like you to meet…</em> = Me gustaría presentarle a… Ojo: <em>I'd like</em> (= I would like) significa «quiero/me gustaría», distinto de <em>I like</em> (= me gusta).",
+      "<em>economist</em> tiene 4 sílabas y el acento va en la segunda: e-CON-o-mist.",
+      "<em>just</em> + pasado simple indica un pasado muy reciente. También puede usarse con presente perfecto: <em>He's just finished…</em>",
+      "<em>By any chance?</em> = ¿por casualidad? Entonación ascendente (pregunta de sí/no).",
+      "<em>That's my field, too</em> = también es mi área / mi campo."
+    ],
+    phrases:[
+      {en:"I'd like you to meet Dr. Edward Smith.", es:"Me gustaría presentarle al Dr. Edward Smith."},
+      {en:"It's nice to meet you.", es:"Encantado de conocerle."},
+      {en:"Pleasure to meet you, too.", es:"El gusto es mío."},
+      {en:"In the Development Program, by any chance?", es:"¿Por casualidad en el Programa de Desarrollo?"},
+      {en:"How did you guess?", es:"¿Cómo lo adivinó?"}
+    ]
+  },
+  {
+    id:"d1-4", emoji:"🎉", title:"Informal Introductions", subtitle:"Presentaciones informales",
+    lines:[
+      {s:"JIM", t:"Who's the tall woman next to Barbara?"},
+      {s:"CHARLES", t:"That's her friend Mary. Didn't you meet her at Steve's party?"},
+      {s:"JIM", t:"No, I wasn't at Steve's party."},
+      {s:"CHARLES", t:"Oh! Then let me introduce you to her now. Mary, this is my friend Jim."},
+      {s:"MARY", t:"Hi, Jim. Nice to meet you."},
+      {s:"JIM", t:"You, too. Would you like a drink?"},
+      {s:"MARY", t:"Sure, let's go get one."}
+    ],
+    notes:[
+      "<em>Who's</em> = who is. Se pronuncia igual que <em>whose</em>, pero significa otra cosa.",
+      "<em>Didn't you meet her…?</em> es una pregunta negativa: Charles pensaba que Jim ya conocía a Mary y muestra sorpresa.",
+      "En <em>I wasn't at Steve's party</em> el énfasis recae en <em>at</em>, que aquí equivale a «there» (no estuve allí).",
+      "<em>This is my friend Jim</em> es la forma típica de presentar a dos personas. Luego se suele añadir: <em>Jim, this is Mary.</em>",
+      "<em>Sure</em> se usa mucho en conversación informal para decir «sí»."
+    ],
+    phrases:[
+      {en:"Who's the tall woman next to Barbara?", es:"¿Quién es la mujer alta junto a Barbara?"},
+      {en:"Didn't you meet her at Steve's party?", es:"¿No la conociste en la fiesta de Steve?"},
+      {en:"Let me introduce you to her.", es:"Déjame presentártela."},
+      {en:"Would you like a drink?", es:"¿Quieres algo de tomar?"},
+      {en:"Sure, let's go get one.", es:"Claro, vamos a por una."}
+    ]
+  },
+  {
+    id:"d1-5", emoji:"⏰", title:"What Time Is It?", subtitle:"¿Qué hora es?",
+    lines:[
+      {s:"NATASHA", t:"What time is it? We're going to be late!"},
+      {s:"TONY", t:"It's a quarter after seven. We're on time. Don't panic."},
+      {s:"NATASHA", t:"But I thought we had to be at the restaurant by 7:30 for the surprise party. We'll never make it there with all this evening traffic."},
+      {s:"TONY", t:"Sure we will. Rush hour is almost over. Anyway, the party starts at 8:00. But I do need help with directions. Can you call the restaurant and ask them where we park our car?"}
+    ],
+    notes:[
+      "<em>It's a quarter after seven</em> = son las 7:15. También puedes decir <em>It's seven fifteen</em> o <em>a quarter past seven</em>.",
+      "<em>Half past seven</em> = 7:30, igual que <em>seven thirty</em>.",
+      "<em>Rush hour</em> es la hora punta: cuando hay más tráfico porque la gente va o vuelve del trabajo.",
+      "Para calmar a alguien: <em>Don't panic. / Don't worry. / We're fine. / We will be on time.</em>",
+      "<em>We'll never make it</em> = nunca vamos a llegar."
+    ],
+    phrases:[
+      {en:"We're going to be late!", es:"¡Vamos a llegar tarde!"},
+      {en:"It's a quarter after seven.", es:"Son las siete y cuarto."},
+      {en:"Don't panic.", es:"No entres en pánico."},
+      {en:"Rush hour is almost over.", es:"La hora punta ya casi termina."},
+      {en:"We'll never make it there.", es:"Nunca vamos a llegar allí."}
+    ]
+  },
+  {
+    id:"d1-6", emoji:"📞", title:"A Telephone Call", subtitle:"Una llamada telefónica",
+    lines:[
+      {s:"JOHN", t:"Hi, Alice, it's John. How are you?"},
+      {s:"ALICE", t:"Oh, hi, John! I was just thinking about you."},
+      {s:"JOHN", t:"That's nice. I was wondering if you'd like to go to a movie tonight."},
+      {s:"ALICE", t:"Sure, I'd love to! What's playing?"},
+      {s:"JOHN", t:"I was thinking about that new comedy Lights Out. What do you think?"},
+      {s:"ALICE", t:"Sounds great!"},
+      {s:"JOHN", t:"OK, I'll pick you up around 7:30. The movie starts at 8:00."},
+      {s:"ALICE", t:"See you then. Bye!"}
+    ],
+    notes:[
+      "Al teléfono, <em>it's</em> se usa con el significado de «soy yo / soy…». <em>Hi, it's John</em> = Hola, soy John.",
+      "<em>I was wondering if you'd like to…</em> es una forma educada e indirecta de invitar a alguien: no suena demasiado directo.",
+      "<em>What's playing?</em> = ¿qué película están dando?",
+      "<em>Sounds great!</em> = ¡Suena muy bien! (informal)",
+      "<em>I'll pick you up</em> = paso a recogerte."
+    ],
+    phrases:[
+      {en:"Hi, it's John.", es:"Hola, soy John."},
+      {en:"I was just thinking about you.", es:"Justo estaba pensando en ti."},
+      {en:"I was wondering if you'd like to go to a movie.", es:"Me preguntaba si te gustaría ir al cine."},
+      {en:"What's playing?", es:"¿Qué película están dando?"},
+      {en:"I'll pick you up around 7:30.", es:"Paso a recogerte sobre las 7:30."}
+    ]
+  },
+  {
+    id:"d1-7", emoji:"📱", title:"Can You Say That Again?", subtitle:"¿Puedes repetir eso?",
+    lines:[
+      {s:"LUKE", t:"Hello? Hi, Stephanie, how are things at the office?"},
+      {s:"STEPHANIE", t:"Hi, Luke! How are you? Can you please stop and pick up extra paper for the computer printer?"},
+      {s:"LUKE", t:"What did you say? Can you repeat that, please? Did you say to pick up ink for the printer? Sorry, the phone is cutting out."},
+      {s:"STEPHANIE", t:"Can you hear me now? No, I need more computer paper. Listen, I'll text you exactly what I need. Thanks, Luke. Talk to you later."},
+      {s:"LUKE", t:"Thanks, Stephanie. Sorry, my phone has really bad reception here."}
+    ],
+    notes:[
+      "Formas de pedir que repitan: <em>Can you repeat that, please? / Excuse me? / I can't hear you. / I'm sorry?</em> (más formal: <em>I beg your pardon?</em>).",
+      "Para pedir aclaraciones: <em>Can you spell that for me? / Can you please write down the address for me?</em>",
+      "<em>Cutting out</em> describe que la llamada se corta por mala señal. También: <em>The line is breaking up. / I am losing you. / The call dropped.</em>",
+      "<em>Talk to you later</em> es el equivalente telefónico de <em>See you later</em>.",
+      "<em>Reception</em> = cobertura / señal del celular."
+    ],
+    phrases:[
+      {en:"How are things at the office?", es:"¿Cómo van las cosas en la oficina?"},
+      {en:"Can you repeat that, please?", es:"¿Puedes repetir eso, por favor?"},
+      {en:"The phone is cutting out.", es:"Se está cortando la llamada."},
+      {en:"I'll text you exactly what I need.", es:"Te escribo exactamente lo que necesito."},
+      {en:"Talk to you later.", es:"Hablamos luego."}
+    ]
+  },
+  {
+    id:"d1-8", emoji:"😲", title:"Coincidences", subtitle:"Coincidencias",
+    lines:[
+      {s:"MEG", t:"Well, hello there, Julia! Long time no see!"},
+      {s:"JULIA", t:"Meg! Hi! What a coincidence! I haven't seen you in ages! What are you doing here?"},
+      {s:"MEG", t:"I just got a new job in the city, so I'm shopping for some clothes. Hey, what do you think of this shirt?"},
+      {s:"JULIA", t:"Hmmm… well, you know how much I love blue. See? I've got the same shirt!"},
+      {s:"MEG", t:"You always did have good taste! What a small world."}
+    ],
+    notes:[
+      "<em>Long time no see!</em> = ¡Cuánto tiempo sin verte! (muy común e informal).",
+      "<em>What a + sustantivo!</em> expresa sorpresa o emoción: <em>What a surprise! / What a joy! / What a shame! / What a wonderful idea!</em>",
+      "En <em>You always did have good taste!</em> el énfasis en <em>did</em> recalca el hecho de que Julia SÍ tiene buen gusto.",
+      "<em>I haven't seen you in ages</em> = no te he visto en siglos.",
+      "<em>What a small world</em> se usa para comentar una coincidencia."
+    ],
+    phrases:[
+      {en:"Long time no see!", es:"¡Cuánto tiempo sin verte!"},
+      {en:"What a coincidence!", es:"¡Qué coincidencia!"},
+      {en:"I haven't seen you in ages!", es:"¡No te he visto en siglos!"},
+      {en:"What do you think of this shirt?", es:"¿Qué te parece esta camisa?"},
+      {en:"What a small world.", es:"Qué mundo tan pequeño."}
+    ]
+  },
+  {
+    id:"d1-9", emoji:"🌧️", title:"Weather Report", subtitle:"El reporte del clima",
+    lines:[
+      {s:"JENNIFER", t:"It's freezing outside! What happened to the weather report? I thought this cold front was supposed to pass."},
+      {s:"GABRIELA", t:"Yeah, I thought so too. That's what I read online this morning."},
+      {s:"JENNIFER", t:"I guess the wind chill is really driving down the temperature."},
+      {s:"GABRIELA", t:"Can we go inside? I feel like my toes are starting to go numb."}
+    ],
+    notes:[
+      "<em>Cold front</em> = frente frío (masa grande de aire frío).",
+      "<em>Supposed to</em> indica algo que se espera o se supone: <em>I thought it was supposed to rain today.</em>",
+      "<em>Yeah / Yup / Uh huh</em> son formas informales de decir «sí» en conversación.",
+      "<em>That's what I read online</em> = eso es lo que leí en línea. También: <em>That's what I heard on the radio / saw on TV.</em>",
+      "<em>Wind chill</em> = sensación térmica por el viento. <em>Driving down</em> = haciendo bajar."
+    ],
+    phrases:[
+      {en:"It's freezing outside!", es:"¡Hace un frío helado afuera!"},
+      {en:"What happened to the weather report?", es:"¿Qué pasó con el pronóstico del clima?"},
+      {en:"I thought this cold front was supposed to pass.", es:"Pensé que este frente frío iba a pasar."},
+      {en:"The wind chill is driving down the temperature.", es:"El viento está haciendo bajar la temperatura."},
+      {en:"My toes are starting to go numb.", es:"Se me están empezando a entumir los dedos de los pies."}
+    ]
+  }]
+},
+/* ================= UNIDAD 2 ================= */
+{
+  id:"u2", title:"Unidad 2 · Por la ciudad",
+  dialogues:[
+  {
+    id:"d2-1", emoji:"🍽️", title:"Ordering a Meal", subtitle:"Pedir comida en un restaurante",
+    lines:[
+      {s:"WAITER", t:"Hello, I'll be your waiter today. Can I start you off with something to drink?"},
+      {s:"RALPH", t:"Yes. I'll have iced tea, please."},
+      {s:"ANNA", t:"And I'll have lemonade."},
+      {s:"WAITER", t:"OK. Are you ready to order, or do you need a few minutes?"},
+      {s:"RALPH", t:"I think we're ready. I'll have the tomato soup to start, and the roast beef with mashed potatoes and peas."},
+      {s:"WAITER", t:"How do you want the beef — rare, medium, or well done?"},
+      {s:"RALPH", t:"Well done, please."},
+      {s:"ANNA", t:"And I'll just have the fish, with potatoes and a salad."}
+    ],
+    notes:[
+      "<em>Can I start you off with something to drink?</em> — pregunta de sí/no: la entonación sube al final.",
+      "<em>I'll have…</em> es la forma estándar de pedir en un restaurante (= voy a pedir…).",
+      "<em>rare / medium / well done</em> = poco hecho / al punto / bien hecho.",
+      "<em>to start</em> = para empezar (el entrante).",
+      "<em>I'll just have the fish</em> — <em>just</em> indica que no quiere entrante, solo el plato principal.",
+      "En <em>Are you ready to order, or do you need a few minutes?</em> la palabra <em>or</em> marca una elección: entonación sube en la primera opción y baja en la segunda."
+    ],
+    phrases:[
+      {en:"Can I start you off with something to drink?", es:"¿Les traigo algo de beber para empezar?"},
+      {en:"I'll have iced tea, please.", es:"Yo tomaré té helado, por favor."},
+      {en:"Are you ready to order?", es:"¿Están listos para pedir?"},
+      {en:"How do you want the beef — rare, medium, or well done?", es:"¿Cómo quiere la carne: poco hecha, al punto o bien hecha?"},
+      {en:"I'll just have the fish.", es:"Yo solo tomaré el pescado."}
+    ]
+  },
+  {
+    id:"d2-2", emoji:"🩺", title:"At the Doctor's Office", subtitle:"En el consultorio médico",
+    lines:[
+      {s:"DOCTOR", t:"What seems to be the problem?"},
+      {s:"CATHY", t:"Well, I have a bad cough and a sore throat. I also have a headache."},
+      {s:"DOCTOR", t:"How long have you had these symptoms?"},
+      {s:"CATHY", t:"About three days now. And I'm really tired, too."},
+      {s:"DOCTOR", t:"Hmm. It sounds like you've got the flu. Take aspirin every four hours and get plenty of rest. Make sure you drink lots of fluids. Call me if you're still sick next week."},
+      {s:"CATHY", t:"OK, thanks."}
+    ],
+    notes:[
+      "<em>What seems to be the problem?</em> = ¿qué le pasa? Entonación descendente porque el médico pide información, no un sí/no.",
+      "<em>Well…</em> alargado se usa para «ganar tiempo» mientras piensas qué decir.",
+      "Se usa el artículo <em>a</em> antes de cada síntoma: <em>a bad cough, a sore throat, a headache</em>.",
+      "<em>About</em> = más o menos, aproximadamente.",
+      "El médico usa el imperativo para dar instrucciones: <em>Take aspirin… / Get plenty of rest… / Make sure… / Call me…</em>",
+      "<em>Still sick</em> = seguir enfermo."
+    ],
+    phrases:[
+      {en:"What seems to be the problem?", es:"¿Qué le ocurre?"},
+      {en:"I have a bad cough and a sore throat.", es:"Tengo mucha tos y dolor de garganta."},
+      {en:"How long have you had these symptoms?", es:"¿Desde cuándo tiene estos síntomas?"},
+      {en:"It sounds like you've got the flu.", es:"Parece que tiene gripe."},
+      {en:"Make sure you drink lots of fluids.", es:"Asegúrese de beber muchos líquidos."}
+    ]
+  },
+  {
+    id:"d2-3", emoji:"🧭", title:"Asking Directions", subtitle:"Pedir direcciones",
+    lines:[
+      {s:"MARK", t:"Excuse me. Could you tell me where the library is?"},
+      {s:"NANCY", t:"Yes, it's that way. You go three blocks to Washington Street, then turn right. It's on the corner, across from the bank."},
+      {s:"MARK", t:"Thanks! I've only been in town a few days, so I really don't know my way around yet."},
+      {s:"NANCY", t:"Oh, I know how you feel. We moved here a year ago, and I still don't know where everything is!"}
+    ],
+    notes:[
+      "<em>Could you tell me…?</em> es un poco más educado que <em>Can you tell me…?</em>",
+      "Es una pregunta indirecta: el sujeto va antes del verbo → <em>where the library is</em> (no «where is the library»).",
+      "<em>across from</em> = enfrente de. <em>on the corner</em> = en la esquina.",
+      "<em>I don't know my way around</em> = no conozco el lugar / no me oriento.",
+      "<em>I know how you feel</em> = sé cómo te sientes (muestra empatía)."
+    ],
+    phrases:[
+      {en:"Excuse me. Could you tell me where the library is?", es:"Disculpe, ¿podría decirme dónde está la biblioteca?"},
+      {en:"Go three blocks and turn right.", es:"Camine tres cuadras y gire a la derecha."},
+      {en:"It's on the corner, across from the bank.", es:"Está en la esquina, enfrente del banco."},
+      {en:"I don't know my way around yet.", es:"Todavía no me oriento."},
+      {en:"I know how you feel.", es:"Sé cómo te sientes."}
+    ]
+  },
+  {
+    id:"d2-4", emoji:"🚨", title:"Calling for Help", subtitle:"Llamar a emergencias",
+    lines:[
+      {s:"PETER", t:"Hey! That car just ran a red light and hit that truck!"},
+      {s:"GAIL", t:"Is anyone hurt?"},
+      {s:"PETER", t:"I don't know… let's call 911. … Hello? I'd like to report a car accident near the post office on Charles Street. It looks like a man is hurt. Yes, it just happened. OK, thanks. Bye."},
+      {s:"GAIL", t:"What did they say?"},
+      {s:"PETER", t:"They're going to send an ambulance and a police car right away."},
+      {s:"GAIL", t:"Good, they're here. I hope the man is OK."},
+      {s:"PETER", t:"I know. You have to be so careful when you're driving."}
+    ],
+    notes:[
+      "<em>Run a red light</em> = pasarse un semáforo en rojo.",
+      "<em>911</em> es el número de emergencias en Estados Unidos: policía, bomberos y ambulancia.",
+      "<em>I'd like to report…</em> = quisiera reportar…",
+      "<em>It just happened</em> = acaba de ocurrir (énfasis en <em>just</em>: hace apenas un momento).",
+      "<em>Right away</em> = de inmediato."
+    ],
+    phrases:[
+      {en:"That car just ran a red light!", es:"¡Ese auto se acaba de pasar el semáforo en rojo!"},
+      {en:"Is anyone hurt?", es:"¿Hay alguien herido?"},
+      {en:"Let's call 911.", es:"Llamemos al 911."},
+      {en:"I'd like to report a car accident.", es:"Quisiera reportar un accidente automovilístico."},
+      {en:"They're going to send an ambulance right away.", es:"Van a enviar una ambulancia de inmediato."}
+    ]
+  },
+  {
+    id:"d2-5", emoji:"🛒", title:"At the Supermarket", subtitle:"En el supermercado",
+    lines:[
+      {s:"LOUISE", t:"Hey, Julia… Look at those desserts! How about baking some cookies today?"},
+      {s:"JULIA", t:"Hmm… Yeah, that's a great idea! While we're here, let's pick up the ingredients."},
+      {s:"LOUISE", t:"OK, what do we need?"},
+      {s:"JULIA", t:"The recipe calls for flour, sugar and butter. Oh, and we also need eggs and chocolate chips."},
+      {s:"LOUISE", t:"Why don't you get the dairy ingredients? You'll find those in the refrigerated section in the back of the store. I'll get the dry ingredients — they're in aisle 10."},
+      {s:"JULIA", t:"Great! Let's meet at the checkout."},
+      {s:"LOUISE", t:"OK. See you there."}
+    ],
+    notes:[
+      "<em>How about + verbo -ing</em> es una forma casual de sugerir una actividad: <em>How about baking some cookies?</em>",
+      "<em>Hmm…</em> indica que estás pensando antes de hablar.",
+      "<em>The recipe calls for…</em> = la receta pide / requiere… (también: <em>They're calling for rain</em> = anuncian lluvia).",
+      "<em>pick up</em> = recoger, comprar.",
+      "<em>aisle</em> = pasillo; la «s» es muda.",
+      "<em>Why don't you…?</em> sirve para pedir a alguien que haga algo o para dar consejo."
+    ],
+    phrases:[
+      {en:"How about baking some cookies today?", es:"¿Qué tal si horneamos galletas hoy?"},
+      {en:"That's a great idea!", es:"¡Es una gran idea!"},
+      {en:"Let's pick up the ingredients.", es:"Compremos los ingredientes."},
+      {en:"The recipe calls for flour, sugar and butter.", es:"La receta pide harina, azúcar y mantequilla."},
+      {en:"Let's meet at the checkout.", es:"Nos vemos en la caja."}
+    ]
+  },
+  {
+    id:"d2-6", emoji:"✅", title:"Running Errands", subtitle:"Haciendo diligencias",
+    lines:[
+      {s:"RECEPTIONIST", t:"Hi, there. How can I help you?"},
+      {s:"CLAIRE", t:"Well, I'm in town visiting for a few days, and I need to get some things done while I'm here."},
+      {s:"RECEPTIONIST", t:"Sure. What do you need?"},
+      {s:"CLAIRE", t:"I need to get my hair cut. I also need to have my new pants hemmed."},
+      {s:"RECEPTIONIST", t:"OK. Here's a map of the city. There's a good hair salon here, which is just a block away. And there's a tailor right here. Is there anything else?"},
+      {s:"CLAIRE", t:"Yes. I'll need to have my car serviced before my long drive home!"},
+      {s:"RECEPTIONIST", t:"No problem. There's a good mechanic a few blocks away."}
+    ],
+    notes:[
+      "<em>Run errands</em> = hacer recados o diligencias.",
+      "Estructura <b>get / have + objeto + participio</b>: describe acciones que otra persona hace por nosotros. <em>get my hair cut / have my pants hemmed / have my car serviced</em> (get y have son intercambiables).",
+      "<em>Is there anything else?</em> = ¿necesita algo más?",
+      "<em>No problem</em> aquí significa «no te preocupes».",
+      "<em>a block away</em> = a una cuadra de distancia."
+    ],
+    phrases:[
+      {en:"How can I help you?", es:"¿En qué puedo ayudarle?"},
+      {en:"I need to get some things done.", es:"Necesito hacer algunas cosas."},
+      {en:"I need to get my hair cut.", es:"Necesito cortarme el pelo."},
+      {en:"Is there anything else?", es:"¿Algo más?"},
+      {en:"It's just a block away.", es:"Está a solo una cuadra."}
+    ]
+  },
+  {
+    id:"d2-7", emoji:"📮", title:"At the Post Office", subtitle:"En la oficina de correos",
+    lines:[
+      {s:"POSTAL CLERK", t:"What can I do for you today?"},
+      {s:"CAROL", t:"I need to mail this package to New York, please."},
+      {s:"POSTAL CLERK", t:"OK, let's see how much it weighs… it's about five pounds. If you send it express, it will get there tomorrow. Or you can send it priority and it will get there by Saturday."},
+      {s:"CAROL", t:"Saturday is fine. How much will that be?"},
+      {s:"POSTAL CLERK", t:"$11.35. Do you need anything else?"},
+      {s:"CAROL", t:"Oh, yeah! I almost forgot. I need a book of stamps, too."},
+      {s:"POSTAL CLERK", t:"OK, your total comes to $20.35."}
+    ],
+    notes:[
+      "<em>What can I do for you today?</em> empieza con «what», así que la entonación baja al final.",
+      "<em>send it express / priority</em> = enviarlo exprés / prioritario.",
+      "<em>How much will that be?</em> = ¿cuánto será?",
+      "<em>a book of stamps</em> = un librito de estampillas.",
+      "<em>Your total comes to…</em> = el total es de…",
+      "Los precios se dicen de dos formas: <em>eleven thirty-five</em> o <em>eleven dollars and thirty-five cents</em>."
+    ],
+    phrases:[
+      {en:"What can I do for you today?", es:"¿Qué puedo hacer por usted hoy?"},
+      {en:"I need to mail this package.", es:"Necesito enviar este paquete."},
+      {en:"How much will that be?", es:"¿Cuánto será?"},
+      {en:"Oh, yeah! I almost forgot.", es:"¡Ah, sí! Casi lo olvido."},
+      {en:"Your total comes to $20.35.", es:"Su total es de $20.35."}
+    ]
+  },
+  {
+    id:"d2-8", emoji:"📚", title:"Catching Up After Class", subtitle:"Ponerse al día después de clase",
+    lines:[
+      {s:"LINDA", t:"Hey! How did your physics exam go?"},
+      {s:"FRANK", t:"Not bad, thanks. I'm just glad it's over! How about you… how'd your presentation go?"},
+      {s:"LINDA", t:"Oh, it went really well. Thanks for helping me with it!"},
+      {s:"FRANK", t:"No problem. So… do you feel like studying tomorrow for our math exam?"},
+      {s:"LINDA", t:"Yeah, sure! Come over around 10:00, after breakfast."},
+      {s:"FRANK", t:"All right. I'll bring my notes."}
+    ],
+    notes:[
+      "<em>How did … go?</em> = ¿cómo te fue en…?",
+      "<em>I'm just glad it's over!</em> — énfasis en <em>glad</em>; <em>just</em> se usa aquí para enfatizar.",
+      "<em>How'd</em> es la contracción de «how did» y suena como /howd/.",
+      "<em>Do you feel like + verbo -ing</em> = ¿tienes ganas de…?",
+      "<em>Come over</em> = ven a mi casa.",
+      "<em>Notes</em> = apuntes (lo que tomas durante una clase)."
+    ],
+    phrases:[
+      {en:"How did your physics exam go?", es:"¿Cómo te fue en el examen de física?"},
+      {en:"I'm just glad it's over!", es:"¡Me alegra que ya haya terminado!"},
+      {en:"Thanks for helping me with it!", es:"¡Gracias por ayudarme con eso!"},
+      {en:"Do you feel like studying tomorrow?", es:"¿Tienes ganas de estudiar mañana?"},
+      {en:"Come over around 10:00.", es:"Ven a mi casa sobre las 10:00."}
+    ]
+  },
+  {
+    id:"d2-9", emoji:"👕", title:"Shopping", subtitle:"De compras",
+    lines:[
+      {s:"SALESPERSON", t:"Can I help you?"},
+      {s:"GLORIA", t:"Yes, I'm looking for a sweater – in a size medium."},
+      {s:"SALESPERSON", t:"Let's see… here's a nice white one. What do you think?"},
+      {s:"GLORIA", t:"I think I'd rather have it in blue."},
+      {s:"SALESPERSON", t:"OK… here's blue, in a medium. Would you like to try it on?"},
+      {s:"GLORIA", t:"OK… yes, I love it. It fits perfectly. How much is it?"},
+      {s:"SALESPERSON", t:"It's $50. It will be $53, with tax."},
+      {s:"GLORIA", t:"Perfect! I'll take it."}
+    ],
+    notes:[
+      "<em>Can I help you? / May I help you?</em> es lo que dice normalmente un vendedor para saludar al cliente.",
+      "<em>I'm looking for…</em> = estoy buscando…",
+      "<em>I'd rather have it in…</em> = preferiría tenerlo en… (otro color, talla o material).",
+      "<em>try it on</em> = probárselo. Es un phrasal verb separable: el objeto va en medio (<em>try it on</em>).",
+      "<em>How much is it?</em> — el acento principal cae en <em>is</em>.",
+      "<em>I'll take it</em> = me lo llevo."
+    ],
+    phrases:[
+      {en:"Can I help you?", es:"¿Puedo ayudarle?"},
+      {en:"I'm looking for a sweater in a size medium.", es:"Busco un suéter talla mediana."},
+      {en:"I'd rather have it in blue.", es:"Preferiría tenerlo en azul."},
+      {en:"Would you like to try it on?", es:"¿Le gustaría probárselo?"},
+      {en:"It fits perfectly. I'll take it.", es:"Me queda perfecto. Me lo llevo."}
+    ]
+  },
+  {
+    id:"d2-10", emoji:"🚌", title:"Transportation", subtitle:"Transporte",
+    lines:[
+      {s:"JOYCE", t:"Should we take a taxi or a bus to the mall?"},
+      {s:"BILL", t:"Let's take a bus. It's impossible to get a taxi during rush hour."},
+      {s:"JOYCE", t:"Isn't that a bus stop over there?"},
+      {s:"BILL", t:"Yes… Oh! There's a bus now. We'll have to run to catch it."},
+      {s:"JOYCE", t:"Oh, no! We just missed it."},
+      {s:"BILL", t:"No problem. There'll be another one in 10 minutes."}
+    ],
+    notes:[
+      "<em>Should we… or…?</em> sirve para preguntar «¿qué es mejor?». <em>Should</em> pide una opinión (aquí no se usa «Will»).",
+      "La palabra <em>or</em> marca una elección: entonación ascendente en la primera opción y descendente en la segunda.",
+      "<em>Let's</em> (Let us) = propongo que hagamos esto.",
+      "<em>Isn't that…?</em> es una pregunta negativa: el hablante espera una respuesta afirmativa y sirve para confirmar información.",
+      "<em>We just missed it</em> = llegamos un momento tarde y lo perdimos.",
+      "<em>No problem</em> aquí significa «no importa»."
+    ],
+    phrases:[
+      {en:"Should we take a taxi or a bus?", es:"¿Tomamos un taxi o un autobús?"},
+      {en:"Let's take a bus.", es:"Tomemos un autobús."},
+      {en:"It's impossible to get a taxi during rush hour.", es:"Es imposible conseguir un taxi en hora punta."},
+      {en:"Isn't that a bus stop over there?", es:"¿No es esa una parada de autobús allí?"},
+      {en:"We just missed it.", es:"Acabamos de perderlo."}
+    ]
+  }]
+},
+/* ================= UNIDAD 3 ================= */
+{
+  id:"u3", title:"Unidad 3 · Pasatiempos y actividades",
+  dialogues:[
+  {
+    id:"d3-1", emoji:"🎂", title:"How Old Are You?", subtitle:"¿Cuántos años tienes?",
+    lines:[
+      {s:"PATTY", t:"I'm really excited for Aunt Mary's surprise birthday party this afternoon! Aren't you?"},
+      {s:"SUSAN", t:"Yeah! How old is she?"},
+      {s:"PATTY", t:"She'll be 55 on May 14."},
+      {s:"SUSAN", t:"Wow! I didn't know that my mom was older — she's going to be 57 on September 2. Anyway, Aunt Mary's going to be so surprised to see us all here!"},
+      {s:"PATTY", t:"I know! But we still have to get all the food set up before she gets here… OK! We're all ready now. Shh! She's here!"},
+      {s:"ALL", t:"Surprise!"}
+    ],
+    notes:[
+      "<em>Aren't you?</em> es una tag negativa que muestra que el hablante espera una respuesta positiva.",
+      "Números ordinales: 14th = <em>fourteenth</em> (acento en la segunda sílaba: fourTEENTH). Compáralo con 40th = <em>fortieth</em> (FORtieth).",
+      "<em>She's going to be…</em> se pronuncia como «gonna be»: tres sílabas en vez de cuatro.",
+      "<em>get the food set up</em> = preparar / colocar la comida.",
+      "<em>Shh!</em> se usa para pedir silencio."
+    ],
+    phrases:[
+      {en:"I'm really excited for the party!", es:"¡Estoy muy emocionado por la fiesta!"},
+      {en:"How old is she?", es:"¿Cuántos años tiene ella?"},
+      {en:"She'll be 55 on May 14.", es:"Cumplirá 55 el 14 de mayo."},
+      {en:"She's going to be so surprised!", es:"¡Se va a llevar una gran sorpresa!"},
+      {en:"We still have to get the food set up.", es:"Todavía tenemos que preparar la comida."}
+    ]
+  },
+  {
+    id:"d3-2", emoji:"🎬", title:"At the Movies", subtitle:"En el cine",
+    lines:[
+      {s:"BOB", t:"We'd like two tickets for the 3:30 show, please."},
+      {s:"TICKET SALES", t:"Here you go. Enjoy the movie!"},
+      {s:"BOB", t:"Would you mind moving over one, so my friend and I can sit together?"},
+      {s:"WOMAN", t:"No, not at all."},
+      {s:"BOB", t:"Thanks a lot!"}
+    ],
+    notes:[
+      "<em>the 3:30 show</em> = la función de las 3:30.",
+      "<em>Would you mind + verbo -ing</em> = ¿le importaría…? Es una forma muy educada de pedir algo.",
+      "La respuesta a <em>Would you mind…?</em> es negativa si aceptas: <em>No, not at all</em> (= no me importa, con gusto).",
+      "<em>moving over one</em> = correrse un asiento.",
+      "<em>Here you go</em> = aquí tiene. <em>Enjoy the movie!</em> se dice con tono amable."
+    ],
+    phrases:[
+      {en:"We'd like two tickets for the 3:30 show.", es:"Quisiéramos dos boletos para la función de las 3:30."},
+      {en:"Here you go. Enjoy the movie!", es:"Aquí tiene. ¡Disfrute la película!"},
+      {en:"Would you mind moving over one?", es:"¿Le importaría correrse un asiento?"},
+      {en:"No, not at all.", es:"No, en absoluto."},
+      {en:"Thanks a lot!", es:"¡Muchas gracias!"}
+    ]
+  },
+  {
+    id:"d3-3", emoji:"🎨", title:"What Are You Good At?", subtitle:"¿En qué eres bueno?",
+    lines:[
+      {s:"SANDRA", t:"So… what should we do?"},
+      {s:"JULIE", t:"Well, I like to do arts and crafts, and I'm really good at drawing. What do you think?"},
+      {s:"SANDRA", t:"Hmm… how about playing a board game? That would be more fun."},
+      {s:"JULIE", t:"OK. Let's play Scrabble! I'm really good at spelling, too!"},
+      {s:"SANDRA", t:"Oh, yeah? We'll see about that!"}
+    ],
+    notes:[
+      "<em>be good at + verbo -ing</em> = ser bueno en algo. <em>I'm good at drawing / at spelling.</em>",
+      "<em>So…</em> con el sonido alargado, junto con la entonación, muestra aburrimiento.",
+      "<em>What do you…</em> suena como «Whaddaya» en el habla rápida.",
+      "<em>How about…</em> introduce una sugerencia tentativa (más suave). <em>Let's…</em> es una sugerencia fuerte y segura.",
+      "<em>Oh, yeah? We'll see about that!</em> se usa en tono de broma para mostrar una competencia amistosa."
+    ],
+    phrases:[
+      {en:"What should we do?", es:"¿Qué deberíamos hacer?"},
+      {en:"I'm really good at drawing.", es:"Soy muy bueno dibujando."},
+      {en:"How about playing a board game?", es:"¿Qué tal jugar un juego de mesa?"},
+      {en:"Let's play Scrabble!", es:"¡Juguemos Scrabble!"},
+      {en:"We'll see about that!", es:"¡Eso lo veremos!"}
+    ]
+  },
+  {
+    id:"d3-4", emoji:"🏀", title:"What's Your Favorite Sport?", subtitle:"¿Cuál es tu deporte favorito?",
+    lines:[
+      {s:"PHIL", t:"What time is that soccer game on? I thought it started at noon."},
+      {s:"JACK", t:"We must have had the wrong time. Oh, well… soccer's not my favorite sport anyway. I much prefer basketball."},
+      {s:"PHIL", t:"Oh, really? I thought your favorite sport was tennis! I'm a big fan of basketball, too."},
+      {s:"JACK", t:"How about a game sometime?"},
+      {s:"PHIL", t:"Sure thing! Why don't we go shoot some hoops now since the soccer game isn't on?"},
+      {s:"JACK", t:"Excellent idea. Let's go."}
+    ],
+    notes:[
+      "<em>What time is … on?</em> = ¿a qué hora empieza? Se usa para programas de TV, películas o partidos.",
+      "<em>I much prefer basketball</em> — <em>much</em> con énfasis indica que le gusta mucho más.",
+      "<em>Oh, really?</em> con entonación ascendente muestra sorpresa.",
+      "<em>I'm a big fan of…</em> = me gusta mucho / soy muy fan de…",
+      "<em>shoot some hoops</em> = jugar baloncesto (expresión casual entre amigos)."
+    ],
+    phrases:[
+      {en:"What time is that soccer game on?", es:"¿A qué hora es el partido de fútbol?"},
+      {en:"Soccer's not my favorite sport anyway.", es:"De todos modos, el fútbol no es mi deporte favorito."},
+      {en:"I much prefer basketball.", es:"Prefiero mucho más el baloncesto."},
+      {en:"I'm a big fan of basketball, too.", es:"También soy muy fanático del baloncesto."},
+      {en:"Why don't we go shoot some hoops?", es:"¿Por qué no vamos a jugar un poco de baloncesto?"}
+    ]
+  },
+  {
+    id:"d3-5", emoji:"🎭", title:"A Night at the Theater", subtitle:"Una noche en el teatro",
+    lines:[
+      {s:"SHANNON", t:"What a fantastic performance! Thank you for inviting me to the musical."},
+      {s:"ELENA", t:"You are welcome. I'm happy you enjoyed the show. The choreography of the dancers was incredible. It reminds me of when I used to dance."},
+      {s:"SHANNON", t:"I know! You were such a talented ballerina. Do you miss dancing?"},
+      {s:"ELENA", t:"Oh, that's very kind of you, Shannon. I do miss it sometimes. But I will always be a fan of the arts. That's why I love going to musicals because it's the perfect combination of song, dance and theater."},
+      {s:"SHANNON", t:"Absolutely! I'm glad you are still an art fan too. Thank you for the invitation. It's always a pleasure to attend an arts event with you and learn something new."}
+    ],
+    notes:[
+      "<em>You are welcome</em> es la respuesta más segura ante un agradecimiento (también <em>Don't mention it</em>).",
+      "Al recibir un cumplido puedes aceptarlo (<em>That's very kind of you</em>) o restarle importancia (<em>Oh, I wasn't that good</em>).",
+      "Los cumplidos en inglés suelen usar superlativos: <em>the best…, the most…</em>",
+      "Otra estructura para halagar: <em>I'm a fan of the arts. / I'm a big fan of theater. / I'm a huge fan of this band.</em>",
+      "<em>used to dance</em> = solía bailar."
+    ],
+    phrases:[
+      {en:"What a fantastic performance!", es:"¡Qué actuación tan fantástica!"},
+      {en:"Thank you for inviting me.", es:"Gracias por invitarme."},
+      {en:"I'm happy you enjoyed the show.", es:"Me alegra que hayas disfrutado el espectáculo."},
+      {en:"That's very kind of you.", es:"Es muy amable de tu parte."},
+      {en:"I will always be a fan of the arts.", es:"Siempre seré un fanático de las artes."}
+    ]
+  },
+  {
+    id:"d3-6", emoji:"✈️", title:"Taking a Vacation", subtitle:"Tomarse unas vacaciones",
+    lines:[
+      {s:"JULIE", t:"I just bought a ticket to New York City. I'm so excited to see the city!"},
+      {s:"SOPHIE", t:"Good for you! Traveling is so much fun. I love discovering new places and new people. When are you leaving?"},
+      {s:"JULIE", t:"Next week. I'm taking the red eye. It was cheaper. Hopefully, I'll be able to sleep on the plane."},
+      {s:"SOPHIE", t:"I wish I could go with you! New York City is a magical place. You will have so much fun."},
+      {s:"JULIE", t:"I hope so. I'm going to visit my brother who lives there. I will stay for a week and then take the train down to Washington, D.C."},
+      {s:"SOPHIE", t:"That sounds like a great vacation. I'm looking forward to a week at the beach for my summer vacation. I just want to relax."}
+    ],
+    notes:[
+      "<em>Ticket</em> sirve para muchos medios de transporte (metro, autobús, tren, avión…). El contexto indica cuál.",
+      "<em>red eye</em> = vuelo nocturno que sale de noche y llega de madrugada (por los ojos rojos de no dormir).",
+      "<em>Good for you!</em> = ¡qué bien por ti!",
+      "<em>I wish I could…</em> = ojalá pudiera…",
+      "<em>I'm looking forward to + sustantivo o -ing</em> = espero con muchas ganas…"
+    ],
+    phrases:[
+      {en:"I'm so excited to see the city!", es:"¡Estoy tan emocionado de ver la ciudad!"},
+      {en:"When are you leaving?", es:"¿Cuándo te vas?"},
+      {en:"I'm taking the red eye.", es:"Voy en el vuelo nocturno."},
+      {en:"I wish I could go with you!", es:"¡Ojalá pudiera ir contigo!"},
+      {en:"I'm looking forward to a week at the beach.", es:"Espero con ganas una semana en la playa."}
+    ]
+  },
+  {
+    id:"d3-7", emoji:"🐱", title:"At the Pet Store", subtitle:"En la tienda de mascotas",
+    lines:[
+      {s:"CONNIE", t:"Oh! What a beautiful cat. What do you think?"},
+      {s:"GARY", t:"I think I'd rather get a dog. Dogs are more loyal than cats."},
+      {s:"CONNIE", t:"Yes, but they're so much work! Would you be willing to walk it every single day? And clean up after it?"},
+      {s:"GARY", t:"Hmm. Good point. What about a bird? Or a fish?"},
+      {s:"CONNIE", t:"We'd have to invest a lot of money in a cage or a fish tank. And I don't really know how to take care of a bird or a fish!"},
+      {s:"GARY", t:"Well, we're obviously not ready to get a pet yet."},
+      {s:"CONNIE", t:"Yeah, you're right. Let's go grab some coffee and talk about it."}
+    ],
+    notes:[
+      "<em>What a + adjetivo + sustantivo!</em> expresa emoción: <em>What a beautiful cat!</em>",
+      "Comparativos: <em>Dogs are more loyal than cats</em> (sustantivo + is/are more + adjetivo + than + sustantivo).",
+      "<em>Every single day</em> — cada palabra se enfatiza para insistir en el punto.",
+      "<em>Good point</em> = buen punto, tienes razón.",
+      "<em>take care of</em> = cuidar de (animales, personas o cosas).",
+      "<em>grab some coffee</em> = tomar un café (informal)."
+    ],
+    phrases:[
+      {en:"What a beautiful cat!", es:"¡Qué gato tan hermoso!"},
+      {en:"I'd rather get a dog.", es:"Preferiría tener un perro."},
+      {en:"Dogs are more loyal than cats.", es:"Los perros son más leales que los gatos."},
+      {en:"Good point.", es:"Buen punto."},
+      {en:"Let's go grab some coffee.", es:"Vamos a tomar un café."}
+    ]
+  },
+  {
+    id:"d3-8", emoji:"🗣️", title:"Giving Your Opinion", subtitle:"Dar tu opinión",
+    lines:[
+      {s:"JAKE", t:"Where should we take a vacation this year? Let's decide soon."},
+      {s:"MELISSA", t:"Well, I'd like to go somewhere warm. How about the beach? Or we could rent a cabin on the lake."},
+      {s:"JAKE", t:"You want to go to the beach, again? I want to ski this winter. How about a compromise? What about traveling to the Alps in Europe next April? We can find a ski resort on a lake."},
+      {s:"MELISSA", t:"Oh, we've never been to Europe before! But I don't know if it will be sunny and warm then. I need to do some research first. That will help me make up my mind."}
+    ],
+    notes:[
+      "<em>make up my mind</em> = decidirse (igual que <em>decide</em>): <em>It's going to take a while to make up my mind.</em>",
+      "<em>How about…</em> presenta una alternativa. Puede ir seguido de sujeto + verbo conjugado o de un sustantivo: <em>How about we go swimming? / How about a movie tonight?</em>",
+      "Verbos para expresar opinión: <em>think / believe / suppose / assume</em>. No son sinónimos exactos: <em>suppose</em> y <em>assume</em> implican una idea preconcebida.",
+      "<em>a compromise</em> = un punto medio / una solución intermedia."
+    ],
+    phrases:[
+      {en:"Where should we take a vacation this year?", es:"¿Dónde deberíamos ir de vacaciones este año?"},
+      {en:"I'd like to go somewhere warm.", es:"Me gustaría ir a un lugar cálido."},
+      {en:"How about a compromise?", es:"¿Qué tal un punto medio?"},
+      {en:"We've never been to Europe before!", es:"¡Nunca hemos estado en Europa!"},
+      {en:"That will help me make up my mind.", es:"Eso me ayudará a decidirme."}
+    ]
+  },
+  {
+    id:"d3-9", emoji:"🚣", title:"Hobbies", subtitle:"Pasatiempos",
+    lines:[
+      {s:"RYAN", t:"I'm so happy this week of midterm exams is finished."},
+      {s:"TYLER", t:"Same here. I'm looking forward to relaxing in the mountains this weekend. I've planned a little hike in the woods. And I'm gonna take a canoe trip down the river if the weather cooperates."},
+      {s:"RYAN", t:"Oh, fun! I'm going to Michigan. I'm taking my camera because fall is coming fast. The leaves are already turning all shades of red and orange. It will be awesome."},
+      {s:"TYLER", t:"Next time you go there, I'll join you. I've heard Michigan is a great place to go canoeing."}
+    ],
+    notes:[
+      "<em>Midterms</em> son los exámenes de mitad de semestre (octubre o marzo). Los del final son <em>finals</em> (mayo).",
+      "<em>gonna</em> = going to; <em>wanna</em> = want to; <em>hafta</em> = have to. Son transcripciones del habla informal: no se usan en escritura formal.",
+      "<em>Same here</em> = yo también.",
+      "<em>Awesome</em> = genial, increíble (coloquial).",
+      "<em>if the weather cooperates</em> = si el clima lo permite."
+    ],
+    phrases:[
+      {en:"I'm so happy midterm exams are finished.", es:"Estoy muy feliz de que los exámenes parciales hayan terminado."},
+      {en:"Same here.", es:"Yo también."},
+      {en:"I'm looking forward to relaxing in the mountains.", es:"Espero con ganas relajarme en las montañas."},
+      {en:"If the weather cooperates.", es:"Si el clima lo permite."},
+      {en:"It will be awesome.", es:"Será increíble."}
+    ]
+  },
+  {
+    id:"d3-10", emoji:"💍", title:"Weddings", subtitle:"Bodas",
+    lines:[
+      {s:"ANGELICA", t:"Doesn't the bride look beautiful in that wedding dress?"},
+      {s:"MARIA", t:"Yes. She looks amazing. And the groom is so romantic. I just heard the story of how they got engaged! He proposed to her during a candlelight dinner in London. Did you know that was where they went to school?"},
+      {s:"ANGELICA", t:"Oh? Wonderful. And the honeymoon! What a great idea! Most people just go to the beach for a week after they tie the knot. But they plan on heading to California and cruising the coast on their motorcycle."},
+      {s:"MARIA", t:"Really! What a fantastic idea. This is by far the best wedding I've ever been to."}
+    ],
+    notes:[
+      "<em>Doesn't the bride look…?</em> es una pregunta negativa: se espera un «yes». Expresa lo contrario de lo que se dice (la novia SÍ se ve hermosa).",
+      "<em>honeymoon</em> = luna de miel. Tres sílabas con acento en la primera: HO-ney-moon.",
+      "<em>tie the knot</em> = casarse (informal).",
+      "<em>just</em> tiene dos usos: (a) pasado muy reciente — <em>I just heard the story</em>; (b) contraste o énfasis — <em>Most people just go to the beach</em> (= simplemente).",
+      "<em>by far the best</em> = de lejos el mejor."
+    ],
+    phrases:[
+      {en:"Doesn't the bride look beautiful?", es:"¿No se ve hermosa la novia?"},
+      {en:"He proposed to her during a candlelight dinner.", es:"Le propuso matrimonio durante una cena a la luz de las velas."},
+      {en:"After they tie the knot.", es:"Después de que se casen."},
+      {en:"What a fantastic idea!", es:"¡Qué idea tan fantástica!"},
+      {en:"This is by far the best wedding I've ever been to.", es:"Es de lejos la mejor boda a la que he ido."}
+    ]
+  },
+  {
+    id:"d3-11", emoji:"💡", title:"Giving Advice", subtitle:"Dar consejo",
+    lines:[
+      {s:"FRIEND A", t:"Thanks for meeting with me during your lunch hour. I appreciate it."},
+      {s:"FRIEND B", t:"No problem. I'm happy to help. What's going on?"},
+      {s:"FRIEND A", t:"Oh you know, the usual. Should I take this new job? Or do I stick with my current one?"},
+      {s:"FRIEND B", t:"Well, I think it's time for a change, don't you? They pay you late and you are unhappy."},
+      {s:"FRIEND A", t:"Do you really think so?"},
+      {s:"FRIEND B", t:"I know so. And I've been listening to you complain for over a year now. Trust me. Take the job. What do you have to lose?"}
+    ],
+    notes:[
+      "En conversación formal se aconseja con modales: <em>ought to / should / could / If I were you…</em>",
+      "En conversación informal se usan: <em>I think that / I feel that / in my opinion…</em>",
+      "<em>I know so</em> expresa mucha más certeza que <em>I think so</em>.",
+      "El imperativo se usa para persuadir con suavidad: <em>Take the job. / Trust me. / Go for it!</em>",
+      "<em>What do you have to lose?</em> = ¿qué tienes que perder?"
+    ],
+    phrases:[
+      {en:"Thanks for meeting with me.", es:"Gracias por reunirte conmigo."},
+      {en:"What's going on?", es:"¿Qué pasa?"},
+      {en:"Should I take this new job?", es:"¿Debería aceptar este nuevo trabajo?"},
+      {en:"I think it's time for a change, don't you?", es:"Creo que es hora de un cambio, ¿no?"},
+      {en:"What do you have to lose?", es:"¿Qué tienes que perder?"}
+    ]
+  }]
+}
+];
+
+/* =========================================================
+   ESTADO
+   ========================================================= */
+const ALL_DIALOGUES = DATA.flatMap(u => u.dialogues);
+const TOTAL = ALL_DIALOGUES.length;
+
+const state = {
+  currentId: null,
+  tab: 'dialogo',
+  roleplay: null,
+  hideText: false,
+  completed: JSON.parse(localStorage.getItem('ec_completed') || '[]'),
+  quiz: null,
+  cloze: null,
+  clozeDlg: null
+};
+
+/* =========================================================
+   UTILIDADES
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const getDlg = id => ALL_DIALOGUES.find(d => d.id === id);
+const initials = name => name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+/* Paleta institucional para los hablantes */
+const COLORS = [
+  '#0072CE','#001B41','#FFB81C','#0F9D58',
+  '#D93025','#5A6B85','#1F87E0','#E6A200'
+];
+
+function speakerColor(name, speakers){
+  const i = speakers.indexOf(name);
+  return COLORS[(i<0?0:i) % COLORS.length];
+}
+
+/* ---------- VOZ ---------- */
+let voiceCache = null;
+function pickVoice(){
+  if(!('speechSynthesis' in window)) return null;
+  if(voiceCache) return voiceCache;
+  const vs = speechSynthesis.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+  if(!vs.length) return null;
+  voiceCache = vs.find(v=>/en-US/i.test(v.lang) && /female|samantha|zira|aria|jenny/i.test(v.name))
+           || vs.find(v=>/en-US/i.test(v.lang)) || vs[0];
+  return voiceCache;
+}
+if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged = ()=>{ voiceCache = null; pickVoice(); }; }
+
+function speak(text, btn){
+  if(!('speechSynthesis' in window)){ alert('Tu navegador no soporta síntesis de voz.'); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.9; u.pitch = 1;
+  const v = pickVoice(); if(v) u.voice = v;
+  if(btn){
+    btn.classList.add('speaking');
+    u.onend = u.onerror = () => btn.classList.remove('speaking');
+  }
+  speechSynthesis.speak(u);
+}
+
+let speakingAll = false;
+function speakAll(){
+  if(!('speechSynthesis' in window)){ alert('Tu navegador no soporta síntesis de voz.'); return; }
+  const d = getDlg(state.currentId); if(!d) return;
+  speechSynthesis.cancel();
+  speakingAll = true;
+  d.lines.forEach((line, i) => {
+    const u = new SpeechSynthesisUtterance(line.t);
+    u.lang = 'en-US'; u.rate = 0.88;
+    const v = pickVoice(); if(v) u.voice = v;
+    u.onstart = () => {
+      document.querySelectorAll('.line').forEach(el => el.classList.remove('speaking'));
+      const el = document.querySelector(`.line[data-i="${i}"]`);
+      if(el){ el.classList.add('speaking'); el.scrollIntoView({block:'center', behavior:'smooth'}); }
+    };
+    u.onend = () => {
+      if(i === d.lines.length - 1){
+        speakingAll = false;
+        document.querySelectorAll('.line').forEach(el => el.classList.remove('speaking'));
+      }
+    };
+    speechSynthesis.speak(u);
+  });
+}
+
+/* =========================================================
+   NAVEGACIÓN
+   ========================================================= */
+function renderNav(){
+  const q = ($('#searchInput').value || '').trim().toLowerCase();
+  let html = '';
+  DATA.forEach(unit => {
+    const items = unit.dialogues.filter(d =>
+      !q || d.title.toLowerCase().includes(q) || d.subtitle.toLowerCase().includes(q)
+        || d.id.includes(q) || d.lines.some(l => l.t.toLowerCase().includes(q))
+    );
+    if(!items.length) return;
+    html += `<div class="unit-title">${esc(unit.title)}</div>`;
+    items.forEach(d => {
+      const done = state.completed.includes(d.id);
+      html += `<button class="nav-item ${state.currentId===d.id?'active':''}" data-id="${d.id}">
+        <span class="nav-emoji">${d.emoji}</span>
+        <span class="nav-text"><b>${d.id.toUpperCase()}</b>${esc(d.title)}</span>
+        <span class="nav-check">${done?'✓':''}</span>
+      </button>`;
+    });
+  });
+  if(!html) html = `<div style="padding:30px 14px;text-align:center;color:#6B85AC;font-size:12.5px">Sin resultados</div>`;
+  $('#nav').innerHTML = html;
+}
+
+function updateProgress(){
+  const n = state.completed.length;
+  $('#progressText').textContent = `${n}/${TOTAL}`;
+  $('#progressFill').style.width = (n/TOTAL*100) + '%';
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function render(){
+  const content = $('#content');
+  if(state.quiz){ content.innerHTML = renderQuiz(); bindQuiz(); return; }
+
+  const d = getDlg(state.currentId);
+  if(!d){ content.innerHTML = welcome(); return; }
+
+  $('#topTitle').innerHTML = `${d.emoji} <b>${esc(d.title)}</b> <span>· ${esc(d.subtitle)}</span>`;
+
+  let html = '';
+  if(state.tab === 'dialogo')  html = renderDialogue(d);
+  if(state.tab === 'notas')    html = renderNotes(d);
+  if(state.tab === 'frases')   html = renderPhrases(d);
+  if(state.tab === 'practica') html = renderPractice(d);
+  content.innerHTML = html;
+  content.scrollTop = 0;
+
+  if(state.tab === 'practica') bindPractice();
+  bindDialogue(d);
+}
+
+function welcome(){
+  return `<div class="wrap"><div class="empty">
+    <div class="big">💬</div>
+    <h3>Bienvenido a tu guía de conversación</h3>
+    <p>Elige un diálogo en la barra lateral para comenzar. Podrás escucharlo, practicar tu papel,
+    revisar las notas de idioma y hacer ejercicios interactivos.</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px">
+      <button class="btn b1" onclick="openDialogue('d1-1')">🚀 Empezar por el diálogo 1-1</button>
+      <button class="btn b2" onclick="startQuiz()">🎯 Hacer un quiz rápido</button>
+    </div>
+  </div></div>`;
+}
+
+/* ---------- DIÁLOGO ---------- */
+function renderDialogue(d){
+  const speakers = [...new Set(d.lines.map(l => l.s))];
+  const done = state.completed.includes(d.id);
+
+  const chips = speakers.map(s =>
+    `<span class="chip">
+      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;
+        background:${speakerColor(s,speakers)};margin-right:8px;
+        box-shadow:0 0 8px ${speakerColor(s,speakers)}88"></span>${esc(s)}
+    </span>`).join('');
+
+  const linesHtml = d.lines.map((l, i) => {
+    const isMine = state.roleplay && l.s === state.roleplay;
+    const color = speakerColor(l.s, speakers);
+    return `<div class="line" data-i="${i}">
+      <div class="avatar" style="background:${color}">${initials(l.s)}</div>
+      <div class="bubble" style="border-left:3px solid ${color}55">
+        <div class="speaker" style="color:${color}">${esc(l.s)}</div>
+        ${ isMine
+          ? `<div class="turn-hint">Tu turno — di esta línea en voz alta
+              <div class="text ${state.hideText?'hidden':''}" style="margin-top:8px">${esc(l.t)}</div></div>`
+          : `<div class="text ${state.hideText?'hidden':''}">${esc(l.t)}</div>` }
+        <div class="line-actions">
+          <button class="mini" data-say="${i}" title="Escuchar">🔊</button>
+          ${ state.hideText ? `<button class="mini" data-toggle-text title="Mostrar texto">👁</button>` : '' }
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="wrap">
+    <div class="dlg-head">
+      <div class="badge">Diálogo ${d.id.replace('d','').toUpperCase()}</div>
+      <h2>${esc(d.title)}</h2>
+      <div class="sub">${esc(d.subtitle)}</div>
+      <div class="chips">${chips}</div>
+    </div>
+
+    <div class="toolbar">
+      <button class="tool" id="btnPlayAll">▶️ Escuchar todo</button>
+      <button class="tool" id="btnStop">⏹️ Detener</button>
+      <div class="sep"></div>
+      <button class="tool ${state.hideText?'on':''}" id="btnHideText">👁 Ocultar texto</button>
+      <button class="tool ${state.roleplay?'on':''}" id="btnRole">
+        🎭 Mi papel:
+        <select id="roleSelect">
+          <option value="">— ninguno —</option>
+          ${speakers.map(s=>`<option value="${esc(s)}" ${state.roleplay===s?'selected':''}>${esc(s)}</option>`).join('')}
+        </select>
+      </button>
+      <div class="sep"></div>
+      <button class="tool ${done?'done':''}" id="btnDone">${done?'✓ Completado':'☐ Marcar completado'}</button>
+      <div class="sep"></div>
+      <button class="tool" onclick="goTab('notas')">📘 Notas</button>
+      <button class="tool" onclick="goTab('practica')">✏️ Practicar</button>
+    </div>
+
+    <div class="lines">${linesHtml}</div>
+  </div>`;
+}
+
+function bindDialogue(d){
+  const play = $('#btnPlayAll');
+  if(play) play.onclick = speakAll;
+  const stop = $('#btnStop');
+  if(stop) stop.onclick = () => { speechSynthesis.cancel(); speakingAll=false;
+    document.querySelectorAll('.line').forEach(el=>el.classList.remove('speaking')); };
+  const hide = $('#btnHideText');
+  if(hide) hide.onclick = () => { state.hideText = !state.hideText; render(); };
+  const role = $('#roleSelect');
+  if(role) role.onchange = e => { state.roleplay = e.target.value || null; render(); };
+  const done = $('#btnDone');
+  if(done) done.onclick = () => {
+    const i = state.completed.indexOf(d.id);
+    if(i>=0) state.completed.splice(i,1); else state.completed.push(d.id);
+    localStorage.setItem('ec_completed', JSON.stringify(state.completed));
+    updateProgress(); renderNav(); render();
+  };
+  document.querySelectorAll('[data-say]').forEach(b => {
+    b.onclick = () => { const l = d.lines[+b.dataset.say]; speak(l.t, b); };
+  });
+  document.querySelectorAll('[data-toggle-text]').forEach(b => {
+    b.onclick = () => { state.hideText = false; render(); };
+  });
+  document.querySelectorAll('.text').forEach(t => {
+    t.onclick = () => {
+      const lineEl = t.closest('.line');
+      const l = d.lines[+lineEl.dataset.i];
+      speak(l.t);
+    };
+  });
+}
+
+/* ---------- NOTAS ---------- */
+function renderNotes(d){
+  return `<div class="wrap">
+    <div class="panel">
+      <h3><span class="dot"></span>Notas de idioma · ${esc(d.title)}</h3>
+      ${d.notes.map((n,i)=>`<div class="note"><span class="n">${i+1}</span><span>${n}</span></div>`).join('')}
+    </div>
+    <div class="actions">
+      <button class="btn b1" onclick="goTab('frases')">Ver frases clave →</button>
+      <button class="btn b2" onclick="goTab('practica')">Ir a practicar</button>
+    </div>
+  </div>`;
+}
+
+/* ---------- FRASES ---------- */
+function renderPhrases(d){
+  return `<div class="wrap">
+    <div class="panel">
+      <h3><span class="dot"></span>Frases clave · ${esc(d.title)}</h3>
+      ${d.phrases.map((p,i)=>`
+        <div class="phrase">
+          <div>
+            <div class="en">${esc(p.en)}</div>
+            <div class="es">${esc(p.es)}</div>
+          </div>
+          <button class="say" data-p="${i}">🔊</button>
+        </div>`).join('')}
+    </div>
+    <div class="actions">
+      <button class="btn b1" id="btnPhraseQuiz">🎯 Quiz de estas frases</button>
+      <button class="btn b2" onclick="goTab('practica')">✏️ Completar oraciones</button>
+    </div>
+  </div>`;
+}
+
+/* ---------- PRÁCTICA (CLOZE) ---------- */
+function makeCloze(d){
+  const items = [];
+  const candidates = d.lines.filter(l => l.t.split(' ').length >= 6);
+  shuffle(candidates).slice(0, 6).forEach(l => {
+    const words = l.t.split(' ');
+    const opts = words.map((w,idx)=>({w,idx}))
+      .filter(o => o.idx > 0 && o.w.replace(/[^A-Za-z']/g,'').length >= 5);
+    if(!opts.length) return;
+    const pick = opts[Math.floor(Math.random()*opts.length)];
+    items.push({
+      speaker: l.s,
+      before: words.slice(0, pick.idx).join(' '),
+      after: words.slice(pick.idx+1).join(' '),
+      answer: pick.w.replace(/[^A-Za-z']/g,''),
+      full: l.t
+    });
+  });
+  return items;
+}
+
+function renderPractice(d){
+  if(state.cloze === null || state.clozeDlg !== d.id){
+    state.cloze = makeCloze(d);
+    state.clozeDlg = d.id;
+  }
+  const items = state.cloze;
+  if(!items.length){
+    return `<div class="wrap"><div class="panel"><h3><span class="dot"></span>Práctica</h3>
+      <p style="color:var(--ink-soft);font-size:14px">Este diálogo es muy corto para generar ejercicios. Prueba el quiz de frases.</p>
+      <div class="actions"><button class="btn b1" onclick="goTab('frases')">Ir a frases clave</button></div></div></div>`;
+  }
+  const blocks = items.map((it,i)=>`
+    <div class="cloze-item">
+      <div class="who">${esc(it.speaker)}</div>
+      <div class="cloze-txt">${esc(it.before)}
+        <input type="text" data-i="${i}" autocomplete="off" spellcheck="false" placeholder="…">
+        ${esc(it.after)}</div>
+      <div class="fb" id="fb${i}"></div>
+    </div>`).join('');
+
+  return `<div class="wrap">
+    <div class="panel">
+      <h3><span class="dot"></span>Completa la palabra que falta</h3>
+      <p style="font-size:13.6px;color:var(--ink-soft);line-height:1.7;margin-bottom:18px">
+        Escribe la palabra exacta que falta en cada oración. Pulsa <b>Enter</b> o el botón <b>Verificar</b> al terminar.
+      </p>
+      ${blocks}
+      <div class="actions" style="margin-top:20px">
+        <button class="btn b1" id="btnCheck">✅ Verificar</button>
+        <button class="btn b2" id="btnShow">👁 Mostrar respuestas</button>
+        <button class="btn b2" id="btnNew">🔄 Nuevos ejercicios</button>
+      </div>
+      <div id="clozeScore" style="margin-top:18px;font-weight:800;font-size:15px;color:var(--blue)"></div>
+    </div>
+  </div>`;
+}
+
+function bindPractice(){
+  const d = getDlg(state.currentId);
+  const inputs = [...document.querySelectorAll('.cloze-txt input')];
+  if(!inputs.length) return;
+  const items = state.cloze;
+
+  const check = () => {
+    let ok = 0;
+    inputs.forEach(inp => {
+      const i = +inp.dataset.i;
+      const val = inp.value.trim().toLowerCase().replace(/[^a-z']/g,'');
+      const ans = items[i].answer.toLowerCase();
+      const fb = document.getElementById('fb'+i);
+      inp.classList.remove('ok','bad');
+      if(val === ans){
+        inp.classList.add('ok'); ok++;
+        fb.className = 'fb ok show'; fb.textContent = '✓ ¡Correcto!';
+      } else {
+        inp.classList.add('bad');
+        fb.className = 'fb bad show';
+        fb.textContent = `✗ Respuesta correcta: "${items[i].answer}"`;
+      }
+    });
+    const score = document.getElementById('clozeScore');
+    score.textContent = `Resultado: ${ok} / ${items.length} correctas ${ok===items.length?'🎉 ¡Perfecto!':''}`;
+  };
+
+  inputs.forEach(inp => inp.addEventListener('keydown', e => { if(e.key === 'Enter') check(); }));
+  document.getElementById('btnCheck').onclick = check;
+  document.getElementById('btnShow').onclick = () => {
+    inputs.forEach(inp => {
+      const i = +inp.dataset.i;
+      inp.value = items[i].answer;
+      inp.classList.add('ok'); inp.classList.remove('bad');
+      const fb = document.getElementById('fb'+i);
+      fb.className = 'fb ok show'; fb.textContent = `→ ${items[i].full}`;
+    });
+    document.getElementById('clozeScore').textContent = 'Respuestas mostradas. ¡Ahora inténtalo de nuevo sin mirar!';
+  };
+  document.getElementById('btnNew').onclick = () => {
+    state.cloze = makeCloze(d);
+    render();
+  };
+}
+
+/* =========================================================
+   QUIZ
+   ========================================================= */
+function buildQuestions(phrases, poolPhrases, n){
+  const chosen = shuffle(phrases).slice(0, Math.min(n, phrases.length));
+  return chosen.map(p => {
+    const distractors = shuffle(poolPhrases.filter(x => x.es !== p.es))
+      .slice(0,3).map(x => x.es);
+    while(distractors.length < 3) distractors.push('—');
+    return { q: p.en, options: shuffle([p.es, ...distractors]), answer: p.es };
+  });
+}
+
+function startQuiz(dialogueId){
+  let questions;
+  if(dialogueId){
+    const d = getDlg(dialogueId);
+    const pool = ALL_DIALOGUES.flatMap(x => x.phrases);
+    questions = buildQuestions(d.phrases, pool, d.phrases.length);
+  } else {
+    const pool = ALL_DIALOGUES.flatMap(x => x.phrases);
+    questions = buildQuestions(pool, pool, 10);
+  }
+  state.quiz = { questions, index: 0, score: 0, answered: false };
+  closeSidebar();
+  render();
+}
+
+function renderQuiz(){
+  const z = state.quiz;
+  if(z.index >= z.questions.length) return renderQuizResult();
+  const q = z.questions[z.index];
+  const pct = (z.index / z.questions.length) * 100;
+
+  return `<div class="wrap">
+    <div class="quiz-card">
+      <div class="qmeta">
+        <span>Pregunta ${z.index+1} de ${z.questions.length}</span>
+        <span>Aciertos: ${z.score} ⭐</span>
+      </div>
+      <div class="qbar"><div style="width:${pct}%"></div></div>
+      <div class="qtext">${esc(q.q)}</div>
+      <div class="qsub">¿Qué significa esta expresión en español?</div>
+      <div class="opts">
+        ${q.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}<span class="mark"></span></button>`).join('')}
+      </div>
+      <div class="actions" style="margin-top:24px">
+        <button class="btn b2" id="btnExitQuiz">← Salir del quiz</button>
+        <button class="btn b1" id="btnNextQ" style="display:none">Siguiente →</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function bindQuiz(){
+  const z = state.quiz;
+  if(!z) return;
+  document.getElementById('btnExitQuiz').onclick = () => { state.quiz = null; render(); };
+
+  if(z.index >= z.questions.length){
+    document.getElementById('btnRestart').onclick = () => startQuiz();
+    document.getElementById('btnBackHome').onclick = () => { state.quiz = null; render(); };
+    return;
+  }
+
+  const q = z.questions[z.index];
+  const btns = [...document.querySelectorAll('.opt')];
+  const nextBtn = document.getElementById('btnNextQ');
+
+  btns.forEach(b => {
+    b.onclick = () => {
+      if(z.answered) return;
+      z.answered = true;
+      const chosen = q.options[+b.dataset.i];
+      const correct = chosen === q.answer;
+      if(correct) z.score++;
+      btns.forEach((bb, i) => {
+        bb.disabled = true;
+        if(q.options[i] === q.answer){
+          bb.classList.add('correct');
+          bb.querySelector('.mark').textContent = '✓';
+        } else if(bb === b){
+          bb.classList.add('wrong');
+          bb.querySelector('.mark').textContent = '✗';
+        }
+      });
+      nextBtn.style.display = 'inline-block';
+      nextBtn.textContent = (z.index === z.questions.length-1) ? 'Ver resultado →' : 'Siguiente →';
+    };
+  });
+
+  nextBtn.onclick = () => {
+    z.index++;
+    z.answered = false;
+    render();
+  };
+}
+
+function renderQuizResult(){
+  const z = state.quiz;
+  const total = z.questions.length;
+  const pct = Math.round(z.score / total * 100);
+  const msg = pct >= 90 ? '🏆 ¡Excelente! Dominas estas expresiones.'
+            : pct >= 70 ? '👏 ¡Muy bien! Solo repasa un par de detalles.'
+            : pct >= 50 ? '💪 Buen intento. Vuelve a las frases clave.'
+            : '📖 Repasa los diálogos y las frases clave, ¡y vuelve a intentarlo!';
+  const color = pct >= 70 ? 'var(--success)' : pct >= 50 ? 'var(--gold-600)' : 'var(--danger)';
+
+  return `<div class="wrap"><div class="quiz-card" style="text-align:center;padding:48px 30px">
+    <div style="font-size:64px;font-weight:800;color:${color};line-height:1;letter-spacing:-.04em">${pct}%</div>
+    <div style="font-size:20px;font-weight:700;margin:16px 0 8px;color:var(--navy-800)">${z.score} de ${total} correctas</div>
+    <p style="color:var(--ink-soft);font-size:14.5px;line-height:1.7;max-width:440px;margin:0 auto 28px">${msg}</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn b1" id="btnRestart">🔄 Otro quiz</button>
+      <button class="btn b2" id="btnBackHome">← Volver a los diálogos</button>
+    </div>
+  </div></div>`;
+}
+
+/* =========================================================
+   INTERACCIONES
+   ========================================================= */
+function openDialogue(id){
+  state.currentId = id;
+  state.tab = 'dialogo';
+  state.roleplay = null;
+  state.hideText = false;
+  state.cloze = null;
+  state.clozeDlg = null;
+  state.quiz = null;
+  speechSynthesis.cancel();
+  document.querySelectorAll('.tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === 'dialogo'));
+  renderNav();
+  render();
+  closeSidebar();
+}
+
+function goTab(t){
+  state.tab = t;
+  state.cloze = null;
+  state.clozeDlg = null;
+  document.querySelectorAll('.tab').forEach(x =>
+    x.classList.toggle('active', x.dataset.tab === t));
+  render();
+}
+
+function closeSidebar(){
+  $('#sidebar').classList.remove('open');
+  $('#backdrop').classList.remove('show');
+}
+
+/* Eventos globales */
+$('#nav').addEventListener('click', e => {
+  const btn = e.target.closest('.nav-item');
+  if(btn) openDialogue(btn.dataset.id);
+});
+
+$('#searchInput').addEventListener('input', renderNav);
+
+$('#tabs').addEventListener('click', e => {
+  const t = e.target.closest('.tab');
+  if(t) goTab(t.dataset.tab);
+});
+
+$('#quizBtn').onclick = () => startQuiz();
+
+$('#menuBtn').onclick = () => {
+  $('#sidebar').classList.toggle('open');
+  $('#backdrop').classList.toggle('show');
+};
+$('#backdrop').onclick = closeSidebar;
+
+document.addEventListener('click', e => {
+  const say = e.target.closest('.say');
+  if(say){
+    const d = getDlg(state.currentId);
+    if(d) speak(d.phrases[+say.dataset.p].en, say);
+  }
+  if(e.target.id === 'btnPhraseQuiz'){
+    startQuiz(state.currentId);
+  }
+});
+
+/* Inicio */
+renderNav();
+updateProgress();
+render();
+</script>
+</body>
+</html>
