@@ -337,3 +337,215 @@ body{
   color:#E8EEF8;
   display:inline-flex;align-items:center;
 }
+
+   /* =========================================================
+   TOOLBAR
+   ========================================================= */
+.toolbar{
+  display:flex;flex-wrap:wrap;gap:9px;align-items:center;
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:14px 16px;
+  margin-bottom:22px;
+  box-shadow:var(--shadow);
+}
+.tool{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 15px;border-radius:10px;
+  border:1.5px solid var(--line);
+  background:#fff;font-family:inherit;
+  font-size:12.5px;font-weight:600;
+  color:var(--ink);cursor:pointer;
+  transition:all .18s var(--t);
+  letter-spacing:-.01em;
+  white-space:nowrap;
+}
+.tool:hover{
+  border-color:var(--blue);
+  color:var(--blue);
+  background:var(--blue-50);
+  transform:translateY(-1px);
+}
+.tool.on{
+  background:var(--blue);border-color:var(--blue);
+  color:#fff;box-shadow:0 4px 12px rgba(0,114,206,.3);
+}
+.tool.done{
+  background:var(--success);border-color:var(--success);
+  color:#fff;box-shadow:0 4px 12px rgba(15,157,88,.3);
+}
+.tool select{
+  border:none;background:transparent;
+  font-family:inherit;font-size:12.5px;
+  font-weight:600;color:inherit;
+  cursor:pointer;outline:none;
+  padding:0 2px;
+}
+.sep{width:1px;height:22px;background:var(--line);margin:0 3px}
+
+/* =========================================================
+   LINES / BUBBLES
+   ========================================================= */
+.lines{display:flex;flex-direction:column;gap:16px}
+.line{
+  display:flex;gap:13px;align-items:flex-start;
+  animation:fade .4s var(--t) both;
+}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.avatar{
+  width:42px;height:42px;border-radius:13px;
+  flex:0 0 42px;display:grid;place-items:center;
+  font-size:13px;font-weight:800;color:#fff;
+  letter-spacing:-.02em;
+  box-shadow:0 4px 10px rgba(0,27,65,.18), inset 0 1px 0 rgba(255,255,255,.2);
+  transition:transform .2s var(--t);
+}
+.line:hover .avatar{transform:scale(1.06)}
+.bubble{
+  flex:1;background:#fff;
+  border:1px solid var(--line);
+  border-radius:6px 18px 18px 18px;
+  padding:14px 18px 13px;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  transition:all .25s var(--t);
+}
+.bubble:hover{
+  border-color:#CFDCEC;
+  box-shadow:var(--shadow);
+}
+.line.speaking .bubble{
+  border-color:var(--blue);
+  background:linear-gradient(180deg,#F5FAFF,#fff);
+  box-shadow:0 0 0 3px rgba(0,114,206,.12), var(--shadow);
+}
+.speaker{
+  font-size:10.5px;font-weight:800;
+  letter-spacing:.9px;text-transform:uppercase;
+  margin-bottom:6px;
+}
+.text{
+  font-size:15.5px;line-height:1.65;
+  color:#0A1E3D;
+  cursor:pointer;
+  transition:filter .2s;
+  font-weight:400;
+}
+.text:hover{filter:brightness(.85)}
+.text.hidden{
+  filter:blur(6px);
+  user-select:none;pointer-events:none;
+}
+.line-actions{
+  display:flex;gap:6px;margin-top:10px;align-items:center;
+}
+.mini{
+  border:none;background:var(--blue-50);
+  color:var(--ink-soft);width:30px;height:30px;
+  border-radius:9px;cursor:pointer;font-size:13px;
+  display:grid;place-items:center;
+  transition:all .18s var(--t);
+}
+.mini:hover{background:var(--blue);color:#fff;transform:translateY(-1px)}
+.mini.speaking{
+  background:var(--blue);color:#fff;
+  animation:pulse 1s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(.94)}}
+.turn-hint{
+  font-size:12.5px;color:var(--blue);
+  font-weight:700;font-style:italic;
+  background:var(--blue-50);
+  border:1px dashed var(--blue-500);
+  border-radius:10px;padding:10px 14px;margin-top:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.turn-hint::before{content:'🎤';font-style:normal}
+
+/* =========================================================
+   PANELS
+   ========================================================= */
+.panel{
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:24px 26px;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+}
+.panel h3{
+  font-size:16.5px;font-weight:700;
+  margin-bottom:16px;display:flex;
+  align-items:center;gap:10px;
+  color:var(--navy-800);
+  letter-spacing:-.02em;
+}
+.panel h3 .dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 0 4px rgba(255,184,28,.18);
+}
+.note{
+  display:flex;gap:12px;padding:13px 0;
+  border-bottom:1px dashed var(--line);
+  font-size:13.8px;line-height:1.68;
+  color:#1E3354;
+}
+.note:last-child{border-bottom:none}
+.note .n{
+  color:var(--blue);font-weight:800;
+  flex:0 0 auto;font-size:13px;
+  width:22px;height:22px;border-radius:7px;
+  background:var(--blue-50);
+  display:grid;place-items:center;
+  margin-top:1px;
+}
+.note em{
+  color:var(--blue-600);font-style:italic;
+  font-weight:600;
+  background:var(--blue-50);
+  padding:1px 5px;border-radius:4px;
+}
+.note b{color:var(--navy-800);font-weight:700}
+
+/* Frases clave */
+.phrase{
+  display:flex;justify-content:space-between;
+  gap:16px;align-items:center;
+  padding:14px 16px;border-radius:12px;
+  background:linear-gradient(135deg,#FBFDFF,#F5F9FE);
+  border:1px solid var(--line-soft);
+  margin-bottom:10px;
+  transition:all .2s var(--t);
+}
+.phrase:hover{
+  background:linear-gradient(135deg,#F3F8FD,#E9F2FC);
+  border-color:#CFE0F2;
+  transform:translateX(2px);
+}
+.phrase .en{
+  font-size:14.8px;font-weight:600;
+  color:var(--navy-800);line-height:1.4;
+  letter-spacing:-.01em;
+}
+.phrase .es{
+  font-size:13px;color:var(--ink-soft);
+  margin-top:4px;line-height:1.45;
+}
+.phrase .say{
+  flex:0 0 auto;width:38px;height:38px;
+  border-radius:11px;border:1px solid var(--line);
+  background:#fff;color:var(--blue);
+  cursor:pointer;font-size:15px;
+  box-shadow:var(--shadow-sm);
+  transition:all .18s var(--t);
+}
+.phrase .say:hover{
+  background:var(--blue);color:#fff;
+  border-color:var(--blue);
+  transform:translateY(-1px) scale(1.05);
+  box-shadow:0 6px 16px rgba(0,114,206,.35);
+}
+.phrase .say.speaking{
+  background:var(--blue);color:#fff;
+  border-color:var(--blue);
+  animation:pulse 1s infinite;
+   }
+   
