@@ -3,1640 +3,2126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Everyday Conversations · TOEFL ITP Study Guide</title>
+<title>TOEFL ITP English Academy · Domina el inglés con confianza</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* =========================================================
-   TOKENS · PALETA INSTITUCIONAL TOEFL ITP
-   ========================================================= */
 *{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  /* Azul marino profundo */
-  --navy-900:#000E24;
-  --navy-800:#001B41;
-  --navy-700:#0A2E5C;
-  --navy-600:#123E73;
-  /* Azul TOEFL */
-  --blue:#0072CE;
-  --blue-600:#005BA5;
-  --blue-500:#1F87E0;
-  --blue-100:#E6F2FB;
-  --blue-50:#F3F8FD;
-  /* Dorado acento */
-  --gold:#FFB81C;
-  --gold-600:#E6A200;
-  --gold-100:#FFF4D9;
-  /* Neutros */
-  --ink:#001B41;
-  --ink-soft:#4A5B76;
-  --ink-faint:#8494AB;
-  --line:#E1E9F3;
-  --line-soft:#EEF3F9;
-  --bg:#F7FAFD;
-  --card:#FFFFFF;
-  /* Estados */
-  --success:#0F9D58;
-  --success-bg:#E7F7EE;
-  --danger:#D93025;
-  --danger-bg:#FDECEA;
-  /* Sombras en capas */
-  --shadow-sm:0 1px 2px rgba(0,27,65,.05);
-  --shadow:0 1px 3px rgba(0,27,65,.06), 0 8px 24px rgba(0,27,65,.06);
-  --shadow-md:0 2px 6px rgba(0,27,65,.07), 0 16px 40px rgba(0,27,65,.08);
-  --shadow-lg:0 4px 12px rgba(0,27,65,.09), 0 24px 60px rgba(0,27,65,.12);
-  /* Radios */
-  --r-sm:8px;
-  --r-md:12px;
-  --r-lg:16px;
-  --r-xl:22px;
-  /* Transición */
+  --navy:#001B41; --navy-2:#0A2E5C; --navy-3:#00112E;
+  --blue:#0072CE; --blue-2:#005BA5; --blue-light:#E6F2FB; --blue-50:#F3F8FD;
+  --gold:#FFB81C; --gold-2:#E6A200; --gold-light:#FFF4D9;
+  --ink:#001B41; --ink-2:#4A5B76; --ink-3:#8494AB;
+  --line:#E1E9F3; --line-2:#EEF3F9;
+  --bg:#F7FAFD; --card:#fff;
+  --ok:#0F9D58; --ok-bg:#E7F7EE;
+  --err:#D93025; --err-bg:#FDECEA;
+  --shadow:0 1px 3px rgba(0,27,65,.06),0 8px 24px rgba(0,27,65,.06);
+  --shadow-md:0 2px 8px rgba(0,27,65,.08),0 20px 48px rgba(0,27,65,.10);
+  --shadow-lg:0 8px 24px rgba(0,27,65,.12),0 32px 80px rgba(0,27,65,.14);
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px;
   --t:cubic-bezier(.4,.14,.3,1);
 }
-
 html,body{height:100%}
-
 body{
-  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  overflow:hidden;
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--ink);
   font-feature-settings:'cv02','cv03','cv04','cv11';
   -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  letter-spacing:-.01em;
+  letter-spacing:-.01em;line-height:1.5;
 }
+button{font-family:inherit;cursor:pointer;border:none;background:none;letter-spacing:inherit}
+input,select,textarea{font-family:inherit;letter-spacing:inherit}
+a{color:inherit;text-decoration:none}
 
-#app{display:flex;height:100vh;width:100%}
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
-#sidebar{
-  width:320px;flex:0 0 320px;
-  background:linear-gradient(180deg,#001B41 0%,#00112E 60%,#00091E 100%);
-  color:#E8EEF8;
-  display:flex;flex-direction:column;height:100vh;
-  box-shadow:6px 0 32px rgba(0,11,30,.25);
-  z-index:40;
-  position:relative;
-}
-#sidebar::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(0,114,206,.18), transparent 45%),
-    radial-gradient(circle at 100% 100%, rgba(255,184,28,.08), transparent 40%);
-}
-
-.brand{
-  display:flex;gap:13px;align-items:center;
-  padding:22px 20px 16px;position:relative;
-}
-.brand-icon{
-  width:46px;height:46px;border-radius:14px;
-  display:grid;place-items:center;font-size:22px;
-  background:linear-gradient(135deg,var(--blue),#3E9EE8);
-  box-shadow:0 8px 20px rgba(0,114,206,.45), inset 0 1px 0 rgba(255,255,255,.25);
-  position:relative;
-}
-.brand-icon::after{
-  content:'';position:absolute;right:-3px;bottom:-3px;
-  width:14px;height:14px;border-radius:50%;
-  background:var(--gold);
-  border:2px solid #001B41;
-}
-.brand h1{
-  font-size:15px;font-weight:800;letter-spacing:-.02em;line-height:1.2;color:#fff;
-}
-.brand p{font-size:11px;color:#7A93B8;margin-top:3px;letter-spacing:.02em;font-weight:500}
-
-.search-box{padding:6px 18px 16px;position:relative;z-index:1}
-.search-box input{
-  width:100%;padding:11px 14px 11px 38px;
-  border-radius:var(--r-md);
-  border:1px solid rgba(255,255,255,.1);
-  background:rgba(255,255,255,.06);
-  color:#fff;font-size:13px;outline:none;
-  font-family:inherit;
-  transition:all .2s var(--t);
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A93B8' stroke-width='2.5' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-3.5-3.5'/></svg>");
-  background-repeat:no-repeat;
-  background-position:14px center;
-}
-.search-box input::placeholder{color:#6B85AC;font-weight:500}
-.search-box input:focus{
-  background-color:rgba(255,255,255,.11);
-  border-color:var(--blue);
-  box-shadow:0 0 0 3px rgba(0,114,206,.25);
-}
-
-#nav{flex:1;overflow-y:auto;padding:0 12px 16px;position:relative;z-index:1}
-#nav::-webkit-scrollbar{width:6px}
-#nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:6px}
-#nav::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.24)}
-
-.unit-title{
-  font-size:10.5px;text-transform:uppercase;letter-spacing:1.4px;
-  color:#6B85AC;padding:16px 10px 8px;font-weight:700;
-}
-
-.nav-item{
-  width:100%;display:flex;align-items:center;gap:10px;
-  padding:10px 11px;border-radius:var(--r-md);
-  background:transparent;border:none;color:#C7D3E5;
-  font-size:12.8px;text-align:left;cursor:pointer;
-  transition:all .18s var(--t);
-  font-family:inherit;line-height:1.3;margin-bottom:2px;
-  font-weight:500;
-  position:relative;
-}
-.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
-.nav-item.active{
-  background:linear-gradient(90deg,rgba(0,114,206,.9),rgba(0,114,206,.35));
-  color:#fff;font-weight:600;
-  box-shadow:0 4px 14px rgba(0,114,206,.3);
-}
-.nav-item.active::before{
-  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
-  width:3px;height:60%;border-radius:0 3px 3px 0;background:var(--gold);
-}
-.nav-emoji{font-size:15px;flex:0 0 auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))}
-.nav-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nav-text b{color:#6FA8E0;font-size:10.5px;margin-right:6px;font-weight:700;letter-spacing:.03em}
-.nav-item.active .nav-text b{color:#A9D4FF}
-.nav-check{
-  color:var(--gold);font-weight:800;font-size:13px;
-  text-shadow:0 0 8px rgba(255,184,28,.5);
-}
-
-.side-footer{
-  padding:16px 20px 20px;
-  border-top:1px solid rgba(255,255,255,.08);
-  position:relative;z-index:1;
-  background:rgba(0,0,0,.15);
-}
-.progress-info{
-  display:flex;justify-content:space-between;
-  font-size:11.5px;color:#93A8C7;margin-bottom:9px;
-  font-weight:500;letter-spacing:.02em;
-}
-.progress-info b{color:#fff;font-weight:700}
-.progress-bar{
-  height:6px;background:rgba(255,255,255,.1);
-  border-radius:8px;overflow:hidden;margin-bottom:15px;
-}
-#progressFill{
-  height:100%;width:0;border-radius:8px;
-  background:linear-gradient(90deg,var(--blue),var(--gold));
-  transition:width .6s var(--t);
-  box-shadow:0 0 12px rgba(255,184,28,.4);
-}
-
-.btn-primary{
-  width:100%;padding:12px;border:none;border-radius:var(--r-md);
-  cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;
-  color:#001B41;
-  background:linear-gradient(135deg,var(--gold),#FFCD4A);
-  box-shadow:0 6px 18px rgba(255,184,28,.35), inset 0 1px 0 rgba(255,255,255,.4);
-  transition:all .2s var(--t);
-  letter-spacing:-.01em;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.btn-primary:hover{
-  transform:translateY(-1px);
-  box-shadow:0 10px 24px rgba(255,184,28,.45), inset 0 1px 0 rgba(255,255,255,.5);
-}
-.btn-primary:active{transform:translateY(0)}
-
-/* =========================================================
-   MAIN
-   ========================================================= */
-#main{
-  flex:1;display:flex;flex-direction:column;
-  height:100vh;overflow:hidden;position:relative;
-  background:var(--bg);
-}
-
-#topbar{
-  display:flex;align-items:center;gap:14px;
-  padding:0 28px;height:68px;flex:0 0 68px;
+/* ============ TOP NAV (Landing / App) ============ */
+.topnav{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;gap:20px;
+  padding:0 32px;height:72px;
   background:rgba(255,255,255,.85);
   backdrop-filter:blur(16px) saturate(180%);
   -webkit-backdrop-filter:blur(16px) saturate(180%);
   border-bottom:1px solid var(--line);
-  z-index:10;
 }
-#menuBtn{
-  display:none;background:none;border:none;
-  font-size:22px;cursor:pointer;color:var(--ink);
-  padding:6px;border-radius:8px;
+.topnav.dark{
+  background:rgba(0,17,46,.7);
+  border-bottom-color:rgba(255,255,255,.08);
+  color:#fff;
 }
-#menuBtn:hover{background:var(--blue-50)}
+.logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:15px;letter-spacing:-.02em}
+.logo-icon{
+  width:40px;height:40px;border-radius:12px;
+  display:grid;place-items:center;font-size:19px;
+  background:linear-gradient(135deg,var(--blue),#3E9EE8);
+  box-shadow:0 8px 20px rgba(0,114,206,.4),inset 0 1px 0 rgba(255,255,255,.25);
+  position:relative;color:#fff;
+}
+.logo-icon::after{
+  content:'';position:absolute;right:-3px;bottom:-3px;
+  width:12px;height:12px;border-radius:50%;background:var(--gold);
+  border:2px solid var(--navy);
+}
+.topnav.dark .logo-icon::after{border-color:var(--navy-3)}
+.logo small{display:block;font-size:10.5px;color:var(--ink-3);font-weight:600;letter-spacing:.03em;text-transform:uppercase}
+.topnav.dark .logo small{color:#7A93B8}
+.nav-spacer{flex:1}
+.nav-links{display:flex;gap:6px}
+.nav-links button{
+  padding:9px 15px;border-radius:10px;font-size:13px;font-weight:600;
+  color:var(--ink-2);transition:.18s var(--t);
+}
+.nav-links button:hover{background:var(--blue-50);color:var(--blue)}
+.topnav.dark .nav-links button{color:#C7D3E5}
+.topnav.dark .nav-links button:hover{background:rgba(255,255,255,.08);color:#fff}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 20px;border-radius:11px;
+  font-size:13px;font-weight:700;transition:.2s var(--t);
+  white-space:nowrap;
+}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-50)}
+.btn-primary{
+  background:linear-gradient(135deg,var(--blue),var(--blue-2));
+  color:#fff;box-shadow:0 6px 16px rgba(0,114,206,.35),inset 0 1px 0 rgba(255,255,255,.15);
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(0,114,206,.5)}
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold),#FFCD4A);
+  color:var(--navy);box-shadow:0 6px 18px rgba(255,184,28,.35),inset 0 1px 0 rgba(255,255,255,.4);
+}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(255,184,28,.5)}
+.btn-sm{padding:8px 14px;font-size:12.5px;border-radius:9px}
+.btn-lg{padding:14px 26px;font-size:14.5px;border-radius:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 
-#topTitle{
-  font-size:14.5px;font-weight:600;flex:1;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  color:var(--ink);letter-spacing:-.02em;
-}
-#topTitle b{font-weight:700;color:var(--navy-800)}
-#topTitle span{color:var(--ink-faint);font-weight:500}
-
-.tabs{
-  display:flex;gap:3px;background:var(--blue-50);
-  padding:4px;border-radius:11px;
-  border:1px solid var(--line-soft);
-}
-.tab{
-  padding:8px 15px;border-radius:8px;border:none;
-  background:transparent;cursor:pointer;
-  font-family:inherit;font-size:12.5px;font-weight:600;
-  color:var(--ink-soft);transition:all .2s var(--t);
-  white-space:nowrap;letter-spacing:-.01em;
-}
-.tab:hover{color:var(--blue)}
-.tab.active{
-  background:#fff;color:var(--blue);
-  box-shadow:0 2px 6px rgba(0,27,65,.1);
-}
-
-#content{
-  flex:1;overflow-y:auto;
-  padding:28px 32px 80px;
-  scroll-behavior:smooth;
-}
-#content::-webkit-scrollbar{width:10px}
-#content::-webkit-scrollbar-thumb{
-  background:#C7D5E5;border-radius:8px;border:3px solid var(--bg);
-}
-#content::-webkit-scrollbar-thumb:hover{background:#A8BBD2}
-.wrap{max-width:920px;margin:0 auto;animation:pageIn .35s var(--t)}
-@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-
-/* =========================================================
-   DIALOGUE HEADER
-   ========================================================= */
-.dlg-head{
-  background:
-    radial-gradient(circle at 100% 0%, rgba(255,184,28,.18), transparent 45%),
-    radial-gradient(circle at 0% 100%, rgba(0,114,206,.35), transparent 50%),
-    linear-gradient(135deg,#001B41,#00112E 60%,#00091E);
-  border-radius:var(--r-xl);
-  padding:30px 32px;color:#fff;
-  box-shadow:var(--shadow-lg);
-  margin-bottom:24px;
+/* ============ HERO / LANDING ============ */
+.landing{min-height:100vh;background:var(--bg)}
+.hero{
   position:relative;overflow:hidden;
-  border:1px solid rgba(255,255,255,.06);
+  background:
+    radial-gradient(circle at 20% 0%,rgba(0,114,206,.35),transparent 50%),
+    radial-gradient(circle at 100% 100%,rgba(255,184,28,.15),transparent 45%),
+    linear-gradient(135deg,#001B41,#00112E 60%,#00091E);
+  color:#fff;padding:88px 32px 96px;
 }
-.dlg-head::before{
-  content:'';position:absolute;right:-60px;top:-60px;
-  width:220px;height:220px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,184,28,.18),transparent 65%);
+.hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    radial-gradient(circle at 1px 1px,rgba(255,255,255,.06) 1px,transparent 0);
+  background-size:32px 32px;opacity:.6;
 }
-.dlg-head::after{
-  content:'';position:absolute;left:0;bottom:0;
-  width:100%;height:3px;
+.hero-inner{position:relative;max-width:1180px;margin:0 auto;z-index:1}
+.hero-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:60px;align-items:center}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:44px}.hero{padding:56px 22px 64px}}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 14px;border-radius:24px;font-size:11.5px;font-weight:700;
+  background:rgba(255,184,28,.12);border:1px solid rgba(255,184,28,.35);
+  color:#FFD166;margin-bottom:22px;letter-spacing:.02em;
+}
+.hero-badge::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 10px var(--gold);
+}
+.hero h1{
+  font-size:56px;font-weight:800;line-height:1.05;letter-spacing:-.035em;
+  margin-bottom:22px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(120deg,var(--gold),#FFE082);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p.lead{
+  font-size:17px;color:#A9BBD6;line-height:1.65;max-width:560px;
+  margin-bottom:32px;font-weight:400;
+}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:34px}
+.hero-stats{
+  display:flex;gap:34px;flex-wrap:wrap;padding-top:26px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.hero-stat b{display:block;font-size:26px;font-weight:800;letter-spacing:-.03em}
+.hero-stat span{font-size:12px;color:#7A93B8;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+@media(max-width:640px){.hero h1{font-size:38px}.hero p.lead{font-size:15px}}
+
+/* Hero side preview */
+.hero-preview{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:22px;
+  backdrop-filter:blur(12px);
+  box-shadow:0 32px 80px rgba(0,0,0,.4);
+  position:relative;
+}
+.hero-preview::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:20px 20px 0 0;
+}
+.preview-head{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.preview-head .dot{width:10px;height:10px;border-radius:50%}
+.preview-head .dot:nth-child(1){background:#FF5F57}
+.preview-head .dot:nth-child(2){background:#FEBC2E}
+.preview-head .dot:nth-child(3){background:#28C840}
+.preview-head span{font-size:11px;color:#7A93B8;margin-left:auto;font-weight:600;letter-spacing:.05em}
+.preview-line{
+  display:flex;gap:11px;align-items:flex-start;padding:9px 0;
+}
+.preview-avatar{
+  width:32px;height:32px;border-radius:10px;flex:0 0 32px;
+  display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff;
+}
+.preview-bubble{
+  flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  border-radius:4px 12px 12px 12px;padding:9px 13px;
+  font-size:13px;color:#E8EEF8;line-height:1.5;
+}
+.preview-speaker{font-size:9.5px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;margin-bottom:3px;opacity:.75}
+.preview-progress{
+  margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.preview-progress b{font-size:12.5px;color:#fff;font-weight:700}
+.preview-bar{height:6px;background:rgba(255,255,255,.1);border-radius:6px;flex:1;margin:0 12px;overflow:hidden}
+.preview-bar div{height:100%;width:65%;background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:6px}
+
+/* ============ SECTIONS ============ */
+.section{padding:88px 32px}
+.section-inner{max-width:1180px;margin:0 auto}
+.section-head{text-align:center;max-width:680px;margin:0 auto 60px}
+.section-eyebrow{
+  font-size:11.5px;font-weight:800;letter-spacing:.14em;
+  color:var(--blue);text-transform:uppercase;margin-bottom:14px;
+}
+.section-head h2{
+  font-size:40px;font-weight:800;line-height:1.15;letter-spacing:-.03em;
+  margin-bottom:16px;color:var(--navy);
+}
+.section-head p{font-size:16px;color:var(--ink-2);line-height:1.7}
+@media(max-width:640px){.section{padding:60px 20px}.section-head h2{font-size:28px}}
+
+/* Feature grid */
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:900px){.feature-grid{grid-template-columns:1fr}}
+.feature-card{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:28px;transition:.25s var(--t);
+}
+.feature-card:hover{
+  transform:translateY(-4px);border-color:#CFE0F2;
+  box-shadow:var(--shadow-md);
+}
+.feature-icon{
+  width:52px;height:52px;border-radius:14px;
+  display:grid;place-items:center;font-size:24px;margin-bottom:18px;
+  background:linear-gradient(135deg,var(--blue-50),#E8F3FD);
+  border:1px solid var(--line);
+}
+.feature-card h3{font-size:17px;font-weight:700;margin-bottom:9px;color:var(--navy)}
+.feature-card p{font-size:14px;color:var(--ink-2);line-height:1.65}
+
+/* CEFR Levels */
+.levels-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:1100px){.levels-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.levels-grid{grid-template-columns:1fr}}
+.level-card{
+  position:relative;overflow:hidden;
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:26px 22px;transition:.25s var(--t);
+}
+.level-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--level-color),var(--level-color2));
+}
+.level-card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-md);
+  border-color:var(--level-color);
+}
+.level-code{
+  display:inline-block;font-size:26px;font-weight:900;letter-spacing:-.03em;
+  color:var(--level-color);margin-bottom:6px;
+}
+.level-name{font-size:14.5px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.level-desc{font-size:13px;color:var(--ink-2);line-height:1.6;margin-bottom:18px;min-height:62px}
+.level-meta{
+  display:flex;justify-content:space-between;padding-top:14px;
+  border-top:1px solid var(--line-2);font-size:12px;color:var(--ink-3);font-weight:600;
+}
+.level-meta b{color:var(--navy);font-weight:700}
+
+/* Pricing */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+@media(max-width:900px){.pricing-grid{grid-template-columns:1fr;max-width:480px;margin:0 auto}}
+.plan{
+  position:relative;background:#fff;border:1.5px solid var(--line);
+  border-radius:20px;padding:32px 26px;display:flex;flex-direction:column;
+  transition:.25s var(--t);
+}
+.plan:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.plan.featured{
+  border-color:var(--blue);border-width:2px;
+  box-shadow:var(--shadow-md);
+  background:linear-gradient(180deg,#fff,#FAFCFF);
+}
+.plan.featured::before{
+  content:'MÁS POPULAR';
+  position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--gold),#FFCD4A);color:var(--navy);
+  padding:5px 14px;border-radius:20px;font-size:10.5px;font-weight:800;letter-spacing:.08em;
+  box-shadow:0 4px 12px rgba(255,184,28,.4);
+}
+.plan h3{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.plan .plan-desc{font-size:13px;color:var(--ink-2);margin-bottom:20px;line-height:1.55}
+.plan-price{display:flex;align-items:baseline;gap:6px;margin-bottom:22px}
+.plan-price .amount{font-size:44px;font-weight:900;letter-spacing:-.04em;color:var(--navy);line-height:1}
+.plan-price .currency{font-size:20px;font-weight:700;color:var(--ink-2);align-self:flex-start;margin-top:6px}
+.plan-price .period{font-size:13px;color:var(--ink-3);font-weight:600}
+.plan ul{list-style:none;margin-bottom:26px;flex:1}
+.plan ul li{
+  display:flex;gap:10px;align-items:flex-start;
+  font-size:13.5px;color:var(--ink-2);padding:7px 0;line-height:1.5;
+}
+.plan ul li::before{
+  content:'✓';color:var(--ok);font-weight:800;flex:0 0 auto;
+}
+.plan .btn{width:100%;justify-content:center}
+
+/* CTA banner */
+.cta-banner{
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,184,28,.18),transparent 45%),
+    linear-gradient(135deg,#001B41,#00112E);
+  color:#fff;border-radius:24px;padding:60px 48px;
+  display:flex;align-items:center;justify-content:space-between;gap:32px;
+  box-shadow:var(--shadow-lg);
+}
+@media(max-width:800px){.cta-banner{flex-direction:column;text-align:center;padding:44px 28px}}
+.cta-banner h2{font-size:32px;font-weight:800;letter-spacing:-.025em;margin-bottom:10px}
+.cta-banner p{font-size:15px;color:#A9BBD6;max-width:520px}
+@media(max-width:640px){.cta-banner h2{font-size:24px}}
+
+/* Footer */
+.footer{
+  background:var(--navy-3);color:#93A8C7;
+  padding:52px 32px 32px;
+}
+.footer-inner{
+  max-width:1180px;margin:0 auto;
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
+}
+@media(max-width:800px){.footer-inner{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.footer-inner{grid-template-columns:1fr}}
+.footer h4{color:#fff;font-size:13px;font-weight:700;margin-bottom:16px;letter-spacing:.03em;text-transform:uppercase}
+.footer p,.footer a{font-size:13px;line-height:1.8;color:#93A8C7;display:block;transition:.15s}
+.footer a:hover{color:var(--gold)}
+.footer-bottom{
+  max-width:1180px;margin:40px auto 0;padding-top:26px;
+  border-top:1px solid rgba(255,255,255,.08);
+  display:flex;justify-content:space-between;font-size:12px;flex-wrap:wrap;gap:12px;
+}
+
+/* ============ AUTH MODAL ============ */
+.modal-backdrop{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,11,30,.6);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-backdrop.show{display:flex}
+.modal{
+  background:#fff;border-radius:22px;max-width:440px;width:100%;
+  padding:34px 32px;box-shadow:var(--shadow-lg);
+  position:relative;max-height:92vh;overflow-y:auto;
+  animation:modalIn .3s var(--t);
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.modal h2{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;letter-spacing:-.02em}
+.modal .modal-sub{font-size:13.5px;color:var(--ink-2);margin-bottom:24px;line-height:1.55}
+.modal-close{
+  position:absolute;top:16px;right:16px;
+  width:34px;height:34px;border-radius:10px;
+  display:grid;place-items:center;font-size:18px;color:var(--ink-3);
+  transition:.15s;
+}
+.modal-close:hover{background:var(--line-2);color:var(--ink)}
+.field{margin-bottom:15px}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-bottom:7px;letter-spacing:.01em}
+.field input,.field select{
+  width:100%;padding:12px 14px;border-radius:11px;
+  border:1.5px solid var(--line);background:#fff;
+  font-size:14px;font-weight:500;color:var(--ink);
+  outline:none;transition:.18s var(--t);
+}
+.field input:focus,.field select:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 4px rgba(0,114,206,.12);
+}
+.field .hint{font-size:11.5px;color:var(--ink-3);margin-top:6px}
+.modal-switch{
+  text-align:center;font-size:13px;color:var(--ink-2);margin-top:20px;
+  padding-top:20px;border-top:1px solid var(--line-2);
+}
+.modal-switch a{color:var(--blue);font-weight:700;cursor:pointer}
+.modal-switch a:hover{text-decoration:underline}
+.alert{
+  padding:11px 14px;border-radius:10px;font-size:13px;font-weight:600;
+  margin-bottom:16px;display:none;
+}
+.alert.show{display:block}
+.alert.err{background:var(--err-bg);color:#A5201A;border:1px solid #F5C6C0}
+.alert.ok{background:var(--ok-bg);color:#0A6B3E;border:1px solid #B7E4CA}
+
+/* ============ DASHBOARD ============ */
+.app-shell{min-height:100vh;background:var(--bg)}
+.dash-hero{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,184,28,.14),transparent 45%),
+    linear-gradient(135deg,#001B41,#00112E);
+  color:#fff;padding:52px 32px 56px;position:relative;overflow:hidden;
+}
+.dash-hero::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:3px;
   background:linear-gradient(90deg,var(--blue),var(--gold),transparent);
 }
-.dlg-head .badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(0,114,206,.25);
-  border:1px solid rgba(0,114,206,.4);
-  padding:5px 12px;border-radius:20px;
-  font-size:10.5px;font-weight:700;letter-spacing:1px;
-  color:#8CC7FF;margin-bottom:12px;
-  text-transform:uppercase;
-  backdrop-filter:blur(6px);
+.dash-hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1}
+.dash-hero h1{font-size:34px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.dash-hero p{font-size:15px;color:#A9BBD6;max-width:600px}
+.dash-kpis{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px;
 }
-.dlg-head .badge::before{
-  content:'';width:6px;height:6px;border-radius:50%;
-  background:var(--gold);box-shadow:0 0 8px var(--gold);
+@media(max-width:900px){.dash-kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:18px;backdrop-filter:blur(6px);
 }
-.dlg-head h2{
-  font-size:28px;font-weight:800;
-  letter-spacing:-.03em;line-height:1.15;
-  position:relative;z-index:1;color:#fff;
-}
-.dlg-head .sub{
-  font-size:13.5px;color:#A9BBD6;
-  margin-top:7px;position:relative;z-index:1;
-  font-weight:500;
-}
-.chips{
-  display:flex;gap:8px;flex-wrap:wrap;
-  margin-top:18px;position:relative;z-index:1;
-}
-.chip{
-  font-size:11.5px;font-weight:600;
-  padding:6px 13px;border-radius:20px;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);
-  backdrop-filter:blur(6px);
-  letter-spacing:.01em;
-  color:#E8EEF8;
-  display:inline-flex;align-items:center;
-}
+.kpi .kpi-label{font-size:11px;color:#7A93B8;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px}
+.kpi .kpi-value{font-size:26px;font-weight:800;letter-spacing:-.02em;color:#fff}
+.kpi .kpi-value small{font-size:14px;color:#A9BBD6;font-weight:600}
 
-/* =========================================================
-   TOOLBAR
-   ========================================================= */
+.dash-content{max-width:1180px;margin:0 auto;padding:40px 32px 80px}
+@media(max-width:640px){.dash-content{padding:28px 20px 60px}.dash-hero{padding:38px 20px 44px}.dash-hero h1{font-size:26px}}
+
+.dash-tabs{
+  display:flex;gap:6px;margin-bottom:32px;
+  border-bottom:1px solid var(--line);
+  overflow-x:auto;scrollbar-width:none;
+}
+.dash-tabs::-webkit-scrollbar{display:none}
+.dash-tab{
+  padding:12px 18px;font-size:13.5px;font-weight:700;
+  color:var(--ink-3);border-bottom:2.5px solid transparent;
+  transition:.2s var(--t);white-space:nowrap;
+}
+.dash-tab:hover{color:var(--blue)}
+.dash-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* Level cards in dashboard */
+.dash-levels{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+@media(max-width:760px){.dash-levels{grid-template-columns:1fr}}
+.dash-level{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:24px;position:relative;overflow:hidden;transition:.25s var(--t);
+}
+.dash-level::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--level-color),var(--level-color2));
+}
+.dash-level.locked{opacity:.7}
+.dash-level:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.dash-level-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.dash-level-code{font-size:30px;font-weight:900;letter-spacing:-.03em;color:var(--level-color)}
+.dash-level-name{font-size:14px;font-weight:700;color:var(--navy);margin-top:2px}
+.lock-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 11px;border-radius:20px;font-size:11px;font-weight:800;
+  background:var(--line-2);color:var(--ink-3);letter-spacing:.03em;
+}
+.lock-badge.owned{background:var(--ok-bg);color:#0A6B3E}
+.dash-progress{margin-bottom:16px}
+.dash-progress-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);font-weight:600;margin-bottom:8px}
+.dash-progress-meta b{color:var(--navy);font-weight:800}
+.dash-bar{height:8px;background:var(--line-2);border-radius:8px;overflow:hidden}
+.dash-bar div{
+  height:100%;border-radius:8px;
+  background:linear-gradient(90deg,var(--level-color),var(--level-color2));
+  transition:width .6s var(--t);
+}
+.dash-modules{list-style:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--line-2)}
+.dash-module{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 0;font-size:13px;color:var(--ink-2);
+  border-bottom:1px dashed var(--line-2);
+}
+.dash-module:last-child{border-bottom:none}
+.dash-module .mod-dot{
+  width:22px;height:22px;border-radius:50%;flex:0 0 22px;
+  display:grid;place-items:center;font-size:11px;font-weight:800;
+  background:var(--line-2);color:var(--ink-3);
+}
+.dash-module.done .mod-dot{background:var(--ok);color:#fff}
+.dash-module.done .mod-name{color:var(--ink);text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.dash-module .mod-name{flex:1}
+.dash-module .mod-btn{
+  font-size:11.5px;font-weight:700;color:var(--blue);padding:6px 12px;
+  border-radius:8px;background:var(--blue-50);
+}
+.dash-module .mod-btn:hover{background:var(--blue);color:#fff}
+
+/* ============ COURSE VIEW ============ */
+.course-shell{max-width:1180px;margin:0 auto;padding:32px}
+.course-header{
+  display:flex;justify-content:space-between;align-items:center;gap:20px;
+  margin-bottom:26px;flex-wrap:wrap;
+}
+.course-title{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-.025em}
+.course-subtitle{font-size:13.5px;color:var(--ink-2);margin-top:4px}
+.course-layout{display:grid;grid-template-columns:280px 1fr;gap:26px}
+@media(max-width:900px){.course-layout{grid-template-columns:1fr}}
+.course-side{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:18px;position:sticky;top:96px;height:fit-content;
+}
+.course-side h4{
+  font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:12px;
+}
+.course-side .side-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;
+  color:var(--ink-2);cursor:pointer;transition:.15s;margin-bottom:3px;
+  width:100%;text-align:left;
+}
+.course-side .side-item:hover{background:var(--blue-50);color:var(--blue)}
+.course-side .side-item.active{background:var(--blue);color:#fff}
+.course-side .side-item .si-num{
+  width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  background:var(--line-2);color:var(--ink-3);font-size:11px;font-weight:800;
+}
+.course-side .side-item.active .si-num{background:rgba(255,255,255,.25);color:#fff}
+.course-side .side-item.done .si-num{background:var(--ok);color:#fff}
+
+/* Reuse dialogue styles from before */
+.dlg-head{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,184,28,.18),transparent 45%),
+    linear-gradient(135deg,#001B41,#00112E);
+  border-radius:22px;padding:28px 30px;color:#fff;
+  box-shadow:var(--shadow-lg);margin-bottom:22px;position:relative;overflow:hidden;
+}
+.dlg-head::after{
+  content:'';position:absolute;left:0;bottom:0;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--gold),transparent);
+}
+.dlg-head h2{font-size:26px;font-weight:800;letter-spacing:-.03em;position:relative;z-index:1}
+.dlg-head .sub{font-size:13.5px;color:#A9BBD6;margin-top:5px;position:relative;z-index:1}
+.dlg-head .badge{
+  display:inline-block;background:rgba(0,114,206,.25);border:1px solid rgba(0,114,206,.4);
+  padding:5px 12px;border-radius:20px;font-size:10.5px;font-weight:700;letter-spacing:1px;
+  color:#8CC7FF;margin-bottom:12px;text-transform:uppercase;
+}
 .toolbar{
   display:flex;flex-wrap:wrap;gap:9px;align-items:center;
-  background:#fff;border:1px solid var(--line);
-  border-radius:var(--r-lg);padding:14px 16px;
-  margin-bottom:22px;
-  box-shadow:var(--shadow);
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:14px 16px;margin-bottom:22px;box-shadow:var(--shadow);
 }
 .tool{
   display:inline-flex;align-items:center;gap:7px;
-  padding:9px 15px;border-radius:10px;
-  border:1.5px solid var(--line);
-  background:#fff;font-family:inherit;
-  font-size:12.5px;font-weight:600;
-  color:var(--ink);cursor:pointer;
-  transition:all .18s var(--t);
-  letter-spacing:-.01em;
-  white-space:nowrap;
+  padding:9px 15px;border-radius:10px;border:1.5px solid var(--line);
+  background:#fff;font-size:12.5px;font-weight:600;color:var(--ink);
+  transition:.18s var(--t);white-space:nowrap;
 }
-.tool:hover{
-  border-color:var(--blue);
-  color:var(--blue);
-  background:var(--blue-50);
-  transform:translateY(-1px);
-}
-.tool.on{
-  background:var(--blue);border-color:var(--blue);
-  color:#fff;box-shadow:0 4px 12px rgba(0,114,206,.3);
-}
-.tool.done{
-  background:var(--success);border-color:var(--success);
-  color:#fff;box-shadow:0 4px 12px rgba(15,157,88,.3);
-}
-.tool select{
-  border:none;background:transparent;
-  font-family:inherit;font-size:12.5px;
-  font-weight:600;color:inherit;
-  cursor:pointer;outline:none;
-  padding:0 2px;
-}
+.tool:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-50)}
+.tool.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.tool.done{background:var(--ok);border-color:var(--ok);color:#fff}
+.tool select{border:none;background:transparent;font-family:inherit;font-size:12.5px;font-weight:600;color:inherit;cursor:pointer;outline:none}
 .sep{width:1px;height:22px;background:var(--line);margin:0 3px}
 
-/* =========================================================
-   LINES / BUBBLES
-   ========================================================= */
 .lines{display:flex;flex-direction:column;gap:16px}
-.line{
-  display:flex;gap:13px;align-items:flex-start;
-  animation:fade .4s var(--t) both;
-}
+.line{display:flex;gap:13px;align-items:flex-start;animation:fade .4s var(--t) both}
 @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .avatar{
-  width:42px;height:42px;border-radius:13px;
-  flex:0 0 42px;display:grid;place-items:center;
-  font-size:13px;font-weight:800;color:#fff;
-  letter-spacing:-.02em;
-  box-shadow:0 4px 10px rgba(0,27,65,.18), inset 0 1px 0 rgba(255,255,255,.2);
-  transition:transform .2s var(--t);
+  width:42px;height:42px;border-radius:13px;flex:0 0 42px;
+  display:grid;place-items:center;font-size:13px;font-weight:800;color:#fff;
+  box-shadow:0 4px 10px rgba(0,27,65,.18),inset 0 1px 0 rgba(255,255,255,.2);
 }
-.line:hover .avatar{transform:scale(1.06)}
 .bubble{
-  flex:1;background:#fff;
-  border:1px solid var(--line);
-  border-radius:6px 18px 18px 18px;
-  padding:14px 18px 13px;
-  box-shadow:var(--shadow-sm);
-  position:relative;
-  transition:all .25s var(--t);
+  flex:1;background:#fff;border:1px solid var(--line);
+  border-radius:6px 18px 18px 18px;padding:14px 18px 13px;
+  box-shadow:var(--shadow);position:relative;transition:.25s var(--t);
 }
-.bubble:hover{
-  border-color:#CFDCEC;
-  box-shadow:var(--shadow);
-}
-.line.speaking .bubble{
-  border-color:var(--blue);
-  background:linear-gradient(180deg,#F5FAFF,#fff);
-  box-shadow:0 0 0 3px rgba(0,114,206,.12), var(--shadow);
-}
-.speaker{
-  font-size:10.5px;font-weight:800;
-  letter-spacing:.9px;text-transform:uppercase;
-  margin-bottom:6px;
-}
-.text{
-  font-size:15.5px;line-height:1.65;
-  color:#0A1E3D;
-  cursor:pointer;
-  transition:filter .2s;
-  font-weight:400;
-}
-.text:hover{filter:brightness(.85)}
-.text.hidden{
-  filter:blur(6px);
-  user-select:none;pointer-events:none;
-}
-.line-actions{
-  display:flex;gap:6px;margin-top:10px;align-items:center;
-}
+.line.speaking .bubble{border-color:var(--blue);background:linear-gradient(180deg,#F5FAFF,#fff);box-shadow:0 0 0 3px rgba(0,114,206,.12)}
+.speaker{font-size:10.5px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;margin-bottom:6px}
+.text{font-size:15.5px;line-height:1.65;color:#0A1E3D;cursor:pointer;font-weight:400}
+.text.hidden{filter:blur(6px);user-select:none;pointer-events:none}
+.line-actions{display:flex;gap:6px;margin-top:10px;align-items:center}
 .mini{
-  border:none;background:var(--blue-50);
-  color:var(--ink-soft);width:30px;height:30px;
-  border-radius:9px;cursor:pointer;font-size:13px;
-  display:grid;place-items:center;
-  transition:all .18s var(--t);
+  border:none;background:var(--blue-50);color:var(--ink-2);
+  width:30px;height:30px;border-radius:9px;font-size:13px;
+  display:grid;place-items:center;transition:.18s var(--t);
 }
-.mini:hover{background:var(--blue);color:#fff;transform:translateY(-1px)}
-.mini.speaking{
-  background:var(--blue);color:#fff;
-  animation:pulse 1s infinite;
-}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(.94)}}
+.mini:hover{background:var(--blue);color:#fff}
+.mini.speaking{background:var(--blue);color:#fff;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 .turn-hint{
-  font-size:12.5px;color:var(--blue);
-  font-weight:700;font-style:italic;
-  background:var(--blue-50);
-  border:1px dashed var(--blue-500);
+  font-size:12.5px;color:var(--blue);font-weight:700;font-style:italic;
+  background:var(--blue-50);border:1px dashed var(--blue-2);
   border-radius:10px;padding:10px 14px;margin-top:8px;
-  display:flex;align-items:center;gap:8px;
 }
-.turn-hint::before{content:'🎤';font-style:normal}
 
-/* =========================================================
-   PANELS
-   ========================================================= */
 .panel{
-  background:#fff;border:1px solid var(--line);
-  border-radius:var(--r-lg);padding:24px 26px;
-  box-shadow:var(--shadow);
-  margin-bottom:20px;
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:24px 26px;box-shadow:var(--shadow);margin-bottom:20px;
 }
-.panel h3{
-  font-size:16.5px;font-weight:700;
-  margin-bottom:16px;display:flex;
-  align-items:center;gap:10px;
-  color:var(--navy-800);
-  letter-spacing:-.02em;
-}
-.panel h3 .dot{
-  width:9px;height:9px;border-radius:50%;
-  background:var(--gold);
-  box-shadow:0 0 0 4px rgba(255,184,28,.18);
-}
-.note{
-  display:flex;gap:12px;padding:13px 0;
-  border-bottom:1px dashed var(--line);
-  font-size:13.8px;line-height:1.68;
-  color:#1E3354;
-}
+.panel h3{font-size:16.5px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px;color:var(--navy)}
+.panel h3 .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(255,184,28,.18)}
+.note{display:flex;gap:12px;padding:13px 0;border-bottom:1px dashed var(--line);font-size:13.8px;line-height:1.68;color:#1E3354}
 .note:last-child{border-bottom:none}
 .note .n{
-  color:var(--blue);font-weight:800;
-  flex:0 0 auto;font-size:13px;
-  width:22px;height:22px;border-radius:7px;
-  background:var(--blue-50);
-  display:grid;place-items:center;
-  margin-top:1px;
+  color:var(--blue);font-weight:800;flex:0 0 auto;font-size:13px;
+  width:22px;height:22px;border-radius:7px;background:var(--blue-50);
+  display:grid;place-items:center;margin-top:1px;
 }
-.note em{
-  color:var(--blue-600);font-style:italic;
-  font-weight:600;
-  background:var(--blue-50);
-  padding:1px 5px;border-radius:4px;
-}
-.note b{color:var(--navy-800);font-weight:700}
-
-/* Frases clave */
+.note em{color:var(--blue-2);font-style:italic;font-weight:600;background:var(--blue-50);padding:1px 5px;border-radius:4px}
 .phrase{
-  display:flex;justify-content:space-between;
-  gap:16px;align-items:center;
+  display:flex;justify-content:space-between;gap:16px;align-items:center;
   padding:14px 16px;border-radius:12px;
   background:linear-gradient(135deg,#FBFDFF,#F5F9FE);
-  border:1px solid var(--line-soft);
-  margin-bottom:10px;
-  transition:all .2s var(--t);
+  border:1px solid var(--line-2);margin-bottom:10px;transition:.2s var(--t);
 }
-.phrase:hover{
-  background:linear-gradient(135deg,#F3F8FD,#E9F2FC);
-  border-color:#CFE0F2;
-  transform:translateX(2px);
-}
-.phrase .en{
-  font-size:14.8px;font-weight:600;
-  color:var(--navy-800);line-height:1.4;
-  letter-spacing:-.01em;
-}
-.phrase .es{
-  font-size:13px;color:var(--ink-soft);
-  margin-top:4px;line-height:1.45;
-}
+.phrase:hover{background:linear-gradient(135deg,#F3F8FD,#E9F2FC);border-color:#CFE0F2}
+.phrase .en{font-size:14.8px;font-weight:600;color:var(--navy);line-height:1.4}
+.phrase .es{font-size:13px;color:var(--ink-2);margin-top:4px;line-height:1.45}
 .phrase .say{
-  flex:0 0 auto;width:38px;height:38px;
-  border-radius:11px;border:1px solid var(--line);
-  background:#fff;color:var(--blue);
-  cursor:pointer;font-size:15px;
-  box-shadow:var(--shadow-sm);
-  transition:all .18s var(--t);
+  flex:0 0 auto;width:38px;height:38px;border-radius:11px;
+  border:1px solid var(--line);background:#fff;color:var(--blue);
+  font-size:15px;box-shadow:var(--shadow);transition:.18s var(--t);
 }
-.phrase .say:hover{
-  background:var(--blue);color:#fff;
-  border-color:var(--blue);
-  transform:translateY(-1px) scale(1.05);
-  box-shadow:0 6px 16px rgba(0,114,206,.35);
-}
-.phrase .say.speaking{
-  background:var(--blue);color:#fff;
-  border-color:var(--blue);
-  animation:pulse 1s infinite;
-}
+.phrase .say:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.phrase .say.speaking{background:var(--blue);color:#fff;animation:pulse 1s infinite}
 
-/* =========================================================
-   PRACTICE · CLOZE
-   ========================================================= */
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.btn.b1{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;box-shadow:0 6px 16px rgba(0,114,206,.35)}
+.btn.b1:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(0,114,206,.5)}
+.btn.b2{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:var(--shadow)}
+.btn.b2:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-50)}
+
 .cloze-item{
   background:linear-gradient(180deg,#fff,#FBFDFF);
-  border:1px solid var(--line);
-  border-radius:var(--r-md);
-  padding:18px 20px;margin-bottom:13px;
-  box-shadow:var(--shadow-sm);
-  transition:all .2s var(--t);
+  border:1px solid var(--line);border-radius:12px;
+  padding:18px 20px;margin-bottom:13px;box-shadow:var(--shadow);
 }
-.cloze-item:focus-within{
-  border-color:var(--blue);
-  box-shadow:0 0 0 3px rgba(0,114,206,.12), var(--shadow);
-}
-.cloze-item .who{
-  font-size:10.5px;font-weight:800;
-  letter-spacing:.9px;text-transform:uppercase;
-  color:var(--ink-faint);margin-bottom:9px;
-}
-.cloze-txt{
-  font-size:15.3px;line-height:2;
-  color:#0A1E3D;font-weight:400;
-}
+.cloze-item .who{font-size:10.5px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-3);margin-bottom:9px}
+.cloze-txt{font-size:15.3px;line-height:2;color:#0A1E3D}
 .cloze-txt input{
-  border:none;border-bottom:2.5px solid var(--blue);
-  background:var(--blue-50);
-  font-family:inherit;font-size:15px;font-weight:700;
-  color:var(--blue-600);padding:3px 10px;
-  min-width:130px;outline:none;
-  border-radius:7px 7px 0 0;
-  text-align:center;
-  transition:all .18s var(--t);
+  border:none;border-bottom:2.5px solid var(--blue);background:var(--blue-50);
+  font-family:inherit;font-size:15px;font-weight:700;color:var(--blue-2);
+  padding:3px 10px;min-width:130px;outline:none;border-radius:7px 7px 0 0;
+  text-align:center;transition:.18s var(--t);
 }
-.cloze-txt input:focus{
-  background:var(--blue-100);
-  box-shadow:0 4px 12px rgba(0,114,206,.15);
-}
-.cloze-txt input.ok{
-  border-color:var(--success);
-  background:var(--success-bg);
-  color:#0A6B3E;
-}
-.cloze-txt input.bad{
-  border-color:var(--danger);
-  background:var(--danger-bg);
-  color:#A5201A;
-}
-.fb{
-  font-size:12.5px;font-weight:600;
-  margin-top:9px;display:none;
-  padding:6px 10px;border-radius:7px;
-}
+.cloze-txt input:focus{background:var(--blue-light)}
+.cloze-txt input.ok{border-color:var(--ok);background:var(--ok-bg);color:#0A6B3E}
+.cloze-txt input.bad{border-color:var(--err);background:var(--err-bg);color:#A5201A}
+.fb{font-size:12.5px;font-weight:600;margin-top:9px;display:none;padding:6px 10px;border-radius:7px}
 .fb.show{display:inline-block}
-.fb.ok{color:#0A6B3E;background:var(--success-bg)}
-.fb.bad{color:#A5201A;background:var(--danger-bg)}
+.fb.ok{color:#0A6B3E;background:var(--ok-bg)}
+.fb.bad{color:#A5201A;background:var(--err-bg)}
 
-/* =========================================================
-   BUTTONS
-   ========================================================= */
-.actions{
-  display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;
-}
-.btn{
-  padding:12px 22px;border-radius:11px;border:none;
-  font-family:inherit;font-size:13px;font-weight:700;
-  cursor:pointer;transition:all .2s var(--t);
-  letter-spacing:-.01em;
-  display:inline-flex;align-items:center;gap:7px;
-}
-.btn.b1{
-  background:linear-gradient(135deg,var(--blue),var(--blue-600));
-  color:#fff;
-  box-shadow:0 6px 16px rgba(0,114,206,.35), inset 0 1px 0 rgba(255,255,255,.15);
-}
-.btn.b1:hover{
-  transform:translateY(-1px);
-  box-shadow:0 10px 24px rgba(0,114,206,.45);
-}
-.btn.b2{
-  background:#fff;color:var(--ink);
-  border:1.5px solid var(--line);
-  box-shadow:var(--shadow-sm);
-}
-.btn.b2:hover{
-  border-color:var(--blue);
-  color:var(--blue);
-  background:var(--blue-50);
-  transform:translateY(-1px);
-}
-
-/* =========================================================
-   QUIZ
-   ========================================================= */
 .quiz-card{
-  background:#fff;border:1px solid var(--line);
-  border-radius:var(--r-xl);
-  padding:30px 32px;
-  box-shadow:var(--shadow-md);
-  position:relative;overflow:hidden;
+  background:#fff;border:1px solid var(--line);border-radius:22px;
+  padding:30px 32px;box-shadow:var(--shadow-md);position:relative;overflow:hidden;
 }
 .quiz-card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:4px;
   background:linear-gradient(90deg,var(--blue),var(--gold));
 }
-.qmeta{
-  display:flex;justify-content:space-between;
-  font-size:12px;font-weight:700;
-  color:var(--ink-faint);margin-bottom:16px;
-  letter-spacing:.03em;text-transform:uppercase;
-}
-.qbar{
-  height:6px;background:var(--line-soft);
-  border-radius:6px;overflow:hidden;margin-bottom:24px;
-}
-.qbar div{
-  height:100%;
-  background:linear-gradient(90deg,var(--blue),var(--gold));
-  width:0;transition:width .4s var(--t);
-  border-radius:6px;
-}
-.qtext{
-  font-size:22px;font-weight:800;
-  line-height:1.4;margin-bottom:10px;
-  color:var(--navy-800);
-  letter-spacing:-.025em;
-}
-.qsub{
-  font-size:12.5px;color:var(--ink-faint);
-  margin-bottom:22px;font-weight:500;
-}
+.qmeta{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--ink-3);margin-bottom:16px;letter-spacing:.03em;text-transform:uppercase}
+.qbar{height:6px;background:var(--line-2);border-radius:6px;overflow:hidden;margin-bottom:24px}
+.qbar div{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));width:0;transition:width .4s var(--t)}
+.qtext{font-size:22px;font-weight:800;line-height:1.4;margin-bottom:10px;color:var(--navy);letter-spacing:-.025em}
+.qsub{font-size:12.5px;color:var(--ink-3);margin-bottom:22px;font-weight:500}
 .opts{display:flex;flex-direction:column;gap:11px}
 .opt{
-  text-align:left;padding:15px 18px;
-  border-radius:12px;border:1.5px solid var(--line);
-  background:#fff;font-family:inherit;
-  font-size:14.5px;font-weight:600;
-  color:var(--ink);cursor:pointer;
-  transition:all .18s var(--t);
-  line-height:1.4;letter-spacing:-.01em;
-  display:flex;justify-content:space-between;
+  text-align:left;padding:15px 18px;border-radius:12px;border:1.5px solid var(--line);
+  background:#fff;font-size:14.5px;font-weight:600;color:var(--ink);
+  transition:.18s var(--t);display:flex;justify-content:space-between;
   align-items:center;gap:12px;
 }
-.opt:hover:not(:disabled){
-  border-color:var(--blue);
-  background:var(--blue-50);
-  transform:translateX(3px);
-}
+.opt:hover:not(:disabled){border-color:var(--blue);background:var(--blue-50)}
 .opt:disabled{cursor:default}
-.opt.correct{
-  background:var(--success-bg);
-  border-color:var(--success);
-  color:#0A6B3E;
-}
-.opt.wrong{
-  background:var(--danger-bg);
-  border-color:var(--danger);
-  color:#A5201A;
-}
+.opt.correct{background:var(--ok-bg);border-color:var(--ok);color:#0A6B3E}
+.opt.wrong{background:var(--err-bg);border-color:var(--err);color:#A5201A}
 .opt .mark{font-weight:900;font-size:16px}
 
-/* =========================================================
-   EMPTY / WELCOME
-   ========================================================= */
-.empty{
-  text-align:center;padding:80px 20px;
-  color:var(--ink-soft);
+/* ============ TOAST ============ */
+.toast-host{position:fixed;bottom:24px;right:24px;z-index:300;display:flex;flex-direction:column;gap:10px}
+.toast{
+  background:var(--navy);color:#fff;padding:14px 18px;border-radius:12px;
+  font-size:13.5px;font-weight:600;box-shadow:var(--shadow-lg);
+  border-left:3px solid var(--gold);
+  animation:toastIn .3s var(--t);max-width:340px;
 }
-.empty .big{
-  font-size:60px;margin-bottom:20px;
-  display:inline-block;
-  animation:bounce 2.5s ease-in-out infinite;
-}
-@keyframes bounce{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-8px)}
-}
-.empty h3{
-  font-size:22px;color:var(--navy-800);
-  margin-bottom:12px;font-weight:800;
-  letter-spacing:-.025em;
-}
-.empty p{
-  font-size:14.5px;max-width:460px;
-  margin:0 auto;line-height:1.7;
-  color:var(--ink-soft);
-}
+.toast.ok{border-left-color:var(--ok)}
+.toast.err{border-left-color:var(--err)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
 
-/* =========================================================
-   BACKDROP (mobile sidebar)
-   ========================================================= */
-.backdrop{
-  display:none;position:fixed;inset:0;
-  background:rgba(0,11,30,.55);
-  z-index:35;
-  backdrop-filter:blur(4px);
-  -webkit-backdrop-filter:blur(4px);
-}
-.backdrop.show{display:block;animation:fadeBack .25s ease}
-@keyframes fadeBack{from{opacity:0}to{opacity:1}}
+/* ============ LOADING / EMPTY ============ */
+.empty{text-align:center;padding:60px 20px;color:var(--ink-2)}
+.empty .big{font-size:56px;margin-bottom:16px;display:inline-block}
+.empty h3{font-size:20px;color:var(--navy);margin-bottom:10px;font-weight:800}
+.empty p{font-size:14px;max-width:420px;margin:0 auto 24px;line-height:1.7}
 
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-@media(max-width:900px){
-  #sidebar{
-    position:fixed;left:0;top:0;
-    transform:translateX(-100%);
-    transition:transform .3s var(--t);
-    width:300px;flex-basis:300px;
-  }
-  #sidebar.open{transform:none}
-  #menuBtn{display:block}
-  #content{padding:20px 16px 70px}
-  .dlg-head{padding:22px 22px}
-  .dlg-head h2{font-size:22px}
-  .tabs{display:none}
-  #topbar{padding:0 14px;height:60px;flex:0 0 60px}
-  #topTitle{font-size:13.5px}
-  .qtext{font-size:18px}
-  .quiz-card{padding:22px}
-}
+.hidden{display:none!important}
 
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{
-    animation-duration:.01ms !important;
-    transition-duration:.01ms !important;
+/* ============ RESPONSIVE ============ */
+@media(max-width:640px){
+  .topnav{padding:0 16px;height:64px}
+  .nav-links{display:none}
+  .topnav .nav-links.show-mobile{
+    display:flex;position:absolute;top:64px;left:0;right:0;
+    background:#fff;border-bottom:1px solid var(--line);
+    flex-direction:column;padding:12px;
   }
 }
 </style>
 </head>
 <body>
 
-<div id="app">
-  <aside id="sidebar">
-    <div class="brand">
-      <div class="brand-icon">💬</div>
-      <div>
-        <h1>Everyday Conversations</h1>
-        <p>TOEFL ITP · Study Guide</p>
-      </div>
-    </div>
-    <div class="search-box">
-      <input id="searchInput" type="text" placeholder="Buscar diálogo o tema…">
-    </div>
-    <nav id="nav"></nav>
-    <div class="side-footer">
-      <div class="progress-info">
-        <span>Progreso del curso</span>
-        <span><b id="progressText">0/30</b></span>
-      </div>
-      <div class="progress-bar"><div id="progressFill"></div></div>
-      <button class="btn-primary" id="quizBtn">🎯 Quiz rápido (10 preguntas)</button>
-    </div>
-  </aside>
+<!-- ============================================================ -->
+<!-- APP ROOT                                                     -->
+<!-- ============================================================ -->
+<div id="app"></div>
 
-  <div class="backdrop" id="backdrop"></div>
-
-  <main id="main">
-    <header id="topbar">
-      <button id="menuBtn">☰</button>
-      <div id="topTitle">Selecciona un diálogo <span>←</span></div>
-      <div class="tabs" id="tabs">
-        <button class="tab active" data-tab="dialogo">Diálogo</button>
-        <button class="tab" data-tab="notas">Notas</button>
-        <button class="tab" data-tab="frases">Frases clave</button>
-        <button class="tab" data-tab="practica">Práctica</button>
-      </div>
-    </header>
-    <div id="content"></div>
-  </main>
+<!-- Modales -->
+<div class="modal-backdrop" id="authModal">
+  <div class="modal">
+    <button class="modal-close" data-close>×</button>
+    <div id="authContent"></div>
+  </div>
 </div>
 
+<div class="modal-backdrop" id="checkoutModal">
+  <div class="modal">
+    <button class="modal-close" data-close>×</button>
+    <div id="checkoutContent"></div>
+  </div>
+</div>
+
+<div class="toast-host" id="toasts"></div>
+
 <script>
-/* =========================================================
-   DATA · 30 DIÁLOGOS
-   ========================================================= */
-const DATA = [
-/* ================= UNIDAD 1 ================= */
-{
-  id:"u1", title:"Unidad 1 · Introducciones y charla casual",
-  dialogues:[
+/* ============================================================
+   1. ALMACENAMIENTO (fácil de cambiar por backend)
+   ------------------------------------------------------------
+   Esta capa abstrae toda la persistencia. Para conectar
+   Supabase/Firebase/backend propio, solo cambia los métodos
+   de este objeto y el resto de la app sigue funcionando igual.
+   ============================================================ */
+const store = {
+  KEY_USERS: 'toefl_users',
+  KEY_SESSION: 'toefl_session',
+  KEY_PROGRESS: 'toefl_progress',
+
+  get users(){ return JSON.parse(localStorage.getItem(this.KEY_USERS) || '[]'); },
+  set users(v){ localStorage.setItem(this.KEY_USERS, JSON.stringify(v)); },
+
+  get session(){ return JSON.parse(localStorage.getItem(this.KEY_SESSION) || 'null'); },
+  set session(v){ v ? localStorage.setItem(this.KEY_SESSION, JSON.stringify(v)) : localStorage.removeItem(this.KEY_SESSION); },
+
+  get progress(){ return JSON.parse(localStorage.getItem(this.KEY_PROGRESS) || '{}'); },
+  set progress(v){ localStorage.setItem(this.KEY_PROGRESS, JSON.stringify(v)); },
+
+  findUser(email){
+    return this.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+  },
+  createUser({name, email, password}){
+    if(this.findUser(email)) throw new Error('Ya existe una cuenta con ese email.');
+    const user = {
+      id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      name, email: email.toLowerCase(), password,  // ⚠️ demo: hashear en backend real
+      createdAt: new Date().toISOString(),
+      plan: 'free',
+      levels: { b1:false, b2:false, c1:false, c2:false }
+    };
+    this.users = [...this.users, user];
+    return user;
+  },
+  login(email, password){
+    const u = this.findUser(email);
+    if(!u) throw new Error('No existe una cuenta con ese email.');
+    if(u.password !== password) throw new Error('Contraseña incorrecta.');
+    return u;
+  },
+  updateUser(id, patch){
+    this.users = this.users.map(u => u.id === id ? {...u, ...patch} : u);
+  },
+  getUserProgress(userId){
+    return this.progress[userId] || { completed: [], quizScores: [] };
+  },
+  saveUserProgress(userId, data){
+    const p = this.progress;
+    p[userId] = data;
+    this.progress = p;
+  }
+};
+
+/* ============================================================
+   2. CATÁLOGO · Niveles CEFR + Diálogos
+   ------------------------------------------------------------
+   Reutiliza el contenido base y agrega ejemplos por nivel.
+   ============================================================ */
+const LEVELS = [
   {
-    id:"d1-1", emoji:"🤝", title:"Formal Greetings", subtitle:"Saludos formales",
+    id:'b1', code:'B1', name:'Intermediate',
+    color:'#0072CE', color2:'#4AA3E8',
+    desc:'Comunícate en situaciones cotidianas: viajes, trabajo, opiniones sencillas.',
+    hours:'40h', modules:9,
+    price:29, priceYear:79,
+    features:[
+      '9 módulos · 27 diálogos',
+      'Vocabulario cotidiano esencial',
+      'Gramática B1 aplicada',
+      'Audios nativos + práctica de voz',
+      'Quizzes adaptativos',
+      'Certificado de nivel'
+    ]
+  },
+  {
+    id:'b2', code:'B2', name:'Upper Intermediate',
+    color:'#0F9D58', color2:'#3AC27E',
+    desc:'Argumenta, debate y entiende textos complejos con fluidez.',
+    hours:'50h', modules:10,
+    price:39, priceYear:99,
+    features:[
+      '10 módulos · 30 diálogos',
+      'Debate y argumentación',
+      'Phrasal verbs y colocaciones',
+      'Comprensión auditiva avanzada',
+      'Simulacros de examen',
+      'Certificado de nivel'
+    ]
+  },
+  {
+    id:'c1', code:'C1', name:'Advanced',
+    color:'#FFB81C', color2:'#FFCD4A',
+    desc:'Domina matices, ironía y discurso académico o profesional.',
+    hours:'60h', modules:12,
+    price:49, priceYear:129,
+    features:[
+      '12 módulos · 36 diálogos',
+      'Discurso académico y formal',
+      'Nuances y expresiones idiomáticas',
+      'Escritura avanzada asistida',
+      'Simulacros tipo TOEFL ITP',
+      'Certificado de nivel'
+    ]
+  },
+  {
+    id:'c2', code:'C2', name:'Proficiency',
+    color:'#D93025', color2:'#F4604D',
+    desc:'Nivel casi nativo: precisión, estilo y comprensión total.',
+    hours:'70h', modules:14,
+    price:59, priceYear:159,
+    features:[
+      '14 módulos · 42 diálogos',
+      'Estilo literario y retórico',
+      'Debates avanzados',
+      'Análisis crítico de textos',
+      'Preparación TOEFL ITP nivel alto',
+      'Certificado de excelencia'
+    ]
+  }
+];
+
+/* Diálogos: los 30 originales asignados a B1/B2 + ejemplos C1/C2 */
+const DIALOGUES = [
+  // ---------- B1 (Unidad 1 y 2) ----------
+  {
+    id:'d1-1', level:'b1', module:'Introductions',
+    emoji:'🤝', title:'Formal Greetings', subtitle:'Saludos formales',
     lines:[
       {s:"JAMES", t:"Good morning, Professor Austin, how are you doing?"},
       {s:"PROFESSOR AUSTIN", t:"Good morning, James. I am doing well. And you?"},
-      {s:"JAMES", t:"I'm great, thank you. This is my friend Emma. She is thinking about applying to this college. She has a few questions. Would you mind telling us about the process, please?"},
-      {s:"PROFESSOR AUSTIN", t:"Hello, Emma! It's a pleasure to meet you. I'm more than happy to speak with you. Please stop by my office next week."},
+      {s:"JAMES", t:"I'm great, thank you. This is my friend Emma. She is thinking about applying to this college."},
+      {s:"PROFESSOR AUSTIN", t:"Hello, Emma! It's a pleasure to meet you. Please stop by my office next week."},
       {s:"EMMA", t:"It's a pleasure to meet you, professor. Thank you so much for helping us."},
       {s:"PROFESSOR AUSTIN", t:"Don't mention it. Hopefully, I will be able to answer your questions!"}
     ],
     notes:[
-      "<em>Good morning / good afternoon / good evening</em> se usan según la hora del día. <em>Good evening</em> se usa después de las 6 p.m. o cuando ya anocheció.",
-      "<em>Good night</em> <b>no es un saludo</b>: se usa al despedirse. Ej.: <em>Thank you and good night!</em>",
-      "En Estados Unidos es costumbre dar la mano al conocer a alguien. El apretón debe ser firme y durar 2-3 segundos, el tiempo justo para decir <em>Nice to meet you</em>.",
-      "<em>Don't mention it</em> es otra forma de decir <em>You're welcome</em>. Otras respuestas informales: <em>No problem. / Happy to help.</em>",
+      "<em>Good morning/afternoon/evening</em> se usan según la hora. <em>Good night</em> no es saludo sino despedida.",
+      "<em>Don't mention it</em> = You're welcome (informal).",
       "<em>It's a pleasure to meet you</em> es más formal que <em>Nice to meet you</em>."
     ],
     phrases:[
-      {en:"How are you doing?", es:"¿Cómo estás? (informal pero educado)"},
+      {en:"How are you doing?", es:"¿Cómo estás?"},
       {en:"I'm more than happy to speak with you.", es:"Estoy encantado de hablar con usted."},
-      {en:"Would you mind telling us about the process?", es:"¿Le importaría explicarnos el proceso?"},
-      {en:"Please stop by my office next week.", es:"Pase por mi oficina la próxima semana."},
       {en:"Don't mention it.", es:"No hay de qué."}
     ]
   },
   {
-    id:"d1-2", emoji:"👋", title:"Informal Greetings & Farewells", subtitle:"Saludos y despedidas informales",
+    id:'d1-2', level:'b1', module:'Introductions',
+    emoji:'👋', title:'Informal Greetings', subtitle:'Saludos informales',
     lines:[
       {s:"JANE", t:"Hi, Helen! How's it going?"},
       {s:"HELEN", t:"Fine, thanks – and you?"},
       {s:"JANE", t:"Just fine. Where are you off to?"},
-      {s:"HELEN", t:"To the library. I've got a history exam next week and need to start studying. Ugh."},
+      {s:"HELEN", t:"To the library. I've got a history exam next week."},
       {s:"JANE", t:"Oh, no. Well, I'll see you later then. Good luck!"},
       {s:"HELEN", t:"Thanks. See you later."}
     ],
     notes:[
-      "<em>Hi</em> es la forma informal de <em>hello</em>. Alargar el sonido «i» (Hiii) muestra que te alegra mucho ver a la persona.",
-      "<em>How's it going?</em> es la versión informal de <em>How are you?</em>",
-      "En <em>Fine, thanks – and you?</em> la entonación sube al final: muestra interés por la otra persona.",
-      "<em>Where are you off to?</em> = ¿A dónde vas? Entonación descendente porque es una pregunta de información, no de sí/no.",
-      "En la respuesta <em>To the library</em> no se repite «I'm going» porque ya se dijo en la pregunta.",
-      "<em>Oh, no</em> expresa empatía. <em>See you later</em> es una despedida informal."
+      "<em>How's it going?</em> = versión informal de <em>How are you?</em>",
+      "<em>Where are you off to?</em> = ¿A dónde vas?"
     ],
     phrases:[
       {en:"How's it going?", es:"¿Cómo va todo?"},
-      {en:"Fine, thanks – and you?", es:"Bien, gracias, ¿y tú?"},
       {en:"Where are you off to?", es:"¿A dónde vas?"},
-      {en:"I'll see you later then.", es:"Entonces nos vemos luego."},
-      {en:"Good luck!", es:"¡Buena suerte!"}
+      {en:"See you later.", es:"Nos vemos luego."}
     ]
   },
   {
-    id:"d1-3", emoji:"🎩", title:"Formal Introductions", subtitle:"Presentaciones formales",
+    id:'d1-3', level:'b1', module:'Introductions',
+    emoji:'🎩', title:'Formal Introductions', subtitle:'Presentaciones formales',
     lines:[
       {s:"MARGARET", t:"Mr. Wilson, I'd like you to meet Dr. Edward Smith."},
       {s:"MR. WILSON", t:"It's nice to meet you, Dr. Smith."},
       {s:"DR. SMITH", t:"Pleasure to meet you, too."},
       {s:"MARGARET", t:"Dr. Smith is an economist. He just finished writing a book on international trade."},
-      {s:"MR. WILSON", t:"Oh? That's my field, too. I work for the United Nations."},
-      {s:"DR. SMITH", t:"In the Development Program, by any chance?"},
-      {s:"MR. WILSON", t:"Yes. How did you guess?"},
-      {s:"DR. SMITH", t:"I've read your articles on technical assistance. They're excellent."}
+      {s:"MR. WILSON", t:"Oh? That's my field, too. I work for the United Nations."}
     ],
     notes:[
-      "<em>I'd like you to meet…</em> = Me gustaría presentarle a… Ojo: <em>I'd like</em> (= I would like) significa «quiero/me gustaría», distinto de <em>I like</em> (= me gusta).",
-      "<em>economist</em> tiene 4 sílabas y el acento va en la segunda: e-CON-o-mist.",
-      "<em>just</em> + pasado simple indica un pasado muy reciente. También puede usarse con presente perfecto: <em>He's just finished…</em>",
-      "<em>By any chance?</em> = ¿por casualidad? Entonación ascendente (pregunta de sí/no).",
-      "<em>That's my field, too</em> = también es mi área / mi campo."
+      "<em>I'd like you to meet…</em> = Me gustaría presentarle a…",
+      "<em>By any chance?</em> = ¿por casualidad?"
     ],
     phrases:[
-      {en:"I'd like you to meet Dr. Edward Smith.", es:"Me gustaría presentarle al Dr. Edward Smith."},
-      {en:"It's nice to meet you.", es:"Encantado de conocerle."},
-      {en:"Pleasure to meet you, too.", es:"El gusto es mío."},
-      {en:"In the Development Program, by any chance?", es:"¿Por casualidad en el Programa de Desarrollo?"},
+      {en:"I'd like you to meet Dr. Smith.", es:"Me gustaría presentarle al Dr. Smith."},
+      {en:"That's my field, too.", es:"También es mi área."},
       {en:"How did you guess?", es:"¿Cómo lo adivinó?"}
     ]
   },
   {
-    id:"d1-4", emoji:"🎉", title:"Informal Introductions", subtitle:"Presentaciones informales",
+    id:'d1-4', level:'b1', module:'Introductions',
+    emoji:'🎉', title:'Informal Introductions', subtitle:'Presentaciones informales',
     lines:[
       {s:"JIM", t:"Who's the tall woman next to Barbara?"},
       {s:"CHARLES", t:"That's her friend Mary. Didn't you meet her at Steve's party?"},
       {s:"JIM", t:"No, I wasn't at Steve's party."},
       {s:"CHARLES", t:"Oh! Then let me introduce you to her now. Mary, this is my friend Jim."},
       {s:"MARY", t:"Hi, Jim. Nice to meet you."},
-      {s:"JIM", t:"You, too. Would you like a drink?"},
-      {s:"MARY", t:"Sure, let's go get one."}
+      {s:"JIM", t:"You, too. Would you like a drink?"}
     ],
     notes:[
-      "<em>Who's</em> = who is. Se pronuncia igual que <em>whose</em>, pero significa otra cosa.",
-      "<em>Didn't you meet her…?</em> es una pregunta negativa: Charles pensaba que Jim ya conocía a Mary y muestra sorpresa.",
-      "En <em>I wasn't at Steve's party</em> el énfasis recae en <em>at</em>, que aquí equivale a «there» (no estuve allí).",
-      "<em>This is my friend Jim</em> es la forma típica de presentar a dos personas. Luego se suele añadir: <em>Jim, this is Mary.</em>",
-      "<em>Sure</em> se usa mucho en conversación informal para decir «sí»."
+      "<em>Didn't you meet her…?</em> pregunta negativa que expresa sorpresa.",
+      "<em>This is my friend Jim</em> es la forma típica de presentar."
     ],
     phrases:[
-      {en:"Who's the tall woman next to Barbara?", es:"¿Quién es la mujer alta junto a Barbara?"},
       {en:"Didn't you meet her at Steve's party?", es:"¿No la conociste en la fiesta de Steve?"},
       {en:"Let me introduce you to her.", es:"Déjame presentártela."},
-      {en:"Would you like a drink?", es:"¿Quieres algo de tomar?"},
-      {en:"Sure, let's go get one.", es:"Claro, vamos a por una."}
+      {en:"Would you like a drink?", es:"¿Quieres algo de tomar?"}
     ]
   },
   {
-    id:"d1-5", emoji:"⏰", title:"What Time Is It?", subtitle:"¿Qué hora es?",
+    id:'d1-5', level:'b1', module:'Daily Life',
+    emoji:'⏰', title:'What Time Is It?', subtitle:'¿Qué hora es?',
     lines:[
       {s:"NATASHA", t:"What time is it? We're going to be late!"},
       {s:"TONY", t:"It's a quarter after seven. We're on time. Don't panic."},
-      {s:"NATASHA", t:"But I thought we had to be at the restaurant by 7:30 for the surprise party. We'll never make it there with all this evening traffic."},
-      {s:"TONY", t:"Sure we will. Rush hour is almost over. Anyway, the party starts at 8:00. But I do need help with directions. Can you call the restaurant and ask them where we park our car?"}
+      {s:"NATASHA", t:"But I thought we had to be at the restaurant by 7:30."},
+      {s:"TONY", t:"Sure we will. Rush hour is almost over."}
     ],
     notes:[
-      "<em>It's a quarter after seven</em> = son las 7:15. También puedes decir <em>It's seven fifteen</em> o <em>a quarter past seven</em>.",
-      "<em>Half past seven</em> = 7:30, igual que <em>seven thirty</em>.",
-      "<em>Rush hour</em> es la hora punta: cuando hay más tráfico porque la gente va o vuelve del trabajo.",
-      "Para calmar a alguien: <em>Don't panic. / Don't worry. / We're fine. / We will be on time.</em>",
-      "<em>We'll never make it</em> = nunca vamos a llegar."
+      "<em>It's a quarter after seven</em> = 7:15. También <em>seven fifteen</em>.",
+      "<em>Rush hour</em> = hora punta."
     ],
     phrases:[
-      {en:"We're going to be late!", es:"¡Vamos a llegar tarde!"},
       {en:"It's a quarter after seven.", es:"Son las siete y cuarto."},
       {en:"Don't panic.", es:"No entres en pánico."},
-      {en:"Rush hour is almost over.", es:"La hora punta ya casi termina."},
-      {en:"We'll never make it there.", es:"Nunca vamos a llegar allí."}
+      {en:"Rush hour is almost over.", es:"La hora punta ya casi termina."}
     ]
   },
   {
-    id:"d1-6", emoji:"📞", title:"A Telephone Call", subtitle:"Una llamada telefónica",
+    id:'d1-6', level:'b1', module:'Daily Life',
+    emoji:'📞', title:'A Telephone Call', subtitle:'Una llamada telefónica',
     lines:[
       {s:"JOHN", t:"Hi, Alice, it's John. How are you?"},
       {s:"ALICE", t:"Oh, hi, John! I was just thinking about you."},
-      {s:"JOHN", t:"That's nice. I was wondering if you'd like to go to a movie tonight."},
+      {s:"JOHN", t:"I was wondering if you'd like to go to a movie tonight."},
       {s:"ALICE", t:"Sure, I'd love to! What's playing?"},
-      {s:"JOHN", t:"I was thinking about that new comedy Lights Out. What do you think?"},
-      {s:"ALICE", t:"Sounds great!"},
-      {s:"JOHN", t:"OK, I'll pick you up around 7:30. The movie starts at 8:00."},
-      {s:"ALICE", t:"See you then. Bye!"}
+      {s:"JOHN", t:"That new comedy Lights Out. What do you think?"},
+      {s:"ALICE", t:"Sounds great!"}
     ],
     notes:[
-      "Al teléfono, <em>it's</em> se usa con el significado de «soy yo / soy…». <em>Hi, it's John</em> = Hola, soy John.",
-      "<em>I was wondering if you'd like to…</em> es una forma educada e indirecta de invitar a alguien: no suena demasiado directo.",
-      "<em>What's playing?</em> = ¿qué película están dando?",
-      "<em>Sounds great!</em> = ¡Suena muy bien! (informal)",
-      "<em>I'll pick you up</em> = paso a recogerte."
+      "Al teléfono, <em>it's</em> significa «soy».",
+      "<em>I was wondering if…</em> es una invitación educada e indirecta."
     ],
     phrases:[
       {en:"Hi, it's John.", es:"Hola, soy John."},
-      {en:"I was just thinking about you.", es:"Justo estaba pensando en ti."},
       {en:"I was wondering if you'd like to go to a movie.", es:"Me preguntaba si te gustaría ir al cine."},
-      {en:"What's playing?", es:"¿Qué película están dando?"},
-      {en:"I'll pick you up around 7:30.", es:"Paso a recogerte sobre las 7:30."}
+      {en:"What's playing?", es:"¿Qué película están dando?"}
     ]
   },
   {
-    id:"d1-7", emoji:"📱", title:"Can You Say That Again?", subtitle:"¿Puedes repetir eso?",
-    lines:[
-      {s:"LUKE", t:"Hello? Hi, Stephanie, how are things at the office?"},
-      {s:"STEPHANIE", t:"Hi, Luke! How are you? Can you please stop and pick up extra paper for the computer printer?"},
-      {s:"LUKE", t:"What did you say? Can you repeat that, please? Did you say to pick up ink for the printer? Sorry, the phone is cutting out."},
-      {s:"STEPHANIE", t:"Can you hear me now? No, I need more computer paper. Listen, I'll text you exactly what I need. Thanks, Luke. Talk to you later."},
-      {s:"LUKE", t:"Thanks, Stephanie. Sorry, my phone has really bad reception here."}
-    ],
-    notes:[
-      "Formas de pedir que repitan: <em>Can you repeat that, please? / Excuse me? / I can't hear you. / I'm sorry?</em> (más formal: <em>I beg your pardon?</em>).",
-      "Para pedir aclaraciones: <em>Can you spell that for me? / Can you please write down the address for me?</em>",
-      "<em>Cutting out</em> describe que la llamada se corta por mala señal. También: <em>The line is breaking up. / I am losing you. / The call dropped.</em>",
-      "<em>Talk to you later</em> es el equivalente telefónico de <em>See you later</em>.",
-      "<em>Reception</em> = cobertura / señal del celular."
-    ],
-    phrases:[
-      {en:"How are things at the office?", es:"¿Cómo van las cosas en la oficina?"},
-      {en:"Can you repeat that, please?", es:"¿Puedes repetir eso, por favor?"},
-      {en:"The phone is cutting out.", es:"Se está cortando la llamada."},
-      {en:"I'll text you exactly what I need.", es:"Te escribo exactamente lo que necesito."},
-      {en:"Talk to you later.", es:"Hablamos luego."}
-    ]
-  },
-  {
-    id:"d1-8", emoji:"😲", title:"Coincidences", subtitle:"Coincidencias",
-    lines:[
-      {s:"MEG", t:"Well, hello there, Julia! Long time no see!"},
-      {s:"JULIA", t:"Meg! Hi! What a coincidence! I haven't seen you in ages! What are you doing here?"},
-      {s:"MEG", t:"I just got a new job in the city, so I'm shopping for some clothes. Hey, what do you think of this shirt?"},
-      {s:"JULIA", t:"Hmmm… well, you know how much I love blue. See? I've got the same shirt!"},
-      {s:"MEG", t:"You always did have good taste! What a small world."}
-    ],
-    notes:[
-      "<em>Long time no see!</em> = ¡Cuánto tiempo sin verte! (muy común e informal).",
-      "<em>What a + sustantivo!</em> expresa sorpresa o emoción: <em>What a surprise! / What a joy! / What a shame! / What a wonderful idea!</em>",
-      "En <em>You always did have good taste!</em> el énfasis en <em>did</em> recalca el hecho de que Julia SÍ tiene buen gusto.",
-      "<em>I haven't seen you in ages</em> = no te he visto en siglos.",
-      "<em>What a small world</em> se usa para comentar una coincidencia."
-    ],
-    phrases:[
-      {en:"Long time no see!", es:"¡Cuánto tiempo sin verte!"},
-      {en:"What a coincidence!", es:"¡Qué coincidencia!"},
-      {en:"I haven't seen you in ages!", es:"¡No te he visto en siglos!"},
-      {en:"What do you think of this shirt?", es:"¿Qué te parece esta camisa?"},
-      {en:"What a small world.", es:"Qué mundo tan pequeño."}
-    ]
-  },
-  {
-    id:"d1-9", emoji:"🌧️", title:"Weather Report", subtitle:"El reporte del clima",
-    lines:[
-      {s:"JENNIFER", t:"It's freezing outside! What happened to the weather report? I thought this cold front was supposed to pass."},
-      {s:"GABRIELA", t:"Yeah, I thought so too. That's what I read online this morning."},
-      {s:"JENNIFER", t:"I guess the wind chill is really driving down the temperature."},
-      {s:"GABRIELA", t:"Can we go inside? I feel like my toes are starting to go numb."}
-    ],
-    notes:[
-      "<em>Cold front</em> = frente frío (masa grande de aire frío).",
-      "<em>Supposed to</em> indica algo que se espera o se supone: <em>I thought it was supposed to rain today.</em>",
-      "<em>Yeah / Yup / Uh huh</em> son formas informales de decir «sí» en conversación.",
-      "<em>That's what I read online</em> = eso es lo que leí en línea. También: <em>That's what I heard on the radio / saw on TV.</em>",
-      "<em>Wind chill</em> = sensación térmica por el viento. <em>Driving down</em> = haciendo bajar."
-    ],
-    phrases:[
-      {en:"It's freezing outside!", es:"¡Hace un frío helado afuera!"},
-      {en:"What happened to the weather report?", es:"¿Qué pasó con el pronóstico del clima?"},
-      {en:"I thought this cold front was supposed to pass.", es:"Pensé que este frente frío iba a pasar."},
-      {en:"The wind chill is driving down the temperature.", es:"El viento está haciendo bajar la temperatura."},
-      {en:"My toes are starting to go numb.", es:"Se me están empezando a entumir los dedos de los pies."}
-    ]
-  }]
-},
-/* ================= UNIDAD 2 ================= */
-{
-  id:"u2", title:"Unidad 2 · Por la ciudad",
-  dialogues:[
-  {
-    id:"d2-1", emoji:"🍽️", title:"Ordering a Meal", subtitle:"Pedir comida en un restaurante",
+    id:'d2-1', level:'b1', module:'Around Town',
+    emoji:'🍽️', title:'Ordering a Meal', subtitle:'Pedir comida',
     lines:[
       {s:"WAITER", t:"Hello, I'll be your waiter today. Can I start you off with something to drink?"},
       {s:"RALPH", t:"Yes. I'll have iced tea, please."},
-      {s:"ANNA", t:"And I'll have lemonade."},
-      {s:"WAITER", t:"OK. Are you ready to order, or do you need a few minutes?"},
-      {s:"RALPH", t:"I think we're ready. I'll have the tomato soup to start, and the roast beef with mashed potatoes and peas."},
+      {s:"WAITER", t:"Are you ready to order, or do you need a few minutes?"},
+      {s:"RALPH", t:"I'll have the tomato soup to start, and the roast beef."},
       {s:"WAITER", t:"How do you want the beef — rare, medium, or well done?"},
-      {s:"RALPH", t:"Well done, please."},
-      {s:"ANNA", t:"And I'll just have the fish, with potatoes and a salad."}
+      {s:"RALPH", t:"Well done, please."}
     ],
     notes:[
-      "<em>Can I start you off with something to drink?</em> — pregunta de sí/no: la entonación sube al final.",
-      "<em>I'll have…</em> es la forma estándar de pedir en un restaurante (= voy a pedir…).",
-      "<em>rare / medium / well done</em> = poco hecho / al punto / bien hecho.",
-      "<em>to start</em> = para empezar (el entrante).",
-      "<em>I'll just have the fish</em> — <em>just</em> indica que no quiere entrante, solo el plato principal.",
-      "En <em>Are you ready to order, or do you need a few minutes?</em> la palabra <em>or</em> marca una elección: entonación sube en la primera opción y baja en la segunda."
+      "<em>I'll have…</em> es la forma estándar de pedir.",
+      "<em>rare / medium / well done</em> = poco / al punto / bien hecho."
     ],
     phrases:[
-      {en:"Can I start you off with something to drink?", es:"¿Les traigo algo de beber para empezar?"},
-      {en:"I'll have iced tea, please.", es:"Yo tomaré té helado, por favor."},
-      {en:"Are you ready to order?", es:"¿Están listos para pedir?"},
-      {en:"How do you want the beef — rare, medium, or well done?", es:"¿Cómo quiere la carne: poco hecha, al punto o bien hecha?"},
-      {en:"I'll just have the fish.", es:"Yo solo tomaré el pescado."}
+      {en:"Can I start you off with something to drink?", es:"¿Les traigo algo de beber?"},
+      {en:"I'll have iced tea, please.", es:"Yo tomaré té helado."},
+      {en:"Are you ready to order?", es:"¿Están listos para pedir?"}
     ]
   },
   {
-    id:"d2-2", emoji:"🩺", title:"At the Doctor's Office", subtitle:"En el consultorio médico",
-    lines:[
-      {s:"DOCTOR", t:"What seems to be the problem?"},
-      {s:"CATHY", t:"Well, I have a bad cough and a sore throat. I also have a headache."},
-      {s:"DOCTOR", t:"How long have you had these symptoms?"},
-      {s:"CATHY", t:"About three days now. And I'm really tired, too."},
-      {s:"DOCTOR", t:"Hmm. It sounds like you've got the flu. Take aspirin every four hours and get plenty of rest. Make sure you drink lots of fluids. Call me if you're still sick next week."},
-      {s:"CATHY", t:"OK, thanks."}
-    ],
-    notes:[
-      "<em>What seems to be the problem?</em> = ¿qué le pasa? Entonación descendente porque el médico pide información, no un sí/no.",
-      "<em>Well…</em> alargado se usa para «ganar tiempo» mientras piensas qué decir.",
-      "Se usa el artículo <em>a</em> antes de cada síntoma: <em>a bad cough, a sore throat, a headache</em>.",
-      "<em>About</em> = más o menos, aproximadamente.",
-      "El médico usa el imperativo para dar instrucciones: <em>Take aspirin… / Get plenty of rest… / Make sure… / Call me…</em>",
-      "<em>Still sick</em> = seguir enfermo."
-    ],
-    phrases:[
-      {en:"What seems to be the problem?", es:"¿Qué le ocurre?"},
-      {en:"I have a bad cough and a sore throat.", es:"Tengo mucha tos y dolor de garganta."},
-      {en:"How long have you had these symptoms?", es:"¿Desde cuándo tiene estos síntomas?"},
-      {en:"It sounds like you've got the flu.", es:"Parece que tiene gripe."},
-      {en:"Make sure you drink lots of fluids.", es:"Asegúrese de beber muchos líquidos."}
-    ]
-  },
-  {
-    id:"d2-3", emoji:"🧭", title:"Asking Directions", subtitle:"Pedir direcciones",
+    id:'d2-3', level:'b1', module:'Around Town',
+    emoji:'🧭', title:'Asking Directions', subtitle:'Pedir direcciones',
     lines:[
       {s:"MARK", t:"Excuse me. Could you tell me where the library is?"},
-      {s:"NANCY", t:"Yes, it's that way. You go three blocks to Washington Street, then turn right. It's on the corner, across from the bank."},
-      {s:"MARK", t:"Thanks! I've only been in town a few days, so I really don't know my way around yet."},
-      {s:"NANCY", t:"Oh, I know how you feel. We moved here a year ago, and I still don't know where everything is!"}
+      {s:"NANCY", t:"Yes, it's that way. Go three blocks to Washington Street, then turn right."},
+      {s:"MARK", t:"Thanks! I've only been in town a few days."},
+      {s:"NANCY", t:"Oh, I know how you feel. We moved here a year ago."}
     ],
     notes:[
-      "<em>Could you tell me…?</em> es un poco más educado que <em>Can you tell me…?</em>",
-      "Es una pregunta indirecta: el sujeto va antes del verbo → <em>where the library is</em> (no «where is the library»).",
-      "<em>across from</em> = enfrente de. <em>on the corner</em> = en la esquina.",
-      "<em>I don't know my way around</em> = no conozco el lugar / no me oriento.",
-      "<em>I know how you feel</em> = sé cómo te sientes (muestra empatía)."
+      "<em>Could you tell me where…is?</em> pregunta indirecta: sujeto antes que verbo.",
+      "<em>I know how you feel</em> = sé cómo te sientes."
     ],
     phrases:[
-      {en:"Excuse me. Could you tell me where the library is?", es:"Disculpe, ¿podría decirme dónde está la biblioteca?"},
-      {en:"Go three blocks and turn right.", es:"Camine tres cuadras y gire a la derecha."},
-      {en:"It's on the corner, across from the bank.", es:"Está en la esquina, enfrente del banco."},
-      {en:"I don't know my way around yet.", es:"Todavía no me oriento."},
+      {en:"Could you tell me where the library is?", es:"¿Podría decirme dónde está la biblioteca?"},
+      {en:"Turn right at the corner.", es:"Gire a la derecha en la esquina."},
       {en:"I know how you feel.", es:"Sé cómo te sientes."}
     ]
   },
   {
-    id:"d2-4", emoji:"🚨", title:"Calling for Help", subtitle:"Llamar a emergencias",
-    lines:[
-      {s:"PETER", t:"Hey! That car just ran a red light and hit that truck!"},
-      {s:"GAIL", t:"Is anyone hurt?"},
-      {s:"PETER", t:"I don't know… let's call 911. … Hello? I'd like to report a car accident near the post office on Charles Street. It looks like a man is hurt. Yes, it just happened. OK, thanks. Bye."},
-      {s:"GAIL", t:"What did they say?"},
-      {s:"PETER", t:"They're going to send an ambulance and a police car right away."},
-      {s:"GAIL", t:"Good, they're here. I hope the man is OK."},
-      {s:"PETER", t:"I know. You have to be so careful when you're driving."}
-    ],
-    notes:[
-      "<em>Run a red light</em> = pasarse un semáforo en rojo.",
-      "<em>911</em> es el número de emergencias en Estados Unidos: policía, bomberos y ambulancia.",
-      "<em>I'd like to report…</em> = quisiera reportar…",
-      "<em>It just happened</em> = acaba de ocurrir (énfasis en <em>just</em>: hace apenas un momento).",
-      "<em>Right away</em> = de inmediato."
-    ],
-    phrases:[
-      {en:"That car just ran a red light!", es:"¡Ese auto se acaba de pasar el semáforo en rojo!"},
-      {en:"Is anyone hurt?", es:"¿Hay alguien herido?"},
-      {en:"Let's call 911.", es:"Llamemos al 911."},
-      {en:"I'd like to report a car accident.", es:"Quisiera reportar un accidente automovilístico."},
-      {en:"They're going to send an ambulance right away.", es:"Van a enviar una ambulancia de inmediato."}
-    ]
-  },
-  {
-    id:"d2-5", emoji:"🛒", title:"At the Supermarket", subtitle:"En el supermercado",
-    lines:[
-      {s:"LOUISE", t:"Hey, Julia… Look at those desserts! How about baking some cookies today?"},
-      {s:"JULIA", t:"Hmm… Yeah, that's a great idea! While we're here, let's pick up the ingredients."},
-      {s:"LOUISE", t:"OK, what do we need?"},
-      {s:"JULIA", t:"The recipe calls for flour, sugar and butter. Oh, and we also need eggs and chocolate chips."},
-      {s:"LOUISE", t:"Why don't you get the dairy ingredients? You'll find those in the refrigerated section in the back of the store. I'll get the dry ingredients — they're in aisle 10."},
-      {s:"JULIA", t:"Great! Let's meet at the checkout."},
-      {s:"LOUISE", t:"OK. See you there."}
-    ],
-    notes:[
-      "<em>How about + verbo -ing</em> es una forma casual de sugerir una actividad: <em>How about baking some cookies?</em>",
-      "<em>Hmm…</em> indica que estás pensando antes de hablar.",
-      "<em>The recipe calls for…</em> = la receta pide / requiere… (también: <em>They're calling for rain</em> = anuncian lluvia).",
-      "<em>pick up</em> = recoger, comprar.",
-      "<em>aisle</em> = pasillo; la «s» es muda.",
-      "<em>Why don't you…?</em> sirve para pedir a alguien que haga algo o para dar consejo."
-    ],
-    phrases:[
-      {en:"How about baking some cookies today?", es:"¿Qué tal si horneamos galletas hoy?"},
-      {en:"That's a great idea!", es:"¡Es una gran idea!"},
-      {en:"Let's pick up the ingredients.", es:"Compremos los ingredientes."},
-      {en:"The recipe calls for flour, sugar and butter.", es:"La receta pide harina, azúcar y mantequilla."},
-      {en:"Let's meet at the checkout.", es:"Nos vemos en la caja."}
-    ]
-  },
-  {
-    id:"d2-6", emoji:"✅", title:"Running Errands", subtitle:"Haciendo diligencias",
-    lines:[
-      {s:"RECEPTIONIST", t:"Hi, there. How can I help you?"},
-      {s:"CLAIRE", t:"Well, I'm in town visiting for a few days, and I need to get some things done while I'm here."},
-      {s:"RECEPTIONIST", t:"Sure. What do you need?"},
-      {s:"CLAIRE", t:"I need to get my hair cut. I also need to have my new pants hemmed."},
-      {s:"RECEPTIONIST", t:"OK. Here's a map of the city. There's a good hair salon here, which is just a block away. And there's a tailor right here. Is there anything else?"},
-      {s:"CLAIRE", t:"Yes. I'll need to have my car serviced before my long drive home!"},
-      {s:"RECEPTIONIST", t:"No problem. There's a good mechanic a few blocks away."}
-    ],
-    notes:[
-      "<em>Run errands</em> = hacer recados o diligencias.",
-      "Estructura <b>get / have + objeto + participio</b>: describe acciones que otra persona hace por nosotros. <em>get my hair cut / have my pants hemmed / have my car serviced</em> (get y have son intercambiables).",
-      "<em>Is there anything else?</em> = ¿necesita algo más?",
-      "<em>No problem</em> aquí significa «no te preocupes».",
-      "<em>a block away</em> = a una cuadra de distancia."
-    ],
-    phrases:[
-      {en:"How can I help you?", es:"¿En qué puedo ayudarle?"},
-      {en:"I need to get some things done.", es:"Necesito hacer algunas cosas."},
-      {en:"I need to get my hair cut.", es:"Necesito cortarme el pelo."},
-      {en:"Is there anything else?", es:"¿Algo más?"},
-      {en:"It's just a block away.", es:"Está a solo una cuadra."}
-    ]
-  },
-  {
-    id:"d2-7", emoji:"📮", title:"At the Post Office", subtitle:"En la oficina de correos",
-    lines:[
-      {s:"POSTAL CLERK", t:"What can I do for you today?"},
-      {s:"CAROL", t:"I need to mail this package to New York, please."},
-      {s:"POSTAL CLERK", t:"OK, let's see how much it weighs… it's about five pounds. If you send it express, it will get there tomorrow. Or you can send it priority and it will get there by Saturday."},
-      {s:"CAROL", t:"Saturday is fine. How much will that be?"},
-      {s:"POSTAL CLERK", t:"$11.35. Do you need anything else?"},
-      {s:"CAROL", t:"Oh, yeah! I almost forgot. I need a book of stamps, too."},
-      {s:"POSTAL CLERK", t:"OK, your total comes to $20.35."}
-    ],
-    notes:[
-      "<em>What can I do for you today?</em> empieza con «what», así que la entonación baja al final.",
-      "<em>send it express / priority</em> = enviarlo exprés / prioritario.",
-      "<em>How much will that be?</em> = ¿cuánto será?",
-      "<em>a book of stamps</em> = un librito de estampillas.",
-      "<em>Your total comes to…</em> = el total es de…",
-      "Los precios se dicen de dos formas: <em>eleven thirty-five</em> o <em>eleven dollars and thirty-five cents</em>."
-    ],
-    phrases:[
-      {en:"What can I do for you today?", es:"¿Qué puedo hacer por usted hoy?"},
-      {en:"I need to mail this package.", es:"Necesito enviar este paquete."},
-      {en:"How much will that be?", es:"¿Cuánto será?"},
-      {en:"Oh, yeah! I almost forgot.", es:"¡Ah, sí! Casi lo olvido."},
-      {en:"Your total comes to $20.35.", es:"Su total es de $20.35."}
-    ]
-  },
-  {
-    id:"d2-8", emoji:"📚", title:"Catching Up After Class", subtitle:"Ponerse al día después de clase",
-    lines:[
-      {s:"LINDA", t:"Hey! How did your physics exam go?"},
-      {s:"FRANK", t:"Not bad, thanks. I'm just glad it's over! How about you… how'd your presentation go?"},
-      {s:"LINDA", t:"Oh, it went really well. Thanks for helping me with it!"},
-      {s:"FRANK", t:"No problem. So… do you feel like studying tomorrow for our math exam?"},
-      {s:"LINDA", t:"Yeah, sure! Come over around 10:00, after breakfast."},
-      {s:"FRANK", t:"All right. I'll bring my notes."}
-    ],
-    notes:[
-      "<em>How did … go?</em> = ¿cómo te fue en…?",
-      "<em>I'm just glad it's over!</em> — énfasis en <em>glad</em>; <em>just</em> se usa aquí para enfatizar.",
-      "<em>How'd</em> es la contracción de «how did» y suena como /howd/.",
-      "<em>Do you feel like + verbo -ing</em> = ¿tienes ganas de…?",
-      "<em>Come over</em> = ven a mi casa.",
-      "<em>Notes</em> = apuntes (lo que tomas durante una clase)."
-    ],
-    phrases:[
-      {en:"How did your physics exam go?", es:"¿Cómo te fue en el examen de física?"},
-      {en:"I'm just glad it's over!", es:"¡Me alegra que ya haya terminado!"},
-      {en:"Thanks for helping me with it!", es:"¡Gracias por ayudarme con eso!"},
-      {en:"Do you feel like studying tomorrow?", es:"¿Tienes ganas de estudiar mañana?"},
-      {en:"Come over around 10:00.", es:"Ven a mi casa sobre las 10:00."}
-    ]
-  },
-  {
-    id:"d2-9", emoji:"👕", title:"Shopping", subtitle:"De compras",
+    id:'d2-9', level:'b1', module:'Around Town',
+    emoji:'👕', title:'Shopping', subtitle:'De compras',
     lines:[
       {s:"SALESPERSON", t:"Can I help you?"},
       {s:"GLORIA", t:"Yes, I'm looking for a sweater – in a size medium."},
       {s:"SALESPERSON", t:"Let's see… here's a nice white one. What do you think?"},
       {s:"GLORIA", t:"I think I'd rather have it in blue."},
-      {s:"SALESPERSON", t:"OK… here's blue, in a medium. Would you like to try it on?"},
-      {s:"GLORIA", t:"OK… yes, I love it. It fits perfectly. How much is it?"},
-      {s:"SALESPERSON", t:"It's $50. It will be $53, with tax."},
-      {s:"GLORIA", t:"Perfect! I'll take it."}
+      {s:"SALESPERSON", t:"Would you like to try it on?"},
+      {s:"GLORIA", t:"Yes, I love it. It fits perfectly. How much is it?"}
     ],
     notes:[
-      "<em>Can I help you? / May I help you?</em> es lo que dice normalmente un vendedor para saludar al cliente.",
       "<em>I'm looking for…</em> = estoy buscando…",
-      "<em>I'd rather have it in…</em> = preferiría tenerlo en… (otro color, talla o material).",
-      "<em>try it on</em> = probárselo. Es un phrasal verb separable: el objeto va en medio (<em>try it on</em>).",
-      "<em>How much is it?</em> — el acento principal cae en <em>is</em>.",
-      "<em>I'll take it</em> = me lo llevo."
+      "<em>I'd rather have it in…</em> = preferiría tenerlo en…"
     ],
     phrases:[
       {en:"Can I help you?", es:"¿Puedo ayudarle?"},
-      {en:"I'm looking for a sweater in a size medium.", es:"Busco un suéter talla mediana."},
       {en:"I'd rather have it in blue.", es:"Preferiría tenerlo en azul."},
-      {en:"Would you like to try it on?", es:"¿Le gustaría probárselo?"},
-      {en:"It fits perfectly. I'll take it.", es:"Me queda perfecto. Me lo llevo."}
+      {en:"Would you like to try it on?", es:"¿Le gustaría probárselo?"}
     ]
   },
+
+  // ---------- B2 (Unidad 3) ----------
   {
-    id:"d2-10", emoji:"🚌", title:"Transportation", subtitle:"Transporte",
-    lines:[
-      {s:"JOYCE", t:"Should we take a taxi or a bus to the mall?"},
-      {s:"BILL", t:"Let's take a bus. It's impossible to get a taxi during rush hour."},
-      {s:"JOYCE", t:"Isn't that a bus stop over there?"},
-      {s:"BILL", t:"Yes… Oh! There's a bus now. We'll have to run to catch it."},
-      {s:"JOYCE", t:"Oh, no! We just missed it."},
-      {s:"BILL", t:"No problem. There'll be another one in 10 minutes."}
-    ],
-    notes:[
-      "<em>Should we… or…?</em> sirve para preguntar «¿qué es mejor?». <em>Should</em> pide una opinión (aquí no se usa «Will»).",
-      "La palabra <em>or</em> marca una elección: entonación ascendente en la primera opción y descendente en la segunda.",
-      "<em>Let's</em> (Let us) = propongo que hagamos esto.",
-      "<em>Isn't that…?</em> es una pregunta negativa: el hablante espera una respuesta afirmativa y sirve para confirmar información.",
-      "<em>We just missed it</em> = llegamos un momento tarde y lo perdimos.",
-      "<em>No problem</em> aquí significa «no importa»."
-    ],
-    phrases:[
-      {en:"Should we take a taxi or a bus?", es:"¿Tomamos un taxi o un autobús?"},
-      {en:"Let's take a bus.", es:"Tomemos un autobús."},
-      {en:"It's impossible to get a taxi during rush hour.", es:"Es imposible conseguir un taxi en hora punta."},
-      {en:"Isn't that a bus stop over there?", es:"¿No es esa una parada de autobús allí?"},
-      {en:"We just missed it.", es:"Acabamos de perderlo."}
-    ]
-  }]
-},
-/* ================= UNIDAD 3 ================= */
-{
-  id:"u3", title:"Unidad 3 · Pasatiempos y actividades",
-  dialogues:[
-  {
-    id:"d3-1", emoji:"🎂", title:"How Old Are You?", subtitle:"¿Cuántos años tienes?",
+    id:'d3-1', level:'b2', module:'Opinions & Plans',
+    emoji:'🎂', title:'How Old Are You?', subtitle:'¿Cuántos años tienes?',
     lines:[
       {s:"PATTY", t:"I'm really excited for Aunt Mary's surprise birthday party this afternoon! Aren't you?"},
       {s:"SUSAN", t:"Yeah! How old is she?"},
       {s:"PATTY", t:"She'll be 55 on May 14."},
-      {s:"SUSAN", t:"Wow! I didn't know that my mom was older — she's going to be 57 on September 2. Anyway, Aunt Mary's going to be so surprised to see us all here!"},
-      {s:"PATTY", t:"I know! But we still have to get all the food set up before she gets here… OK! We're all ready now. Shh! She's here!"},
-      {s:"ALL", t:"Surprise!"}
+      {s:"SUSAN", t:"Wow! I didn't know that my mom was older — she's going to be 57 on September 2."},
+      {s:"PATTY", t:"I know! But we still have to get all the food set up before she gets here…"}
     ],
     notes:[
-      "<em>Aren't you?</em> es una tag negativa que muestra que el hablante espera una respuesta positiva.",
-      "Números ordinales: 14th = <em>fourteenth</em> (acento en la segunda sílaba: fourTEENTH). Compáralo con 40th = <em>fortieth</em> (FORtieth).",
-      "<em>She's going to be…</em> se pronuncia como «gonna be»: tres sílabas en vez de cuatro.",
-      "<em>get the food set up</em> = preparar / colocar la comida.",
-      "<em>Shh!</em> se usa para pedir silencio."
+      "<em>Aren't you?</em> tag negativa que espera respuesta afirmativa.",
+      "Ordinales: 14th = fourteenth (fourTEENTH), 40th = fortieth (FORtieth)."
     ],
     phrases:[
       {en:"I'm really excited for the party!", es:"¡Estoy muy emocionado por la fiesta!"},
-      {en:"How old is she?", es:"¿Cuántos años tiene ella?"},
-      {en:"She'll be 55 on May 14.", es:"Cumplirá 55 el 14 de mayo."},
-      {en:"She's going to be so surprised!", es:"¡Se va a llevar una gran sorpresa!"},
+      {en:"How old is she?", es:"¿Cuántos años tiene?"},
       {en:"We still have to get the food set up.", es:"Todavía tenemos que preparar la comida."}
     ]
   },
   {
-    id:"d3-2", emoji:"🎬", title:"At the Movies", subtitle:"En el cine",
-    lines:[
-      {s:"BOB", t:"We'd like two tickets for the 3:30 show, please."},
-      {s:"TICKET SALES", t:"Here you go. Enjoy the movie!"},
-      {s:"BOB", t:"Would you mind moving over one, so my friend and I can sit together?"},
-      {s:"WOMAN", t:"No, not at all."},
-      {s:"BOB", t:"Thanks a lot!"}
-    ],
-    notes:[
-      "<em>the 3:30 show</em> = la función de las 3:30.",
-      "<em>Would you mind + verbo -ing</em> = ¿le importaría…? Es una forma muy educada de pedir algo.",
-      "La respuesta a <em>Would you mind…?</em> es negativa si aceptas: <em>No, not at all</em> (= no me importa, con gusto).",
-      "<em>moving over one</em> = correrse un asiento.",
-      "<em>Here you go</em> = aquí tiene. <em>Enjoy the movie!</em> se dice con tono amable."
-    ],
-    phrases:[
-      {en:"We'd like two tickets for the 3:30 show.", es:"Quisiéramos dos boletos para la función de las 3:30."},
-      {en:"Here you go. Enjoy the movie!", es:"Aquí tiene. ¡Disfrute la película!"},
-      {en:"Would you mind moving over one?", es:"¿Le importaría correrse un asiento?"},
-      {en:"No, not at all.", es:"No, en absoluto."},
-      {en:"Thanks a lot!", es:"¡Muchas gracias!"}
-    ]
-  },
-  {
-    id:"d3-3", emoji:"🎨", title:"What Are You Good At?", subtitle:"¿En qué eres bueno?",
+    id:'d3-3', level:'b2', module:'Opinions & Plans',
+    emoji:'🎨', title:'What Are You Good At?', subtitle:'¿En qué eres bueno?',
     lines:[
       {s:"SANDRA", t:"So… what should we do?"},
-      {s:"JULIE", t:"Well, I like to do arts and crafts, and I'm really good at drawing. What do you think?"},
-      {s:"SANDRA", t:"Hmm… how about playing a board game? That would be more fun."},
+      {s:"JULIE", t:"Well, I like to do arts and crafts, and I'm really good at drawing."},
+      {s:"SANDRA", t:"Hmm… how about playing a board game?"},
       {s:"JULIE", t:"OK. Let's play Scrabble! I'm really good at spelling, too!"},
       {s:"SANDRA", t:"Oh, yeah? We'll see about that!"}
     ],
     notes:[
-      "<em>be good at + verbo -ing</em> = ser bueno en algo. <em>I'm good at drawing / at spelling.</em>",
-      "<em>So…</em> con el sonido alargado, junto con la entonación, muestra aburrimiento.",
-      "<em>What do you…</em> suena como «Whaddaya» en el habla rápida.",
-      "<em>How about…</em> introduce una sugerencia tentativa (más suave). <em>Let's…</em> es una sugerencia fuerte y segura.",
-      "<em>Oh, yeah? We'll see about that!</em> se usa en tono de broma para mostrar una competencia amistosa."
+      "<em>be good at + -ing</em> = ser bueno en algo.",
+      "<em>How about…</em> sugerencia tentativa. <em>Let's…</em> sugerencia fuerte."
     ],
     phrases:[
-      {en:"What should we do?", es:"¿Qué deberíamos hacer?"},
       {en:"I'm really good at drawing.", es:"Soy muy bueno dibujando."},
       {en:"How about playing a board game?", es:"¿Qué tal jugar un juego de mesa?"},
-      {en:"Let's play Scrabble!", es:"¡Juguemos Scrabble!"},
       {en:"We'll see about that!", es:"¡Eso lo veremos!"}
     ]
   },
   {
-    id:"d3-4", emoji:"🏀", title:"What's Your Favorite Sport?", subtitle:"¿Cuál es tu deporte favorito?",
-    lines:[
-      {s:"PHIL", t:"What time is that soccer game on? I thought it started at noon."},
-      {s:"JACK", t:"We must have had the wrong time. Oh, well… soccer's not my favorite sport anyway. I much prefer basketball."},
-      {s:"PHIL", t:"Oh, really? I thought your favorite sport was tennis! I'm a big fan of basketball, too."},
-      {s:"JACK", t:"How about a game sometime?"},
-      {s:"PHIL", t:"Sure thing! Why don't we go shoot some hoops now since the soccer game isn't on?"},
-      {s:"JACK", t:"Excellent idea. Let's go."}
-    ],
-    notes:[
-      "<em>What time is … on?</em> = ¿a qué hora empieza? Se usa para programas de TV, películas o partidos.",
-      "<em>I much prefer basketball</em> — <em>much</em> con énfasis indica que le gusta mucho más.",
-      "<em>Oh, really?</em> con entonación ascendente muestra sorpresa.",
-      "<em>I'm a big fan of…</em> = me gusta mucho / soy muy fan de…",
-      "<em>shoot some hoops</em> = jugar baloncesto (expresión casual entre amigos)."
-    ],
-    phrases:[
-      {en:"What time is that soccer game on?", es:"¿A qué hora es el partido de fútbol?"},
-      {en:"Soccer's not my favorite sport anyway.", es:"De todos modos, el fútbol no es mi deporte favorito."},
-      {en:"I much prefer basketball.", es:"Prefiero mucho más el baloncesto."},
-      {en:"I'm a big fan of basketball, too.", es:"También soy muy fanático del baloncesto."},
-      {en:"Why don't we go shoot some hoops?", es:"¿Por qué no vamos a jugar un poco de baloncesto?"}
-    ]
-  },
-  {
-    id:"d3-5", emoji:"🎭", title:"A Night at the Theater", subtitle:"Una noche en el teatro",
+    id:'d3-5', level:'b2', module:'Opinions & Plans',
+    emoji:'🎭', title:'A Night at the Theater', subtitle:'Noche en el teatro',
     lines:[
       {s:"SHANNON", t:"What a fantastic performance! Thank you for inviting me to the musical."},
-      {s:"ELENA", t:"You are welcome. I'm happy you enjoyed the show. The choreography of the dancers was incredible. It reminds me of when I used to dance."},
-      {s:"SHANNON", t:"I know! You were such a talented ballerina. Do you miss dancing?"},
-      {s:"ELENA", t:"Oh, that's very kind of you, Shannon. I do miss it sometimes. But I will always be a fan of the arts. That's why I love going to musicals because it's the perfect combination of song, dance and theater."},
-      {s:"SHANNON", t:"Absolutely! I'm glad you are still an art fan too. Thank you for the invitation. It's always a pleasure to attend an arts event with you and learn something new."}
+      {s:"ELENA", t:"You are welcome. The choreography of the dancers was incredible."},
+      {s:"SHANNON", t:"You were such a talented ballerina. Do you miss dancing?"},
+      {s:"ELENA", t:"Oh, that's very kind of you. I do miss it sometimes."}
     ],
     notes:[
-      "<em>You are welcome</em> es la respuesta más segura ante un agradecimiento (también <em>Don't mention it</em>).",
-      "Al recibir un cumplido puedes aceptarlo (<em>That's very kind of you</em>) o restarle importancia (<em>Oh, I wasn't that good</em>).",
-      "Los cumplidos en inglés suelen usar superlativos: <em>the best…, the most…</em>",
-      "Otra estructura para halagar: <em>I'm a fan of the arts. / I'm a big fan of theater. / I'm a huge fan of this band.</em>",
-      "<em>used to dance</em> = solía bailar."
+      "<em>That's very kind of you</em> = Es muy amable de tu parte.",
+      "<em>I'm a fan of…</em> = me gusta mucho…"
     ],
     phrases:[
       {en:"What a fantastic performance!", es:"¡Qué actuación tan fantástica!"},
-      {en:"Thank you for inviting me.", es:"Gracias por invitarme."},
-      {en:"I'm happy you enjoyed the show.", es:"Me alegra que hayas disfrutado el espectáculo."},
       {en:"That's very kind of you.", es:"Es muy amable de tu parte."},
-      {en:"I will always be a fan of the arts.", es:"Siempre seré un fanático de las artes."}
+      {en:"I'm a big fan of theater.", es:"Soy muy fanático del teatro."}
     ]
   },
   {
-    id:"d3-6", emoji:"✈️", title:"Taking a Vacation", subtitle:"Tomarse unas vacaciones",
+    id:'d3-8', level:'b2', module:'Opinions & Plans',
+    emoji:'🗣️', title:'Giving Your Opinion', subtitle:'Dar tu opinión',
     lines:[
-      {s:"JULIE", t:"I just bought a ticket to New York City. I'm so excited to see the city!"},
-      {s:"SOPHIE", t:"Good for you! Traveling is so much fun. I love discovering new places and new people. When are you leaving?"},
-      {s:"JULIE", t:"Next week. I'm taking the red eye. It was cheaper. Hopefully, I'll be able to sleep on the plane."},
-      {s:"SOPHIE", t:"I wish I could go with you! New York City is a magical place. You will have so much fun."},
-      {s:"JULIE", t:"I hope so. I'm going to visit my brother who lives there. I will stay for a week and then take the train down to Washington, D.C."},
-      {s:"SOPHIE", t:"That sounds like a great vacation. I'm looking forward to a week at the beach for my summer vacation. I just want to relax."}
+      {s:"JAKE", t:"Where should we take a vacation this year?"},
+      {s:"MELISSA", t:"Well, I'd like to go somewhere warm. How about the beach?"},
+      {s:"JAKE", t:"You want to go to the beach, again? I want to ski this winter."},
+      {s:"MELISSA", t:"How about a compromise? What about the Alps in Europe next April?"}
     ],
     notes:[
-      "<em>Ticket</em> sirve para muchos medios de transporte (metro, autobús, tren, avión…). El contexto indica cuál.",
-      "<em>red eye</em> = vuelo nocturno que sale de noche y llega de madrugada (por los ojos rojos de no dormir).",
-      "<em>Good for you!</em> = ¡qué bien por ti!",
-      "<em>I wish I could…</em> = ojalá pudiera…",
-      "<em>I'm looking forward to + sustantivo o -ing</em> = espero con muchas ganas…"
+      "<em>make up my mind</em> = decidirse.",
+      "<em>How about…</em> presenta una alternativa."
     ],
     phrases:[
-      {en:"I'm so excited to see the city!", es:"¡Estoy tan emocionado de ver la ciudad!"},
-      {en:"When are you leaving?", es:"¿Cuándo te vas?"},
-      {en:"I'm taking the red eye.", es:"Voy en el vuelo nocturno."},
-      {en:"I wish I could go with you!", es:"¡Ojalá pudiera ir contigo!"},
-      {en:"I'm looking forward to a week at the beach.", es:"Espero con ganas una semana en la playa."}
-    ]
-  },
-  {
-    id:"d3-7", emoji:"🐱", title:"At the Pet Store", subtitle:"En la tienda de mascotas",
-    lines:[
-      {s:"CONNIE", t:"Oh! What a beautiful cat. What do you think?"},
-      {s:"GARY", t:"I think I'd rather get a dog. Dogs are more loyal than cats."},
-      {s:"CONNIE", t:"Yes, but they're so much work! Would you be willing to walk it every single day? And clean up after it?"},
-      {s:"GARY", t:"Hmm. Good point. What about a bird? Or a fish?"},
-      {s:"CONNIE", t:"We'd have to invest a lot of money in a cage or a fish tank. And I don't really know how to take care of a bird or a fish!"},
-      {s:"GARY", t:"Well, we're obviously not ready to get a pet yet."},
-      {s:"CONNIE", t:"Yeah, you're right. Let's go grab some coffee and talk about it."}
-    ],
-    notes:[
-      "<em>What a + adjetivo + sustantivo!</em> expresa emoción: <em>What a beautiful cat!</em>",
-      "Comparativos: <em>Dogs are more loyal than cats</em> (sustantivo + is/are more + adjetivo + than + sustantivo).",
-      "<em>Every single day</em> — cada palabra se enfatiza para insistir en el punto.",
-      "<em>Good point</em> = buen punto, tienes razón.",
-      "<em>take care of</em> = cuidar de (animales, personas o cosas).",
-      "<em>grab some coffee</em> = tomar un café (informal)."
-    ],
-    phrases:[
-      {en:"What a beautiful cat!", es:"¡Qué gato tan hermoso!"},
-      {en:"I'd rather get a dog.", es:"Preferiría tener un perro."},
-      {en:"Dogs are more loyal than cats.", es:"Los perros son más leales que los gatos."},
-      {en:"Good point.", es:"Buen punto."},
-      {en:"Let's go grab some coffee.", es:"Vamos a tomar un café."}
-    ]
-  },
-  {
-    id:"d3-8", emoji:"🗣️", title:"Giving Your Opinion", subtitle:"Dar tu opinión",
-    lines:[
-      {s:"JAKE", t:"Where should we take a vacation this year? Let's decide soon."},
-      {s:"MELISSA", t:"Well, I'd like to go somewhere warm. How about the beach? Or we could rent a cabin on the lake."},
-      {s:"JAKE", t:"You want to go to the beach, again? I want to ski this winter. How about a compromise? What about traveling to the Alps in Europe next April? We can find a ski resort on a lake."},
-      {s:"MELISSA", t:"Oh, we've never been to Europe before! But I don't know if it will be sunny and warm then. I need to do some research first. That will help me make up my mind."}
-    ],
-    notes:[
-      "<em>make up my mind</em> = decidirse (igual que <em>decide</em>): <em>It's going to take a while to make up my mind.</em>",
-      "<em>How about…</em> presenta una alternativa. Puede ir seguido de sujeto + verbo conjugado o de un sustantivo: <em>How about we go swimming? / How about a movie tonight?</em>",
-      "Verbos para expresar opinión: <em>think / believe / suppose / assume</em>. No son sinónimos exactos: <em>suppose</em> y <em>assume</em> implican una idea preconcebida.",
-      "<em>a compromise</em> = un punto medio / una solución intermedia."
-    ],
-    phrases:[
-      {en:"Where should we take a vacation this year?", es:"¿Dónde deberíamos ir de vacaciones este año?"},
       {en:"I'd like to go somewhere warm.", es:"Me gustaría ir a un lugar cálido."},
       {en:"How about a compromise?", es:"¿Qué tal un punto medio?"},
-      {en:"We've never been to Europe before!", es:"¡Nunca hemos estado en Europa!"},
       {en:"That will help me make up my mind.", es:"Eso me ayudará a decidirme."}
     ]
   },
   {
-    id:"d3-9", emoji:"🚣", title:"Hobbies", subtitle:"Pasatiempos",
+    id:'d3-9', level:'b2', module:'Free Time',
+    emoji:'🚣', title:'Hobbies', subtitle:'Pasatiempos',
     lines:[
       {s:"RYAN", t:"I'm so happy this week of midterm exams is finished."},
-      {s:"TYLER", t:"Same here. I'm looking forward to relaxing in the mountains this weekend. I've planned a little hike in the woods. And I'm gonna take a canoe trip down the river if the weather cooperates."},
-      {s:"RYAN", t:"Oh, fun! I'm going to Michigan. I'm taking my camera because fall is coming fast. The leaves are already turning all shades of red and orange. It will be awesome."},
-      {s:"TYLER", t:"Next time you go there, I'll join you. I've heard Michigan is a great place to go canoeing."}
+      {s:"TYLER", t:"Same here. I'm looking forward to relaxing in the mountains this weekend."},
+      {s:"RYAN", t:"I'm going to Michigan. Fall is coming fast. The leaves are turning red and orange."},
+      {s:"TYLER", t:"Next time you go there, I'll join you."}
     ],
     notes:[
-      "<em>Midterms</em> son los exámenes de mitad de semestre (octubre o marzo). Los del final son <em>finals</em> (mayo).",
-      "<em>gonna</em> = going to; <em>wanna</em> = want to; <em>hafta</em> = have to. Son transcripciones del habla informal: no se usan en escritura formal.",
       "<em>Same here</em> = yo también.",
-      "<em>Awesome</em> = genial, increíble (coloquial).",
-      "<em>if the weather cooperates</em> = si el clima lo permite."
+      "<em>gonna</em> = going to (informal)."
     ],
     phrases:[
-      {en:"I'm so happy midterm exams are finished.", es:"Estoy muy feliz de que los exámenes parciales hayan terminado."},
       {en:"Same here.", es:"Yo también."},
-      {en:"I'm looking forward to relaxing in the mountains.", es:"Espero con ganas relajarme en las montañas."},
-      {en:"If the weather cooperates.", es:"Si el clima lo permite."},
-      {en:"It will be awesome.", es:"Será increíble."}
+      {en:"I'm looking forward to relaxing.", es:"Espero con ganas relajarme."},
+      {en:"If the weather cooperates.", es:"Si el clima lo permite."}
+    ]
+  },
+
+  // ---------- C1 · Advanced ----------
+  {
+    id:'c1-1', level:'c1', module:'Academic Discourse',
+    emoji:'🎓', title:'Discussing Research', subtitle:'Discutir una investigación',
+    lines:[
+      {s:"PROF. LEE", t:"Your hypothesis on code-switching seems well-grounded. What methodology did you employ?"},
+      {s:"DR. ORTIZ", t:"We adopted a mixed-methods approach, combining corpus analysis with semi-structured interviews."},
+      {s:"PROF. LEE", t:"Interesting. And how did you mitigate potential bias in the qualitative sample?"},
+      {s:"DR. ORTIZ", t:"We triangulated the data with two independent coders and conducted member checks with participants."},
+      {s:"PROF. LEE", t:"That's rigorous. I'd be keen to see the preliminary findings."}
+    ],
+    notes:[
+      "<em>to be well-grounded</em> = estar bien fundamentado.",
+      "<em>to mitigate bias</em> = mitigar el sesgo.",
+      "<em>I'd be keen to…</em> = me interesaría mucho… (formal británico/americano académico)."
+    ],
+    phrases:[
+      {en:"What methodology did you employ?", es:"¿Qué metodología empleó?"},
+      {en:"We triangulated the data.", es:"Triangulamos los datos."},
+      {en:"I'd be keen to see the findings.", es:"Me interesaría ver los resultados."}
     ]
   },
   {
-    id:"d3-10", emoji:"💍", title:"Weddings", subtitle:"Bodas",
+    id:'c1-2', level:'c1', module:'Academic Discourse',
+    emoji:'⚖️', title:'Debating Policy', subtitle:'Debatir políticas',
     lines:[
-      {s:"ANGELICA", t:"Doesn't the bride look beautiful in that wedding dress?"},
-      {s:"MARIA", t:"Yes. She looks amazing. And the groom is so romantic. I just heard the story of how they got engaged! He proposed to her during a candlelight dinner in London. Did you know that was where they went to school?"},
-      {s:"ANGELICA", t:"Oh? Wonderful. And the honeymoon! What a great idea! Most people just go to the beach for a week after they tie the knot. But they plan on heading to California and cruising the coast on their motorcycle."},
-      {s:"MARIA", t:"Really! What a fantastic idea. This is by far the best wedding I've ever been to."}
+      {s:"MODERATOR", t:"Would you care to elaborate on your position regarding universal basic income?"},
+      {s:"ECONOMIST", t:"Certainly. The premise hinges on the assumption that automation will displace labor at scale."},
+      {s:"MODERATOR", t:"Some would argue that such a scheme is fiscally unsustainable."},
+      {s:"ECONOMIST", t:"That's a fair concern, though the empirical evidence from pilot programs suggests otherwise."},
+      {s:"MODERATOR", t:"Point taken. Let's move on to the next speaker."}
     ],
     notes:[
-      "<em>Doesn't the bride look…?</em> es una pregunta negativa: se espera un «yes». Expresa lo contrario de lo que se dice (la novia SÍ se ve hermosa).",
-      "<em>honeymoon</em> = luna de miel. Tres sílabas con acento en la primera: HO-ney-moon.",
-      "<em>tie the knot</em> = casarse (informal).",
-      "<em>just</em> tiene dos usos: (a) pasado muy reciente — <em>I just heard the story</em>; (b) contraste o énfasis — <em>Most people just go to the beach</em> (= simplemente).",
-      "<em>by far the best</em> = de lejos el mejor."
+      "<em>to hinge on</em> = depender de / basarse en.",
+      "<em>fiscally unsustainable</em> = fiscalmente insostenible.",
+      "<em>Point taken</em> = acepto su argumento."
     ],
     phrases:[
-      {en:"Doesn't the bride look beautiful?", es:"¿No se ve hermosa la novia?"},
-      {en:"He proposed to her during a candlelight dinner.", es:"Le propuso matrimonio durante una cena a la luz de las velas."},
-      {en:"After they tie the knot.", es:"Después de que se casen."},
-      {en:"What a fantastic idea!", es:"¡Qué idea tan fantástica!"},
-      {en:"This is by far the best wedding I've ever been to.", es:"Es de lejos la mejor boda a la que he ido."}
+      {en:"Would you care to elaborate?", es:"¿Le gustaría ampliar?"},
+      {en:"That's a fair concern.", es:"Es una preocupación razonable."},
+      {en:"Point taken.", es:"Acepto su punto."}
     ]
   },
   {
-    id:"d3-11", emoji:"💡", title:"Giving Advice", subtitle:"Dar consejo",
+    id:'c1-3', level:'c1', module:'Professional English',
+    emoji:'💼', title:'Negotiating a Contract', subtitle:'Negociar un contrato',
     lines:[
-      {s:"FRIEND A", t:"Thanks for meeting with me during your lunch hour. I appreciate it."},
-      {s:"FRIEND B", t:"No problem. I'm happy to help. What's going on?"},
-      {s:"FRIEND A", t:"Oh you know, the usual. Should I take this new job? Or do I stick with my current one?"},
-      {s:"FRIEND B", t:"Well, I think it's time for a change, don't you? They pay you late and you are unhappy."},
-      {s:"FRIEND A", t:"Do you really think so?"},
-      {s:"FRIEND B", t:"I know so. And I've been listening to you complain for over a year now. Trust me. Take the job. What do you have to lose?"}
+      {s:"CLIENT", t:"We're prepared to move forward, provided the deliverables are revised."},
+      {s:"VENDOR", t:"I appreciate the flexibility. That said, we'd need to revisit the payment terms."},
+      {s:"CLIENT", t:"Could you be more specific?"},
+      {s:"VENDOR", t:"We'd propose a 50% upfront payment and the remainder upon completion."},
+      {s:"CLIENT", t:"That seems reasonable. I'll run it past our legal team."}
     ],
     notes:[
-      "En conversación formal se aconseja con modales: <em>ought to / should / could / If I were you…</em>",
-      "En conversación informal se usan: <em>I think that / I feel that / in my opinion…</em>",
-      "<em>I know so</em> expresa mucha más certeza que <em>I think so</em>.",
-      "El imperativo se usa para persuadir con suavidad: <em>Take the job. / Trust me. / Go for it!</em>",
-      "<em>What do you have to lose?</em> = ¿qué tienes que perder?"
+      "<em>provided (that)</em> = siempre que / a condición de que.",
+      "<em>That said,</em> = dicho eso, no obstante.",
+      "<em>to run it past someone</em> = consultarlo con alguien."
     ],
     phrases:[
-      {en:"Thanks for meeting with me.", es:"Gracias por reunirte conmigo."},
-      {en:"What's going on?", es:"¿Qué pasa?"},
-      {en:"Should I take this new job?", es:"¿Debería aceptar este nuevo trabajo?"},
-      {en:"I think it's time for a change, don't you?", es:"Creo que es hora de un cambio, ¿no?"},
-      {en:"What do you have to lose?", es:"¿Qué tienes que perder?"}
+      {en:"We're prepared to move forward.", es:"Estamos dispuestos a seguir adelante."},
+      {en:"That seems reasonable.", es:"Eso parece razonable."},
+      {en:"I'll run it past our legal team.", es:"Lo consultaré con nuestro equipo legal."}
     ]
-  }]
-}
+  },
+  {
+    id:'c1-4', level:'c1', module:'Professional English',
+    emoji:'📊', title:'Presenting Results', subtitle:'Presentar resultados',
+    lines:[
+      {s:"ANALYST", t:"As you can see from the chart, retention has plateaued over the last two quarters."},
+      {s:"CEO", t:"What do you attribute that to?"},
+      {s:"ANALYST", t:"Several factors converge: pricing pressure, a maturing market, and shifts in user behavior."},
+      {s:"CEO", t:"So what's your recommendation?"},
+      {s:"ANALYST", t:"I'd advocate for a two-pronged strategy: diversify the product line and double down on retention."}
+    ],
+    notes:[
+      "<em>to plateau</em> = estancarse (en una meseta).",
+      "<em>to attribute X to Y</em> = atribuir X a Y.",
+      "<em>to double down on</em> = redoblar esfuerzos en."
+    ],
+    phrases:[
+      {en:"What do you attribute that to?", es:"¿A qué lo atribuye?"},
+      {en:"Several factors converge.", es:"Convergen varios factores."},
+      {en:"I'd advocate for a two-pronged strategy.", es:"Abogaría por una estrategia de dos frentes."}
+    ]
+  },
+
+  // ---------- C2 · Proficiency ----------
+  {
+    id:'c2-1', level:'c2', module:'Rhetoric & Style',
+    emoji:'🖋️', title:'Literary Analysis', subtitle:'Análisis literario',
+    lines:[
+      {s:"CRITIC", t:"The author's use of free indirect discourse blurs the boundary between narrator and protagonist."},
+      {s:"SCHOLAR", t:"Precisely. And that ambiguity is precisely what lends the novel its unsettling quality."},
+      {s:"CRITIC", t:"One might argue the technique verges on mannerism in the later chapters."},
+      {s:"SCHOLAR", t:"A fair critique, though I'd contend that it's a deliberate aesthetic choice rather than an affectation."}
+    ],
+    notes:[
+      "<em>free indirect discourse</em> = estilo indirecto libre (técnica narrativa).",
+      "<em>to verge on</em> = rayar en / bordear.",
+      "<em>affectation</em> = afectación, amaneramiento."
+    ],
+    phrases:[
+      {en:"That lends the novel its unsettling quality.", es:"Eso le da a la novela su cualidad inquietante."},
+      {en:"One might argue…", es:"Se podría argumentar que…"},
+      {en:"I'd contend that…", es:"Yo sostendría que…"}
+    ]
+  },
+  {
+    id:'c2-2', level:'c2', module:'Rhetoric & Style',
+    emoji:'🎙️', title:'Diplomatic Exchange', subtitle:'Intercambio diplomático',
+    lines:[
+      {s:"AMBASSADOR A", t:"We note with concern the recent developments in the region."},
+      {s:"AMBASSADOR B", t:"Our position remains unchanged: dialogue is the only viable path."},
+      {s:"AMBASSADOR A", t:"While we share that sentiment, we must not lose sight of the humanitarian dimension."},
+      {s:"AMBASSADOR B", t:"Rest assured, that remains at the forefront of our considerations."},
+      {s:"AMBASSADOR A", t:"Then I trust we can count on your continued cooperation."}
+    ],
+    notes:[
+      "<em>We note with concern</em> = observamos con preocupación (lenguaje diplomático).",
+      "<em>Rest assured</em> = tenga la seguridad.",
+      "<em>At the forefront of</em> = a la vanguardia de / en primer plano."
+    ],
+    phrases:[
+      {en:"We note with concern…", es:"Observamos con preocupación…"},
+      {en:"Rest assured.", es:"Tenga la seguridad."},
+      {en:"I trust we can count on your cooperation.", es:"Confío en que podamos contar con su cooperación."}
+    ]
+  },
+  {
+    id:'c2-3', level:'c2', module:'Nuance & Idiom',
+    emoji:'🎭', title:'Subtle Disagreement', subtitle:'Desacuerdo sutil',
+    lines:[
+      {s:"A", t:"I couldn't help but feel his remarks were somewhat beside the point."},
+      {s:"B", t:"I see where you're coming from, but I'd venture to disagree."},
+      {s:"A", t:"Oh? Do tell."},
+      {s:"B", t:"With all due respect, his argument, however tangential, lays bare an underlying tension."},
+      {s:"A", t:"Fair enough. You've given me food for thought."}
+    ],
+    notes:[
+      "<em>beside the point</em> = fuera de lugar / irrelevante.",
+      "<em>I see where you're coming from</em> = entiendo tu postura.",
+      "<em>to lay bare</em> = poner al descubierto.",
+      "<em>food for thought</em> = algo en qué pensar."
+    ],
+    phrases:[
+      {en:"I couldn't help but feel…", es:"No pude evitar sentir que…"},
+      {en:"With all due respect…", es:"Con el debido respeto…"},
+      {en:"You've given me food for thought.", es:"Me has dado en qué pensar."}
+    ]
+  }
 ];
 
-/* =========================================================
-   ESTADO
-   ========================================================= */
-const ALL_DIALOGUES = DATA.flatMap(u => u.dialogues);
-const TOTAL = ALL_DIALOGUES.length;
+/* ============================================================
+   3. HELPERS
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const getLevel = id => LEVELS.find(l => l.id === id);
+const getDialogue = id => DIALOGUES.find(d => d.id === id);
+const initials = name => name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const COLORS = ['#0072CE','#001B41','#FFB81C','#0F9D58','#D93025','#5A6B85','#1F87E0','#E6A200'];
+const speakerColor = (name, list) => COLORS[list.indexOf(name) % COLORS.length];
 
-const state = {
-  currentId: null,
-  tab: 'dialogo',
+function toast(msg, type='ok'){
+  const host = $('#toasts');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  host.appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; el.style.transition='.3s'; setTimeout(()=>el.remove(),300); }, 3200);
+}
+
+/* Estado global de la vista */
+const UI = {
+  view: 'landing',        // landing | dashboard | course | checkout | pricing
+  currentLevel: null,
+  currentDialogue: null,
+  tab: 'dialogo',         // dialogo | notas | frases | practica
   roleplay: null,
   hideText: false,
-  completed: JSON.parse(localStorage.getItem('ec_completed') || '[]'),
-  quiz: null,
   cloze: null,
-  clozeDlg: null
+  quiz: null,
+  authMode: 'login'       // login | register
 };
 
-/* =========================================================
-   UTILIDADES
-   ========================================================= */
-const $ = s => document.querySelector(s);
-const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
-const getDlg = id => ALL_DIALOGUES.find(d => d.id === id);
-const initials = name => name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+/* ============================================================
+   4. ROUTER / RENDER
+   ============================================================ */
+function render(){
+  const app = $('#app');
+  const user = store.session ? store.findUser(store.session.email) : null;
 
-/* Paleta institucional para los hablantes */
-const COLORS = [
-  '#0072CE','#001B41','#FFB81C','#0F9D58',
-  '#D93025','#5A6B85','#1F87E0','#E6A200'
-];
+  if(!user && UI.view !== 'landing' && UI.view !== 'pricing') UI.view = 'landing';
 
-function speakerColor(name, speakers){
-  const i = speakers.indexOf(name);
-  return COLORS[(i<0?0:i) % COLORS.length];
+  if(UI.view === 'landing')      app.innerHTML = renderLanding();
+  else if(UI.view === 'dashboard') app.innerHTML = renderDashboard(user);
+  else if(UI.view === 'course')    app.innerHTML = renderCourse(user);
+  else if(UI.view === 'pricing')   app.innerHTML = renderPricing(user);
+
+  window.scrollTo({top:0,behavior:'instant'});
 }
 
-/* ---------- VOZ ---------- */
+/* ============================================================
+   5. LANDING
+   ============================================================ */
+function renderLanding(){
+  return `
+  <div class="landing">
+    ${renderTopNav()}
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-grid">
+          <div>
+            <div class="hero-badge">TOEFL ITP · Plataforma oficial de práctica</div>
+            <h1>Domina el inglés con <em>confianza real</em>.</h1>
+            <p class="lead">
+              Cuatro niveles alineados al Marco Común Europeo (B1–C2), con diálogos auténticos,
+              práctica de voz, quizzes adaptativos y seguimiento personalizado de tu progreso.
+            </p>
+            <div class="hero-cta">
+              <button class="btn btn-gold btn-lg" data-auth="register">Empezar gratis →</button>
+              <button class="btn btn-lg" style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15)" data-scroll="levels">Ver niveles</button>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat"><b>4</b><span>Niveles CEFR</span></div>
+              <div class="hero-stat"><b>30+</b><span>Diálogos</span></div>
+              <div class="hero-stat"><b>150+</b><span>Horas</span></div>
+              <div class="hero-stat"><b>100%</b><span>Online</span></div>
+            </div>
+          </div>
+          <div class="hero-preview">
+            <div class="preview-head">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span>EVERYDAY CONVERSATIONS · B1</span>
+            </div>
+            <div class="preview-line">
+              <div class="preview-avatar" style="background:#0072CE">JA</div>
+              <div class="preview-bubble">
+                <div class="preview-speaker" style="color:#8CC7FF">James</div>
+                Good morning, Professor Austin, how are you doing?
+              </div>
+            </div>
+            <div class="preview-line">
+              <div class="preview-avatar" style="background:#FFB81C;color:#001B41">PA</div>
+              <div class="preview-bubble">
+                <div class="preview-speaker" style="color:#FFD166">Professor Austin</div>
+                Good morning, James. I am doing well. And you?
+              </div>
+            </div>
+            <div class="preview-line">
+              <div class="preview-avatar" style="background:#0F9D58">EM</div>
+              <div class="preview-bubble">
+                <div class="preview-speaker" style="color:#5BD99C">Emma</div>
+                It's a pleasure to meet you, professor.
+              </div>
+            </div>
+            <div class="preview-progress">
+              <b>Progreso</b>
+              <div class="preview-bar"><div></div></div>
+              <b>65%</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-eyebrow">Por qué elegirnos</div>
+          <h2>Aprende como se aprende de verdad</h2>
+          <p>No memorizas listas. Practicas conversaciones reales con retroalimentación inmediata y seguimiento continuo.</p>
+        </div>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🎧</div>
+            <h3>Audio nativo integrado</h3>
+            <p>Escucha cada línea con voces nativas americanas. Practica tu turno con el modo role-play y compara tu pronunciación.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📈</div>
+            <h3>Seguimiento real de progreso</h3>
+            <p>Tu dashboard muestra módulos completados, precisión en quizzes, tiempo de práctica y racha diaria. Todo guardado automáticamente.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Ejercicios adaptativos</h3>
+            <p>Completa oraciones, responde quizzes de vocabulario y practica con notas de idioma explicadas paso a paso.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🏛️</div>
+            <h3>Diseñado para TOEFL ITP</h3>
+            <p>Cada nivel está alineado a los estándares del TOEFL ITP. Vocabulario, estructuras y giros que aparecen en el examen real.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>Funciona en cualquier dispositivo</h3>
+            <p>Móvil, tablet o escritorio. Sin descargas, sin instalaciones, sin excusas.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🏆</div>
+            <h3>Certificado por nivel</h3>
+            <p>Al completar los módulos de cada nivel obtienes un certificado digital verificable con tu nombre y puntuación.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="levels" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-eyebrow">Niveles CEFR</div>
+          <h2>Cuatro niveles. Una sola meta.</h2>
+          <p>Desde la comunicación cotidiana hasta el dominio casi nativo. Elige dónde empezar o hazlo todo.</p>
+        </div>
+        <div class="levels-grid">
+          ${LEVELS.map(l => `
+            <div class="level-card" style="--level-color:${l.color};--level-color2:${l.color2}">
+              <div class="level-code">${l.code}</div>
+              <div class="level-name">${l.name}</div>
+              <div class="level-desc">${l.desc}</div>
+              <div class="level-meta">
+                <span><b>${l.modules}</b> módulos</span>
+                <span><b>${l.hours}</b></span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-eyebrow">Planes</div>
+          <h2>Precios simples, resultados serios</h2>
+          <p>Sin contratos forzosos. Cancela cuando quieras. Acceso inmediato al inscribirte.</p>
+        </div>
+        <div class="pricing-grid" id="pricing"></div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="section-inner">
+        <div class="cta-banner">
+          <div>
+            <h2>¿Listo para empezar?</h2>
+            <p>Crea tu cuenta gratis y accede al primer módulo de B1 al instante. Sin tarjeta de crédito.</p>
+          </div>
+          <button class="btn btn-gold btn-lg" data-auth="register">Crear cuenta gratis</button>
+        </div>
+      </div>
+    </section>
+
+    ${renderFooter()}
+  </div>`;
+}
+
+/* ============================================================
+   6. TOP NAV
+   ============================================================ */
+function renderTopNav(){
+  const user = store.session ? store.findUser(store.session.email) : null;
+  const dark = UI.view === 'landing';
+
+  return `
+  <nav class="topnav ${dark?'dark':''}">
+    <div class="logo" style="cursor:pointer" data-nav="landing">
+      <div class="logo-icon">🎓</div>
+      <div>
+        <div>TOEFL ITP Academy</div>
+        <small>Everyday Conversations</small>
+      </div>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-links">
+      ${user ? `
+        <button data-nav="dashboard">Mi panel</button>
+        <button data-nav="pricing">Inscripciones</button>
+        <button data-logout>Cerrar sesión</button>
+      ` : `
+        <button data-scroll="levels">Niveles</button>
+        <button data-scroll="pricing-top">Precios</button>
+        <button data-auth="login">Iniciar sesión</button>
+        <button class="btn btn-gold btn-sm" data-auth="register">Registrarse</button>
+      `}
+    </div>
+  </nav>`;
+}
+
+/* ============================================================
+   7. PRICING
+   ============================================================ */
+function renderPricingCards(){
+  const user = store.session ? store.findUser(store.session.email) : null;
+  return `
+    <div class="plan">
+      <h3>Prueba</h3>
+      <div class="plan-desc">Acceso al primer módulo de B1. Para conocer la plataforma.</div>
+      <div class="plan-price">
+        <span class="currency">$</span><span class="amount">0</span>
+        <span class="period">gratis</span>
+      </div>
+      <ul>
+        <li>1 módulo de B1</li>
+        <li>3 diálogos con audio</li>
+        <li>Notas de idioma</li>
+        <li>1 quiz de prueba</li>
+      </ul>
+      <button class="btn btn-ghost" data-auth="register">Empezar gratis</button>
+    </div>
+
+    <div class="plan featured">
+      <h3>Nivel individual</h3>
+      <div class="plan-desc">Un nivel completo (B1, B2, C1 o C2). Pago único, acceso de por vida.</div>
+      <div class="plan-price">
+        <span class="currency">$</span><span class="amount">29</span>
+        <span class="period">/ nivel · desde</span>
+      </div>
+      <ul>
+        <li>Todos los módulos del nivel</li>
+        <li>Audio nativo ilimitado</li>
+        <li>Práctica de voz y role-play</li>
+        <li>Quizzes y ejercicios</li>
+        <li>Certificado digital del nivel</li>
+        <li>Seguimiento de progreso</li>
+      </ul>
+      <button class="btn btn-primary" data-scroll="levels">Elegir nivel</button>
+    </div>
+
+    <div class="plan">
+      <h3>Acceso total</h3>
+      <div class="plan-desc">Los 4 niveles CEFR completos. La ruta más completa hacia el dominio.</div>
+      <div class="plan-price">
+        <span class="currency">$</span><span class="amount">99</span>
+        <span class="period">/ año</span>
+      </div>
+      <ul>
+        <li>B1 + B2 + C1 + C2</li>
+        <li>45+ módulos · 150+ horas</li>
+        <li>Todos los ejercicios y quizzes</li>
+        <li>Certificados por nivel</li>
+        <li>Simulacros TOEFL ITP</li>
+        <li>Soporte prioritario</li>
+      </ul>
+      <button class="btn btn-gold" data-auth="${user?'':'register'}">${user?'Inscribirme':'Crear cuenta'}</button>
+    </div>
+  `;
+}
+
+function renderPricing(){
+  return `
+  <div class="app-shell">
+    ${renderTopNav()}
+    <div style="max-width:1180px;margin:0 auto;padding:60px 32px">
+      <div class="section-head">
+        <div class="section-eyebrow">Inscripciones</div>
+        <h2 style="color:var(--navy);font-size:38px;font-weight:800;letter-spacing:-.03em;margin-bottom:14px">Elige tu plan</h2>
+        <p style="color:var(--ink-2);font-size:16px;line-height:1.7">Acceso inmediato. Sin contratos. Cancela cuando quieras.</p>
+      </div>
+      <div class="pricing-grid" id="pricing" style="margin-top:48px"></div>
+    </div>
+    ${renderFooter()}
+  </div>`;
+}
+
+/* Inyecta las pricing cards donde exista el div #pricing */
+function injectPricingCards(){
+  const target = $('#pricing');
+  if(target) target.innerHTML = renderPricingCards();
+}
+
+/* ============================================================
+   8. DASHBOARD
+   ============================================================ */
+function renderDashboard(user){
+  const prog = store.getUserProgress(user.id);
+  const totalModules = LEVELS.reduce((s,l)=>s+l.modules,0);
+  const completed = prog.completed.length;
+  const accuracy = prog.quizScores.length
+    ? Math.round(prog.quizScores.reduce((s,q)=>s+q.score,0) / prog.quizScores.reduce((s,q)=>s+q.total,0) * 100)
+    : 0;
+
+  const ownedCount = Object.values(user.levels || {}).filter(Boolean).length;
+
+  return `
+  <div class="app-shell">
+    ${renderTopNav()}
+
+    <div class="dash-hero">
+      <div class="dash-hero-inner">
+        <h1>Hola, ${esc(user.name.split(' ')[0])} 👋</h1>
+        <p>Continúa donde lo dejaste. Tu progreso se guarda automáticamente.</p>
+        <div class="dash-kpis">
+          <div class="kpi">
+            <div class="kpi-label">Niveles activos</div>
+            <div class="kpi-value">${ownedCount}<small> / 4</small></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Módulos completados</div>
+            <div class="kpi-value">${completed}<small> / ${totalModules}</small></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Precisión en quizzes</div>
+            <div class="kpi-value">${accuracy}<small>%</small></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Plan actual</div>
+            <div class="kpi-value" style="font-size:20px;text-transform:capitalize">${esc(user.plan)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-content">
+      <div class="dash-tabs">
+        <button class="dash-tab active" data-dash="levels">Mis niveles</button>
+        <button class="dash-tab" data-dash="inscripciones">Inscripciones</button>
+      </div>
+      <div id="dashBody"></div>
+    </div>
+  </div>`;
+}
+
+function renderDashLevels(user){
+  const prog = store.getUserProgress(user.id);
+  return `
+    <div class="dash-levels">
+      ${LEVELS.map(l => {
+        const owned = user.levels?.[l.id];
+        const levelDialogues = DIALOGUES.filter(d => d.level === l.id);
+        const doneCount = levelDialogues.filter(d => prog.completed.includes(d.id)).length;
+        const pct = levelDialogues.length ? Math.round(doneCount/levelDialogues.length*100) : 0;
+
+        return `
+        <div class="dash-level ${owned?'':'locked'}" style="--level-color:${l.color};--level-color2:${l.color2}">
+          <div class="dash-level-head">
+            <div>
+              <div class="dash-level-code">${l.code}</div>
+              <div class="dash-level-name">${l.name}</div>
+            </div>
+            <div class="lock-badge ${owned?'owned':''}">
+              ${owned ? '✓ Activo' : '🔒 Bloqueado'}
+            </div>
+          </div>
+          <div class="dash-progress">
+            <div class="dash-progress-meta">
+              <span>Progreso</span>
+              <span><b>${pct}%</b></span>
+            </div>
+            <div class="dash-bar"><div style="width:${pct}%"></div></div>
+          </div>
+          ${owned ? `
+            <ul class="dash-modules">
+              ${levelDialogues.slice(0,4).map(d => {
+                const done = prog.completed.includes(d.id);
+                return `<li class="dash-module ${done?'done':''}">
+                  <span class="mod-dot">${done?'✓':'○'}</span>
+                  <span class="mod-name">${esc(d.title)}</span>
+                  <button class="mod-btn" data-open="${d.id}">Abrir</button>
+                </li>`;
+              }).join('')}
+              ${levelDialogues.length > 4 ? `
+                <li class="dash-module" style="color:var(--ink-3);font-style:italic">
+                  + ${levelDialogues.length - 4} módulos más
+                </li>` : ''}
+            </ul>
+          ` : `
+            <div style="font-size:13px;color:var(--ink-2);line-height:1.6;margin-top:8px">
+              Desbloquea este nivel para acceder a los ${levelDialogues.length} módulos,
+              audio nativo, quizzes y certificado.
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px" data-buy="${l.id}">
+              Inscribirme · $${l.price}
+            </button>
+          `}
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderDashInscripciones(user){
+  return `
+    <div class="pricing-grid" style="margin-top:8px">
+      ${LEVELS.map(l => {
+        const owned = user.levels?.[l.id];
+        return `
+        <div class="plan" style="${owned?'border-color:'+l.color:''}">
+          <h3 style="display:flex;align-items:center;gap:10px">
+            <span style="color:${l.color};font-size:22px;font-weight:900">${l.code}</span>
+            ${l.name}
+          </h3>
+          <div class="plan-desc">${l.desc}</div>
+          <div class="plan-price">
+            <span class="currency">$</span><span class="amount">${l.price}</span>
+            <span class="period">/ nivel</span>
+          </div>
+          <ul>
+            ${l.features.map(f=>`<li>${f}</li>`).join('')}
+          </ul>
+          ${owned ? `
+            <button class="btn btn-ghost" disabled style="width:100%;justify-content:center">✓ Ya inscrito</button>
+          ` : `
+            <button class="btn btn-primary" style="width:100%;justify-content:center" data-buy="${l.id}">
+              Inscribirme · $${l.price}
+            </button>
+          `}
+        </div>
+      `;
+      }).join('')}
+    </div>
+  `;
+}
+
+/* ============================================================
+   9. COURSE VIEW (diálogo dentro de un nivel)
+   ============================================================ */
+function renderCourse(user){
+  const d = getDialogue(UI.currentDialogue);
+  if(!d) return renderDashboard(user);
+  const level = getLevel(d.level);
+  const levelDialogues = DIALOGUES.filter(x => x.level === d.level);
+  const prog = store.getUserProgress(user.id);
+  const speakers = [...new Set(d.lines.map(l=>l.s))];
+  const done = prog.completed.includes(d.id);
+
+  return `
+  <div class="app-shell">
+    ${renderTopNav()}
+    <div class="course-shell">
+      <div class="course-header">
+        <div>
+          <button class="btn btn-ghost btn-sm" data-nav="dashboard" style="margin-bottom:10px">← Volver al panel</button>
+          <div class="course-title" style="color:${level.color}">${level.code} · ${esc(level.name)}</div>
+          <div class="course-subtitle">${levelDialogues.indexOf(d)+1} de ${levelDialogues.length} módulos · ${esc(d.module)}</div>
+        </div>
+      </div>
+
+      <div class="course-layout">
+        <aside class="course-side">
+          <h4>Módulos de ${level.code}</h4>
+          ${levelDialogues.map((x,i) => `
+            <button class="side-item ${x.id===d.id?'active':''} ${prog.completed.includes(x.id)?'done':''}" data-open="${x.id}">
+              <span class="si-num">${prog.completed.includes(x.id)?'✓':i+1}</span>
+              <span>${esc(x.title)}</span>
+            </button>
+          `).join('')}
+        </aside>
+
+        <div>
+          ${UI.quiz ? renderQuiz() : ''}
+          ${!UI.quiz ? `
+            <div class="dlg-head">
+              <div class="badge">${d.emoji} ${esc(d.module)}</div>
+              <h2>${esc(d.title)}</h2>
+              <div class="sub">${esc(d.subtitle)}</div>
+            </div>
+
+            <div class="toolbar">
+              <button class="tool" id="btnPlayAll">▶️ Escuchar todo</button>
+              <button class="tool" id="btnStop">⏹️ Detener</button>
+              <div class="sep"></div>
+              <button class="tool ${UI.hideText?'on':''}" id="btnHideText">👁 Ocultar texto</button>
+              <button class="tool ${UI.roleplay?'on':''}" id="btnRole">
+                🎭 Mi papel:
+                <select id="roleSelect">
+                  <option value="">— ninguno —</option>
+                  ${speakers.map(s=>`<option value="${esc(s)}" ${UI.roleplay===s?'selected':''}>${esc(s)}</option>`).join('')}
+                </select>
+              </button>
+              <div class="sep"></div>
+              <button class="tool ${done?'done':''}" id="btnDone">${done?'✓ Completado':'☐ Marcar completado'}</button>
+              <div class="sep"></div>
+              <button class="tool" data-tab="notas">📘 Notas</button>
+              <button class="tool" data-tab="frases">💬 Frases</button>
+              <button class="tool" data-tab="practica">✏️ Práctica</button>
+            </div>
+
+            <div id="tabContent">${renderTabContent(d)}</div>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderTabContent(d){
+  if(UI.tab === 'dialogo')  return renderDialogueTab(d);
+  if(UI.tab === 'notas')    return renderNotasTab(d);
+  if(UI.tab === 'frases')   return renderFrasesTab(d);
+  if(UI.tab === 'practica') return renderPracticaTab(d);
+  return '';
+}
+
+function renderDialogueTab(d){
+  const speakers = [...new Set(d.lines.map(l=>l.s))];
+  return `<div class="lines">${d.lines.map((l,i) => {
+    const isMine = UI.roleplay && l.s === UI.roleplay;
+    const color = speakerColor(l.s, speakers);
+    return `<div class="line" data-i="${i}">
+      <div class="avatar" style="background:${color}">${initials(l.s)}</div>
+      <div class="bubble" style="border-left:3px solid ${color}55">
+        <div class="speaker" style="color:${color}">${esc(l.s)}</div>
+        ${ isMine
+          ? `<div class="turn-hint">Tu turno — di esta línea en voz alta
+              <div class="text ${UI.hideText?'hidden':''}" style="margin-top:8px">${esc(l.t)}</div></div>`
+          : `<div class="text ${UI.hideText?'hidden':''}">${esc(l.t)}</div>` }
+        <div class="line-actions">
+          <button class="mini" data-say="${i}">🔊</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderNotasTab(d){
+  return `<div class="panel">
+    <h3><span class="dot"></span>Notas de idioma</h3>
+    ${d.notes.map((n,i)=>`<div class="note"><span class="n">${i+1}</span><span>${n}</span></div>`).join('')}
+  </div>`;
+}
+
+function renderFrasesTab(d){
+  return `<div class="panel">
+    <h3><span class="dot"></span>Frases clave</h3>
+    ${d.phrases.map((p,i)=>`
+      <div class="phrase">
+        <div>
+          <div class="en">${esc(p.en)}</div>
+          <div class="es">${esc(p.es)}</div>
+        </div>
+        <button class="say" data-p="${i}">🔊</button>
+      </div>`).join('')}
+    <div class="actions" style="margin-top:20px">
+      <button class="btn b1" id="btnPhraseQuiz">🎯 Quiz de estas frases</button>
+    </div>
+  </div>`;
+}
+
+function renderPracticaTab(d){
+  if(!UI.cloze || UI.clozeDlg !== d.id){
+    UI.cloze = makeCloze(d);
+    UI.clozeDlg = d.id;
+  }
+  const items = UI.cloze;
+  if(!items.length){
+    return `<div class="panel"><h3><span class="dot"></span>Práctica</h3>
+      <p style="color:var(--ink-2)">Este diálogo es muy corto. Prueba el quiz de frases.</p>
+      <div class="actions" style="margin-top:16px"><button class="btn b1" data-tab="frases">Ir a frases clave</button></div>
+    </div>`;
+  }
+  return `<div class="panel">
+    <h3><span class="dot"></span>Completa la palabra que falta</h3>
+    ${items.map((it,i)=>`
+      <div class="cloze-item">
+        <div class="who">${esc(it.speaker)}</div>
+        <div class="cloze-txt">${esc(it.before)}
+          <input type="text" data-i="${i}" autocomplete="off" spellcheck="false" placeholder="…">
+          ${esc(it.after)}</div>
+        <div class="fb" id="fb${i}"></div>
+      </div>`).join('')}
+    <div class="actions" style="margin-top:18px">
+      <button class="btn b1" id="btnCheck">✅ Verificar</button>
+      <button class="btn b2" id="btnShow">👁 Mostrar</button>
+      <button class="btn b2" id="btnNew">🔄 Nuevos</button>
+    </div>
+    <div id="clozeScore" style="margin-top:16px;font-weight:800;color:var(--blue)"></div>
+  </div>`;
+}
+
+function makeCloze(d){
+  const items = [];
+  const candidates = d.lines.filter(l => l.t.split(' ').length >= 6);
+  candidates.slice(0,5).forEach(l => {
+    const words = l.t.split(' ');
+    const opts = words.map((w,idx)=>({w,idx})).filter(o => o.idx>0 && o.w.replace(/[^A-Za-z']/g,'').length>=5);
+    if(!opts.length) return;
+    const pick = opts[Math.floor(Math.random()*opts.length)];
+    items.push({
+      speaker:l.s,
+      before:words.slice(0,pick.idx).join(' '),
+      after:words.slice(pick.idx+1).join(' '),
+      answer:pick.w.replace(/[^A-Za-z']/g,''),
+      full:l.t
+    });
+  });
+  return items;
+}
+
+/* ============================================================
+   10. QUIZ
+   ============================================================ */
+function renderQuiz(){
+  const z = UI.quiz;
+  if(z.index >= z.questions.length) return renderQuizResult();
+  const q = z.questions[z.index];
+  const pct = (z.index / z.questions.length) * 100;
+  return `<div class="quiz-card">
+    <div class="qmeta">
+      <span>Pregunta ${z.index+1} de ${z.questions.length}</span>
+      <span>Aciertos: ${z.score} ⭐</span>
+    </div>
+    <div class="qbar"><div style="width:${pct}%"></div></div>
+    <div class="qtext">${esc(q.q)}</div>
+    <div class="qsub">¿Qué significa esta expresión?</div>
+    <div class="opts">
+      ${q.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}<span class="mark"></span></button>`).join('')}
+    </div>
+    <div class="actions" style="margin-top:24px">
+      <button class="btn b2" id="btnExitQuiz">← Salir del quiz</button>
+      <button class="btn b1" id="btnNextQ" style="display:none">Siguiente →</button>
+    </div>
+  </div>`;
+}
+
+function renderQuizResult(){
+  const z = UI.quiz;
+  const pct = Math.round(z.score / z.questions.length * 100);
+  return `<div class="quiz-card" style="text-align:center;padding:44px 30px">
+    <div style="font-size:56px;font-weight:900;color:${pct>=70?'var(--ok)':'var(--gold-2)'};letter-spacing:-.04em">${pct}%</div>
+    <div style="font-size:18px;font-weight:800;margin:14px 0 8px;color:var(--navy)">${z.score} de ${z.questions.length} correctas</div>
+    <p style="color:var(--ink-2);font-size:14.5px;margin-bottom:24px">${pct>=70?'¡Excelente trabajo!':'Sigue practicando.'}</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn b1" id="btnRestartQuiz">🔄 Otro quiz</button>
+      <button class="btn b2" id="btnExitQuiz">← Volver al módulo</button>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   11. AUTH MODAL
+   ============================================================ */
+function openAuth(mode='login'){
+  UI.authMode = mode;
+  $('#authContent').innerHTML = mode === 'login' ? renderLoginForm() : renderRegisterForm();
+  $('#authModal').classList.add('show');
+  bindAuth();
+}
+
+function renderLoginForm(){
+  return `
+    <h2>Bienvenido de vuelta</h2>
+    <p class="modal-sub">Inicia sesión para continuar tu aprendizaje.</p>
+    <div id="authAlert"></div>
+    <form id="loginForm">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" name="email" required autocomplete="email" placeholder="tu@email.com">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" type="submit">Iniciar sesión</button>
+    </form>
+    <div class="modal-switch">
+      ¿No tienes cuenta? <a data-auth="register">Crear una gratis</a>
+    </div>
+  `;
+}
+
+function renderRegisterForm(){
+  return `
+    <h2>Crea tu cuenta</h2>
+    <p class="modal-sub">Accede al primer módulo de B1 gratis. Sin tarjeta.</p>
+    <div id="authAlert"></div>
+    <form id="registerForm">
+      <div class="field">
+        <label>Nombre completo</label>
+        <input type="text" name="name" required placeholder="María García" autocomplete="name">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="tu@email.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" name="password" required minlength="6" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+        <div class="hint">Al menos 6 caracteres.</div>
+      </div>
+      <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" type="submit">Crear cuenta gratis</button>
+    </form>
+    <div class="modal-switch">
+      ¿Ya tienes cuenta? <a data-auth="login">Inicia sesión</a>
+    </div>
+  `;
+}
+
+function bindAuth(){
+  const alertEl = $('#authAlert');
+  const showAlert = (msg, type='err') => {
+    alertEl.className = `alert ${type} show`;
+    alertEl.textContent = msg;
+  };
+
+  const loginForm = $('#loginForm');
+  if(loginForm) loginForm.onsubmit = e => {
+    e.preventDefault();
+    const fd = new FormData(loginForm);
+    try {
+      const user = store.login(fd.get('email'), fd.get('password'));
+      store.session = {email: user.email, at: Date.now()};
+      $('#authModal').classList.remove('show');
+      toast(`¡Bienvenido, ${user.name.split(' ')[0]}!`, 'ok');
+      UI.view = 'dashboard';
+      render();
+    } catch(err){ showAlert(err.message); }
+  };
+
+  const registerForm = $('#registerForm');
+  if(registerForm) registerForm.onsubmit = e => {
+    e.preventDefault();
+    const fd = new FormData(registerForm);
+    try {
+      const user = store.createUser({
+        name: fd.get('name').trim(),
+        email: fd.get('email').trim(),
+        password: fd.get('password')
+      });
+      // B1 módulo 1 gratis
+      user.levels.b1 = true;
+      store.updateUser(user.id, {levels: user.levels});
+      store.session = {email: user.email, at: Date.now()};
+      $('#authModal').classList.remove('show');
+      toast('¡Cuenta creada! Tienes acceso a B1 módulo 1.', 'ok');
+      UI.view = 'dashboard';
+      render();
+    } catch(err){ showAlert(err.message); }
+  };
+
+  $$('#authModal [data-auth]').forEach(el => {
+    el.onclick = () => openAuth(el.dataset.auth);
+  });
+}
+
+/* ============================================================
+   12. CHECKOUT MODAL
+   ============================================================ */
+function openCheckout(levelId){
+  const user = store.session ? store.findUser(store.session.email) : null;
+  if(!user){ openAuth('register'); return; }
+  const level = getLevel(levelId);
+  $('#checkoutContent').innerHTML = `
+    <h2>Inscripción · ${level.code} ${level.name}</h2>
+    <p class="modal-sub">Acceso inmediato y de por vida a todos los módulos de este nivel.</p>
+    <div style="background:var(--blue-50);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px">
+        <span>${level.modules} módulos · ${level.hours}</span>
+        <b>$${level.price}.00</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2);padding-top:8px;border-top:1px solid var(--line)">
+        <span>Acceso de por vida</span><span>Incluido</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Nombre en la tarjeta</label>
+      <input type="text" id="ccName" placeholder="Como aparece en la tarjeta" value="${esc(user.name)}">
+    </div>
+    <div class="field">
+      <label>Número de tarjeta</label>
+      <input type="text" id="ccNumber" placeholder="4242 4242 4242 4242" maxlength="19">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field">
+        <label>Vencimiento</label>
+        <input type="text" id="ccExp" placeholder="MM/AA" maxlength="5">
+      </div>
+      <div class="field">
+        <label>CVC</label>
+        <input type="text" id="ccCvc" placeholder="123" maxlength="4">
+      </div>
+    </div>
+    <button class="btn btn-gold btn-lg" style="width:100%;justify-content:center;margin-top:8px" id="btnPay">
+      Pagar $${level.price}.00 y desbloquear
+    </button>
+    <p style="font-size:11.5px;color:var(--ink-3);text-align:center;margin-top:14px;line-height:1.5">
+      Demo: ningún cargo real. Integra Stripe para producción.
+    </p>
+  `;
+  $('#checkoutModal').classList.add('show');
+
+  $('#btnPay').onclick = () => {
+    user.levels = user.levels || {};
+    user.levels[levelId] = true;
+    store.updateUser(user.id, {levels: user.levels, plan: 'premium'});
+    $('#checkoutModal').classList.remove('show');
+    toast(`¡${level.code} desbloqueado! Ya puedes empezar.`, 'ok');
+    UI.view = 'dashboard';
+    render();
+  };
+}
+
+/* ============================================================
+   13. VOZ
+   ============================================================ */
 let voiceCache = null;
 function pickVoice(){
   if(!('speechSynthesis' in window)) return null;
@@ -1647,535 +2133,264 @@ function pickVoice(){
            || vs.find(v=>/en-US/i.test(v.lang)) || vs[0];
   return voiceCache;
 }
-if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged = ()=>{ voiceCache = null; pickVoice(); }; }
+if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged = ()=>{ voiceCache=null; pickVoice(); }; }
 
 function speak(text, btn){
-  if(!('speechSynthesis' in window)){ alert('Tu navegador no soporta síntesis de voz.'); return; }
+  if(!('speechSynthesis' in window)){ toast('Tu navegador no soporta voz.', 'err'); return; }
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US'; u.rate = 0.9; u.pitch = 1;
+  u.lang='en-US'; u.rate=0.9;
   const v = pickVoice(); if(v) u.voice = v;
-  if(btn){
-    btn.classList.add('speaking');
-    u.onend = u.onerror = () => btn.classList.remove('speaking');
-  }
+  if(btn){ btn.classList.add('speaking'); u.onend = u.onerror = () => btn.classList.remove('speaking'); }
   speechSynthesis.speak(u);
 }
-
-let speakingAll = false;
 function speakAll(){
-  if(!('speechSynthesis' in window)){ alert('Tu navegador no soporta síntesis de voz.'); return; }
-  const d = getDlg(state.currentId); if(!d) return;
+  const d = getDialogue(UI.currentDialogue); if(!d) return;
+  if(!('speechSynthesis' in window)){ toast('Tu navegador no soporta voz.', 'err'); return; }
   speechSynthesis.cancel();
-  speakingAll = true;
-  d.lines.forEach((line, i) => {
+  d.lines.forEach((line,i) => {
     const u = new SpeechSynthesisUtterance(line.t);
-    u.lang = 'en-US'; u.rate = 0.88;
+    u.lang='en-US'; u.rate=0.88;
     const v = pickVoice(); if(v) u.voice = v;
     u.onstart = () => {
-      document.querySelectorAll('.line').forEach(el => el.classList.remove('speaking'));
+      $$('.line').forEach(el => el.classList.remove('speaking'));
       const el = document.querySelector(`.line[data-i="${i}"]`);
-      if(el){ el.classList.add('speaking'); el.scrollIntoView({block:'center', behavior:'smooth'}); }
+      if(el){ el.classList.add('speaking'); el.scrollIntoView({block:'center',behavior:'smooth'}); }
     };
-    u.onend = () => {
-      if(i === d.lines.length - 1){
-        speakingAll = false;
-        document.querySelectorAll('.line').forEach(el => el.classList.remove('speaking'));
-      }
-    };
+    u.onend = () => { if(i===d.lines.length-1) $$('.line').forEach(el=>el.classList.remove('speaking')); };
     speechSynthesis.speak(u);
   });
 }
 
-/* =========================================================
-   NAVEGACIÓN
-   ========================================================= */
-function renderNav(){
-  const q = ($('#searchInput').value || '').trim().toLowerCase();
-  let html = '';
-  DATA.forEach(unit => {
-    const items = unit.dialogues.filter(d =>
-      !q || d.title.toLowerCase().includes(q) || d.subtitle.toLowerCase().includes(q)
-        || d.id.includes(q) || d.lines.some(l => l.t.toLowerCase().includes(q))
-    );
-    if(!items.length) return;
-    html += `<div class="unit-title">${esc(unit.title)}</div>`;
-    items.forEach(d => {
-      const done = state.completed.includes(d.id);
-      html += `<button class="nav-item ${state.currentId===d.id?'active':''}" data-id="${d.id}">
-        <span class="nav-emoji">${d.emoji}</span>
-        <span class="nav-text"><b>${d.id.toUpperCase()}</b>${esc(d.title)}</span>
-        <span class="nav-check">${done?'✓':''}</span>
-      </button>`;
-    });
-  });
-  if(!html) html = `<div style="padding:30px 14px;text-align:center;color:#6B85AC;font-size:12.5px">Sin resultados</div>`;
-  $('#nav').innerHTML = html;
-}
-
-function updateProgress(){
-  const n = state.completed.length;
-  $('#progressText').textContent = `${n}/${TOTAL}`;
-  $('#progressFill').style.width = (n/TOTAL*100) + '%';
-}
-
-/* =========================================================
-   RENDER
-   ========================================================= */
-function render(){
-  const content = $('#content');
-  if(state.quiz){ content.innerHTML = renderQuiz(); bindQuiz(); return; }
-
-  const d = getDlg(state.currentId);
-  if(!d){ content.innerHTML = welcome(); return; }
-
-  $('#topTitle').innerHTML = `${d.emoji} <b>${esc(d.title)}</b> <span>· ${esc(d.subtitle)}</span>`;
-
-  let html = '';
-  if(state.tab === 'dialogo')  html = renderDialogue(d);
-  if(state.tab === 'notas')    html = renderNotes(d);
-  if(state.tab === 'frases')   html = renderPhrases(d);
-  if(state.tab === 'practica') html = renderPractice(d);
-  content.innerHTML = html;
-  content.scrollTop = 0;
-
-  if(state.tab === 'practica') bindPractice();
-  bindDialogue(d);
-}
-
-function welcome(){
-  return `<div class="wrap"><div class="empty">
-    <div class="big">💬</div>
-    <h3>Bienvenido a tu guía de conversación</h3>
-    <p>Elige un diálogo en la barra lateral para comenzar. Podrás escucharlo, practicar tu papel,
-    revisar las notas de idioma y hacer ejercicios interactivos.</p>
-    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px">
-      <button class="btn b1" onclick="openDialogue('d1-1')">🚀 Empezar por el diálogo 1-1</button>
-      <button class="btn b2" onclick="startQuiz()">🎯 Hacer un quiz rápido</button>
-    </div>
-  </div></div>`;
-}
-
-/* ---------- DIÁLOGO ---------- */
-function renderDialogue(d){
-  const speakers = [...new Set(d.lines.map(l => l.s))];
-  const done = state.completed.includes(d.id);
-
-  const chips = speakers.map(s =>
-    `<span class="chip">
-      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;
-        background:${speakerColor(s,speakers)};margin-right:8px;
-        box-shadow:0 0 8px ${speakerColor(s,speakers)}88"></span>${esc(s)}
-    </span>`).join('');
-
-  const linesHtml = d.lines.map((l, i) => {
-    const isMine = state.roleplay && l.s === state.roleplay;
-    const color = speakerColor(l.s, speakers);
-    return `<div class="line" data-i="${i}">
-      <div class="avatar" style="background:${color}">${initials(l.s)}</div>
-      <div class="bubble" style="border-left:3px solid ${color}55">
-        <div class="speaker" style="color:${color}">${esc(l.s)}</div>
-        ${ isMine
-          ? `<div class="turn-hint">Tu turno — di esta línea en voz alta
-              <div class="text ${state.hideText?'hidden':''}" style="margin-top:8px">${esc(l.t)}</div></div>`
-          : `<div class="text ${state.hideText?'hidden':''}">${esc(l.t)}</div>` }
-        <div class="line-actions">
-          <button class="mini" data-say="${i}" title="Escuchar">🔊</button>
-          ${ state.hideText ? `<button class="mini" data-toggle-text title="Mostrar texto">👁</button>` : '' }
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  return `<div class="wrap">
-    <div class="dlg-head">
-      <div class="badge">Diálogo ${d.id.replace('d','').toUpperCase()}</div>
-      <h2>${esc(d.title)}</h2>
-      <div class="sub">${esc(d.subtitle)}</div>
-      <div class="chips">${chips}</div>
-    </div>
-
-    <div class="toolbar">
-      <button class="tool" id="btnPlayAll">▶️ Escuchar todo</button>
-      <button class="tool" id="btnStop">⏹️ Detener</button>
-      <div class="sep"></div>
-      <button class="tool ${state.hideText?'on':''}" id="btnHideText">👁 Ocultar texto</button>
-      <button class="tool ${state.roleplay?'on':''}" id="btnRole">
-        🎭 Mi papel:
-        <select id="roleSelect">
-          <option value="">— ninguno —</option>
-          ${speakers.map(s=>`<option value="${esc(s)}" ${state.roleplay===s?'selected':''}>${esc(s)}</option>`).join('')}
-        </select>
-      </button>
-      <div class="sep"></div>
-      <button class="tool ${done?'done':''}" id="btnDone">${done?'✓ Completado':'☐ Marcar completado'}</button>
-      <div class="sep"></div>
-      <button class="tool" onclick="goTab('notas')">📘 Notas</button>
-      <button class="tool" onclick="goTab('practica')">✏️ Practicar</button>
-    </div>
-
-    <div class="lines">${linesHtml}</div>
-  </div>`;
-}
-
-function bindDialogue(d){
-  const play = $('#btnPlayAll');
-  if(play) play.onclick = speakAll;
-  const stop = $('#btnStop');
-  if(stop) stop.onclick = () => { speechSynthesis.cancel(); speakingAll=false;
-    document.querySelectorAll('.line').forEach(el=>el.classList.remove('speaking')); };
-  const hide = $('#btnHideText');
-  if(hide) hide.onclick = () => { state.hideText = !state.hideText; render(); };
-  const role = $('#roleSelect');
-  if(role) role.onchange = e => { state.roleplay = e.target.value || null; render(); };
-  const done = $('#btnDone');
-  if(done) done.onclick = () => {
-    const i = state.completed.indexOf(d.id);
-    if(i>=0) state.completed.splice(i,1); else state.completed.push(d.id);
-    localStorage.setItem('ec_completed', JSON.stringify(state.completed));
-    updateProgress(); renderNav(); render();
-  };
-  document.querySelectorAll('[data-say]').forEach(b => {
-    b.onclick = () => { const l = d.lines[+b.dataset.say]; speak(l.t, b); };
-  });
-  document.querySelectorAll('[data-toggle-text]').forEach(b => {
-    b.onclick = () => { state.hideText = false; render(); };
-  });
-  document.querySelectorAll('.text').forEach(t => {
-    t.onclick = () => {
-      const lineEl = t.closest('.line');
-      const l = d.lines[+lineEl.dataset.i];
-      speak(l.t);
-    };
-  });
-}
-
-/* ---------- NOTAS ---------- */
-function renderNotes(d){
-  return `<div class="wrap">
-    <div class="panel">
-      <h3><span class="dot"></span>Notas de idioma · ${esc(d.title)}</h3>
-      ${d.notes.map((n,i)=>`<div class="note"><span class="n">${i+1}</span><span>${n}</span></div>`).join('')}
-    </div>
-    <div class="actions">
-      <button class="btn b1" onclick="goTab('frases')">Ver frases clave →</button>
-      <button class="btn b2" onclick="goTab('practica')">Ir a practicar</button>
-    </div>
-  </div>`;
-}
-
-/* ---------- FRASES ---------- */
-function renderPhrases(d){
-  return `<div class="wrap">
-    <div class="panel">
-      <h3><span class="dot"></span>Frases clave · ${esc(d.title)}</h3>
-      ${d.phrases.map((p,i)=>`
-        <div class="phrase">
-          <div>
-            <div class="en">${esc(p.en)}</div>
-            <div class="es">${esc(p.es)}</div>
-          </div>
-          <button class="say" data-p="${i}">🔊</button>
-        </div>`).join('')}
-    </div>
-    <div class="actions">
-      <button class="btn b1" id="btnPhraseQuiz">🎯 Quiz de estas frases</button>
-      <button class="btn b2" onclick="goTab('practica')">✏️ Completar oraciones</button>
-    </div>
-  </div>`;
-}
-
-/* ---------- PRÁCTICA (CLOZE) ---------- */
-function makeCloze(d){
-  const items = [];
-  const candidates = d.lines.filter(l => l.t.split(' ').length >= 6);
-  shuffle(candidates).slice(0, 6).forEach(l => {
-    const words = l.t.split(' ');
-    const opts = words.map((w,idx)=>({w,idx}))
-      .filter(o => o.idx > 0 && o.w.replace(/[^A-Za-z']/g,'').length >= 5);
-    if(!opts.length) return;
-    const pick = opts[Math.floor(Math.random()*opts.length)];
-    items.push({
-      speaker: l.s,
-      before: words.slice(0, pick.idx).join(' '),
-      after: words.slice(pick.idx+1).join(' '),
-      answer: pick.w.replace(/[^A-Za-z']/g,''),
-      full: l.t
-    });
-  });
-  return items;
-}
-
-function renderPractice(d){
-  if(state.cloze === null || state.clozeDlg !== d.id){
-    state.cloze = makeCloze(d);
-    state.clozeDlg = d.id;
+/* ============================================================
+   14. EVENTOS GLOBALES
+   ============================================================ */
+document.addEventListener('click', e => {
+  // navegación
+  const nav = e.target.closest('[data-nav]');
+  if(nav){
+    const dest = nav.dataset.nav;
+    if(dest === 'landing'){ UI.view='landing'; render(); }
+    if(dest === 'dashboard'){ UI.view='dashboard'; render(); }
+    if(dest === 'pricing'){ UI.view='pricing'; render(); }
+    return;
   }
-  const items = state.cloze;
-  if(!items.length){
-    return `<div class="wrap"><div class="panel"><h3><span class="dot"></span>Práctica</h3>
-      <p style="color:var(--ink-soft);font-size:14px">Este diálogo es muy corto para generar ejercicios. Prueba el quiz de frases.</p>
-      <div class="actions"><button class="btn b1" onclick="goTab('frases')">Ir a frases clave</button></div></div></div>`;
+  // scroll interno
+  const scroll = e.target.closest('[data-scroll]');
+  if(scroll){
+    const target = scroll.dataset.scroll;
+    if(target === 'levels'){
+      if(UI.view !== 'landing'){ UI.view='landing'; render(); setTimeout(()=>{
+        document.getElementById('levels')?.scrollIntoView({behavior:'smooth'});
+      },100); }
+      else document.getElementById('levels')?.scrollIntoView({behavior:'smooth'});
+    }
+    if(target === 'pricing-top'){
+      UI.view='pricing'; render();
+    }
+    return;
   }
-  const blocks = items.map((it,i)=>`
-    <div class="cloze-item">
-      <div class="who">${esc(it.speaker)}</div>
-      <div class="cloze-txt">${esc(it.before)}
-        <input type="text" data-i="${i}" autocomplete="off" spellcheck="false" placeholder="…">
-        ${esc(it.after)}</div>
-      <div class="fb" id="fb${i}"></div>
-    </div>`).join('');
-
-  return `<div class="wrap">
-    <div class="panel">
-      <h3><span class="dot"></span>Completa la palabra que falta</h3>
-      <p style="font-size:13.6px;color:var(--ink-soft);line-height:1.7;margin-bottom:18px">
-        Escribe la palabra exacta que falta en cada oración. Pulsa <b>Enter</b> o el botón <b>Verificar</b> al terminar.
-      </p>
-      ${blocks}
-      <div class="actions" style="margin-top:20px">
-        <button class="btn b1" id="btnCheck">✅ Verificar</button>
-        <button class="btn b2" id="btnShow">👁 Mostrar respuestas</button>
-        <button class="btn b2" id="btnNew">🔄 Nuevos ejercicios</button>
-      </div>
-      <div id="clozeScore" style="margin-top:18px;font-weight:800;font-size:15px;color:var(--blue)"></div>
-    </div>
-  </div>`;
-}
-
-function bindPractice(){
-  const d = getDlg(state.currentId);
-  const inputs = [...document.querySelectorAll('.cloze-txt input')];
-  if(!inputs.length) return;
-  const items = state.cloze;
-
-  const check = () => {
-    let ok = 0;
-    inputs.forEach(inp => {
-      const i = +inp.dataset.i;
-      const val = inp.value.trim().toLowerCase().replace(/[^a-z']/g,'');
-      const ans = items[i].answer.toLowerCase();
-      const fb = document.getElementById('fb'+i);
-      inp.classList.remove('ok','bad');
-      if(val === ans){
-        inp.classList.add('ok'); ok++;
-        fb.className = 'fb ok show'; fb.textContent = '✓ ¡Correcto!';
-      } else {
-        inp.classList.add('bad');
-        fb.className = 'fb bad show';
-        fb.textContent = `✗ Respuesta correcta: "${items[i].answer}"`;
-      }
-    });
-    const score = document.getElementById('clozeScore');
-    score.textContent = `Resultado: ${ok} / ${items.length} correctas ${ok===items.length?'🎉 ¡Perfecto!':''}`;
-  };
-
-  inputs.forEach(inp => inp.addEventListener('keydown', e => { if(e.key === 'Enter') check(); }));
-  document.getElementById('btnCheck').onclick = check;
-  document.getElementById('btnShow').onclick = () => {
-    inputs.forEach(inp => {
+  // auth
+  const auth = e.target.closest('[data-auth]');
+  if(auth){ openAuth(auth.dataset.auth); return; }
+  // logout
+  if(e.target.closest('[data-logout]')){
+    store.session = null;
+    toast('Sesión cerrada.', 'ok');
+    UI.view = 'landing';
+    render();
+    return;
+  }
+  // dashboard tabs
+  const dashTab = e.target.closest('.dash-tab');
+  if(dashTab){
+    $$('.dash-tab').forEach(t=>t.classList.remove('active'));
+    dashTab.classList.add('active');
+    const user = store.findUser(store.session.email);
+    $('#dashBody').innerHTML = dashTab.dataset.dash === 'inscripciones'
+      ? renderDashInscripciones(user)
+      : renderDashLevels(user);
+    return;
+  }
+  // abrir curso
+  const openBtn = e.target.closest('[data-open]');
+  if(openBtn){
+    UI.currentDialogue = openBtn.dataset.open;
+    UI.view = 'course';
+    UI.tab = 'dialogo';
+    UI.quiz = null;
+    UI.cloze = null;
+    render();
+    return;
+  }
+  // comprar
+  const buy = e.target.closest('[data-buy]');
+  if(buy){ openCheckout(buy.dataset.buy); return; }
+  // cerrar modales
+  if(e.target.closest('[data-close]') || e.target.classList.contains('modal-backdrop')){
+    $$('.modal-backdrop').forEach(m => m.classList.remove('show'));
+  }
+  // tools del course view
+  const tool = e.target.closest('[data-tab]');
+  if(tool){
+    UI.tab = tool.dataset.tab;
+    UI.cloze = null;
+    render();
+    return;
+  }
+  // tab content interactions
+  if(e.target.id === 'btnPlayAll'){ speakAll(); return; }
+  if(e.target.id === 'btnStop'){ speechSynthesis.cancel(); $$('.line').forEach(el=>el.classList.remove('speaking')); return; }
+  if(e.target.id === 'btnHideText'){ UI.hideText = !UI.hideText; render(); return; }
+  if(e.target.id === 'btnDone'){
+    const user = store.findUser(store.session.email);
+    const prog = store.getUserProgress(user.id);
+    const i = prog.completed.indexOf(UI.currentDialogue);
+    if(i>=0) prog.completed.splice(i,1); else prog.completed.push(UI.currentDialogue);
+    store.saveUserProgress(user.id, prog);
+    toast(i>=0?'Módulo desmarcado.':'¡Módulo completado! 🎉','ok');
+    render();
+    return;
+  }
+  if(e.target.id === 'btnPhraseQuiz'){
+    const d = getDialogue(UI.currentDialogue);
+    startQuiz(d.phrases);
+    return;
+  }
+  if(e.target.id === 'btnCheck'){ checkCloze(); return; }
+  if(e.target.id === 'btnShow'){
+    const items = UI.cloze;
+    $$('.cloze-txt input').forEach(inp => {
       const i = +inp.dataset.i;
       inp.value = items[i].answer;
-      inp.classList.add('ok'); inp.classList.remove('bad');
+      inp.classList.remove('bad'); inp.classList.add('ok');
       const fb = document.getElementById('fb'+i);
       fb.className = 'fb ok show'; fb.textContent = `→ ${items[i].full}`;
     });
-    document.getElementById('clozeScore').textContent = 'Respuestas mostradas. ¡Ahora inténtalo de nuevo sin mirar!';
-  };
-  document.getElementById('btnNew').onclick = () => {
-    state.cloze = makeCloze(d);
-    render();
-  };
-}
-
-/* =========================================================
-   QUIZ
-   ========================================================= */
-function buildQuestions(phrases, poolPhrases, n){
-  const chosen = shuffle(phrases).slice(0, Math.min(n, phrases.length));
-  return chosen.map(p => {
-    const distractors = shuffle(poolPhrases.filter(x => x.es !== p.es))
-      .slice(0,3).map(x => x.es);
-    while(distractors.length < 3) distractors.push('—');
-    return { q: p.en, options: shuffle([p.es, ...distractors]), answer: p.es };
-  });
-}
-
-function startQuiz(dialogueId){
-  let questions;
-  if(dialogueId){
-    const d = getDlg(dialogueId);
-    const pool = ALL_DIALOGUES.flatMap(x => x.phrases);
-    questions = buildQuestions(d.phrases, pool, d.phrases.length);
-  } else {
-    const pool = ALL_DIALOGUES.flatMap(x => x.phrases);
-    questions = buildQuestions(pool, pool, 10);
-  }
-  state.quiz = { questions, index: 0, score: 0, answered: false };
-  closeSidebar();
-  render();
-}
-
-function renderQuiz(){
-  const z = state.quiz;
-  if(z.index >= z.questions.length) return renderQuizResult();
-  const q = z.questions[z.index];
-  const pct = (z.index / z.questions.length) * 100;
-
-  return `<div class="wrap">
-    <div class="quiz-card">
-      <div class="qmeta">
-        <span>Pregunta ${z.index+1} de ${z.questions.length}</span>
-        <span>Aciertos: ${z.score} ⭐</span>
-      </div>
-      <div class="qbar"><div style="width:${pct}%"></div></div>
-      <div class="qtext">${esc(q.q)}</div>
-      <div class="qsub">¿Qué significa esta expresión en español?</div>
-      <div class="opts">
-        ${q.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}<span class="mark"></span></button>`).join('')}
-      </div>
-      <div class="actions" style="margin-top:24px">
-        <button class="btn b2" id="btnExitQuiz">← Salir del quiz</button>
-        <button class="btn b1" id="btnNextQ" style="display:none">Siguiente →</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function bindQuiz(){
-  const z = state.quiz;
-  if(!z) return;
-  document.getElementById('btnExitQuiz').onclick = () => { state.quiz = null; render(); };
-
-  if(z.index >= z.questions.length){
-    document.getElementById('btnRestart').onclick = () => startQuiz();
-    document.getElementById('btnBackHome').onclick = () => { state.quiz = null; render(); };
     return;
   }
-
-  const q = z.questions[z.index];
-  const btns = [...document.querySelectorAll('.opt')];
-  const nextBtn = document.getElementById('btnNextQ');
-
-  btns.forEach(b => {
-    b.onclick = () => {
-      if(z.answered) return;
-      z.answered = true;
-      const chosen = q.options[+b.dataset.i];
-      const correct = chosen === q.answer;
-      if(correct) z.score++;
-      btns.forEach((bb, i) => {
-        bb.disabled = true;
-        if(q.options[i] === q.answer){
-          bb.classList.add('correct');
-          bb.querySelector('.mark').textContent = '✓';
-        } else if(bb === b){
-          bb.classList.add('wrong');
-          bb.querySelector('.mark').textContent = '✗';
-        }
-      });
-      nextBtn.style.display = 'inline-block';
-      nextBtn.textContent = (z.index === z.questions.length-1) ? 'Ver resultado →' : 'Siguiente →';
-    };
-  });
-
-  nextBtn.onclick = () => {
-    z.index++;
-    z.answered = false;
+  if(e.target.id === 'btnNew'){
+    const d = getDialogue(UI.currentDialogue);
+    UI.cloze = makeCloze(d);
     render();
-  };
-}
-
-function renderQuizResult(){
-  const z = state.quiz;
-  const total = z.questions.length;
-  const pct = Math.round(z.score / total * 100);
-  const msg = pct >= 90 ? '🏆 ¡Excelente! Dominas estas expresiones.'
-            : pct >= 70 ? '👏 ¡Muy bien! Solo repasa un par de detalles.'
-            : pct >= 50 ? '💪 Buen intento. Vuelve a las frases clave.'
-            : '📖 Repasa los diálogos y las frases clave, ¡y vuelve a intentarlo!';
-  const color = pct >= 70 ? 'var(--success)' : pct >= 50 ? 'var(--gold-600)' : 'var(--danger)';
-
-  return `<div class="wrap"><div class="quiz-card" style="text-align:center;padding:48px 30px">
-    <div style="font-size:64px;font-weight:800;color:${color};line-height:1;letter-spacing:-.04em">${pct}%</div>
-    <div style="font-size:20px;font-weight:700;margin:16px 0 8px;color:var(--navy-800)">${z.score} de ${total} correctas</div>
-    <p style="color:var(--ink-soft);font-size:14.5px;line-height:1.7;max-width:440px;margin:0 auto 28px">${msg}</p>
-    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <button class="btn b1" id="btnRestart">🔄 Otro quiz</button>
-      <button class="btn b2" id="btnBackHome">← Volver a los diálogos</button>
-    </div>
-  </div></div>`;
-}
-
-/* =========================================================
-   INTERACCIONES
-   ========================================================= */
-function openDialogue(id){
-  state.currentId = id;
-  state.tab = 'dialogo';
-  state.roleplay = null;
-  state.hideText = false;
-  state.cloze = null;
-  state.clozeDlg = null;
-  state.quiz = null;
-  speechSynthesis.cancel();
-  document.querySelectorAll('.tab').forEach(t =>
-    t.classList.toggle('active', t.dataset.tab === 'dialogo'));
-  renderNav();
-  render();
-  closeSidebar();
-}
-
-function goTab(t){
-  state.tab = t;
-  state.cloze = null;
-  state.clozeDlg = null;
-  document.querySelectorAll('.tab').forEach(x =>
-    x.classList.toggle('active', x.dataset.tab === t));
-  render();
-}
-
-function closeSidebar(){
-  $('#sidebar').classList.remove('open');
-  $('#backdrop').classList.remove('show');
-}
-
-/* Eventos globales */
-$('#nav').addEventListener('click', e => {
-  const btn = e.target.closest('.nav-item');
-  if(btn) openDialogue(btn.dataset.id);
-});
-
-$('#searchInput').addEventListener('input', renderNav);
-
-$('#tabs').addEventListener('click', e => {
-  const t = e.target.closest('.tab');
-  if(t) goTab(t.dataset.tab);
-});
-
-$('#quizBtn').onclick = () => startQuiz();
-
-$('#menuBtn').onclick = () => {
-  $('#sidebar').classList.toggle('open');
-  $('#backdrop').classList.toggle('show');
-};
-$('#backdrop').onclick = closeSidebar;
-
-document.addEventListener('click', e => {
+    return;
+  }
+  // quiz
+  const opt = e.target.closest('.opt');
+  if(opt && UI.quiz && !UI.quiz.answered){ answerQuiz(opt); return; }
+  if(e.target.id === 'btnNextQ'){
+    UI.quiz.index++;
+    UI.quiz.answered = false;
+    render();
+    return;
+  }
+  if(e.target.id === 'btnExitQuiz'){ UI.quiz = null; render(); return; }
+  if(e.target.id === 'btnRestartQuiz'){
+    const d = getDialogue(UI.currentDialogue);
+    startQuiz(d.phrases);
+    return;
+  }
+  // say buttons
   const say = e.target.closest('.say');
   if(say){
-    const d = getDlg(state.currentId);
-    if(d) speak(d.phrases[+say.dataset.p].en, say);
+    const d = getDialogue(UI.currentDialogue);
+    speak(d.phrases[+say.dataset.p].en, say);
+    return;
   }
-  if(e.target.id === 'btnPhraseQuiz'){
-    startQuiz(state.currentId);
+  const mini = e.target.closest('[data-say]');
+  if(mini){
+    const d = getDialogue(UI.currentDialogue);
+    speak(d.lines[+mini.dataset.say].t, mini);
+    return;
+  }
+  // text click
+  const text = e.target.closest('.text');
+  if(text && text.closest('.line')){
+    const d = getDialogue(UI.currentDialogue);
+    const i = +text.closest('.line').dataset.i;
+    speak(d.lines[i].t);
   }
 });
 
-/* Inicio */
-renderNav();
-updateProgress();
-render();
+document.addEventListener('change', e => {
+  if(e.target.id === 'roleSelect'){
+    UI.roleplay = e.target.value || null;
+    render();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    $$('.modal-backdrop').forEach(m => m.classList.remove('show'));
+  }
+  if(e.key === 'Enter' && e.target.matches('.cloze-txt input')){
+    checkCloze();
+  }
+});
+
+/* Cloze check */
+function checkCloze(){
+  const items = UI.cloze; if(!items) return;
+  let ok = 0;
+  $$('.cloze-txt input').forEach(inp => {
+    const i = +inp.dataset.i;
+    const val = inp.value.trim().toLowerCase().replace(/[^a-z']/g,'');
+    const ans = items[i].answer.toLowerCase();
+    const fb = document.getElementById('fb'+i);
+    inp.classList.remove('ok','bad');
+    if(val === ans){ inp.classList.add('ok'); ok++; fb.className='fb ok show'; fb.textContent='✓ ¡Correcto!'; }
+    else { inp.classList.add('bad'); fb.className='fb bad show'; fb.textContent=`✗ Respuesta: "${items[i].answer}"`; }
+  });
+  $('#clozeScore').textContent = `Resultado: ${ok} / ${items.length} correctas ${ok===items.length?'🎉':''}`;
+}
+
+/* Quiz */
+function startQuiz(phrases){
+  const all = DIALOGUES.flatMap(d => d.phrases);
+  const questions = shuffle(phrases).slice(0, Math.min(5, phrases.length)).map(p => {
+    const distractors = shuffle(all.filter(x => x.es !== p.es)).slice(0,3).map(x => x.es);
+    return { q: p.en, options: shuffle([p.es, ...distractors]), answer: p.es };
+  });
+  UI.quiz = { questions, index:0, score:0, answered:false };
+  render();
+}
+
+function answerQuiz(btn){
+  const z = UI.quiz; if(z.answered) return;
+  z.answered = true;
+  const q = z.questions[z.index];
+  const chosen = q.options[+btn.dataset.i];
+  const correct = chosen === q.answer;
+  if(correct) z.score++;
+  $$('.opt').forEach((b,i) => {
+    b.disabled = true;
+    if(q.options[i] === q.answer){ b.classList.add('correct'); b.querySelector('.mark').textContent='✓'; }
+    else if(b===btn){ b.classList.add('wrong'); b.querySelector('.mark').textContent='✗'; }
+  });
+  const next = $('#btnNextQ');
+  if(next){
+    next.style.display='inline-block';
+    next.textContent = z.index === z.questions.length-1 ? 'Ver resultado →' : 'Siguiente →';
+  }
+}
+
+/* ============================================================
+   15. INIT
+   ============================================================ */
+(function init(){
+  // Registrar pricing cards en landing y pricing view después del render
+  const origRender = render;
+  render = function(){
+    origRender();
+    injectPricingCards();
+    // Si el usuario está logueado y la vista es dashboard, renderiza dashBody
+    const user = store.session ? store.findUser(store.session.email) : null;
+    if(user && UI.view === 'dashboard' && $('#dashBody') && !$('#dashBody').innerHTML){
+      $('#dashBody').innerHTML = renderDashLevels(user);
+    }
+  };
+  render();
+})();
 </script>
 </body>
 </html>
