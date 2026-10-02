@@ -1313,7 +1313,7 @@ const UI = {
 
 /* ============================================================
    4. ROUTER / RENDER
-   ============================================================ */
+   ============================================================ 
 function render(){
   const app = $('#app');
   const user = store.session ? store.findUser(store.session.email) : null;
@@ -1325,6 +1325,31 @@ function render(){
   else if(UI.view === 'course')    app.innerHTML = renderCourse(user);
   else if(UI.view === 'pricing')   app.innerHTML = renderPricing(user);
 
+  window.scrollTo({top:0,behavior:'instant'});
+}
+*/
+  function render(){
+  const app = $('#app');
+  const user = store.session ? store.findUser(store.session.email) : null;
+
+  if(!user && UI.view !== 'landing' && UI.view !== 'pricing') UI.view = 'landing';
+
+  if(UI.view === 'landing')        app.innerHTML = renderLanding();
+  else if(UI.view === 'dashboard') app.innerHTML = renderDashboard(user);
+  else if(UI.view === 'course')    app.innerHTML = renderCourse(user);
+  else if(UI.view === 'pricing')   app.innerHTML = renderPricing(user);
+  else                             app.innerHTML = renderLanding();
+
+  // Post-render: inyectar pricing cards donde exista #pricing
+  injectPricingCards();
+
+  // Post-render: rellenar dashBody si estamos en dashboard
+  if(user && UI.view === 'dashboard'){
+    const body = $('#dashBody');
+    if(body && !body.innerHTML.trim()){
+      body.innerHTML = renderDashLevels(user);
+    }
+  }
   window.scrollTo({top:0,behavior:'instant'});
 }
 
