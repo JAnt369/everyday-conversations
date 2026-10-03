@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23001B41'/%3E%3Ccircle cx='50' cy='50' r='16' fill='%230072CE'/%3E%3Ccircle cx='74' cy='74' r='9' fill='%23FFB81C'/%3E%3C/svg%3E">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -2398,6 +2399,53 @@ function answerQuiz(btn){
     next.textContent = z.index === z.questions.length-1 ? 'Ver resultado →' : 'Siguiente →';
   }
 }
+/* ============================================================
+   14.b FOOTER
+   ============================================================ */
+function renderFooter(){
+  const year = new Date().getFullYear();
+  return `
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
+          <div class="logo-icon" style="width:36px;height:36px;font-size:17px">🎓</div>
+          <div>
+            <div style="color:#fff;font-weight:800;font-size:14px">TOEFL ITP Academy</div>
+            <div style="font-size:11px;color:#7A93B8">Everyday Conversations</div>
+          </div>
+        </div>
+        <p style="font-size:13px;line-height:1.7;color:#93A8C7;max-width:320px">
+          Plataforma de práctica conversacional alineada al Marco Común Europeo (B1–C2)
+          y a los estándares del TOEFL ITP.
+        </p>
+      </div>
+      <div>
+        <h4>Plataforma</h4>
+        <a href="#" onclick="event.preventDefault();UI.view='landing';render();">Inicio</a>
+        <a href="#" onclick="event.preventDefault();UI.view='pricing';render();">Precios</a>
+        <a href="#" onclick="event.preventDefault();document.getElementById('levels')?.scrollIntoView({behavior:'smooth'});">Niveles</a>
+      </div>
+      <div>
+        <h4>Recursos</h4>
+        <a href="#" onclick="event.preventDefault();">Guía de estudio</a>
+        <a href="#" onclick="event.preventDefault();">Preguntas frecuentes</a>
+        <a href="#" onclick="event.preventDefault();">Contacto</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#" onclick="event.preventDefault();">Términos</a>
+        <a href="#" onclick="event.preventDefault();">Privacidad</a>
+        <a href="#" onclick="event.preventDefault();">Cookies</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© ${year} TOEFL ITP Academy. Todos los derechos reservados.</span>
+      <span>Hecho con 💙 para estudiantes de inglés</span>
+    </div>
+  </footer>`;
+}
+
 /* ============================================================
    15. INIT
    ============================================================ 
