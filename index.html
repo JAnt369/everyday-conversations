@@ -483,7 +483,7 @@ a{color:inherit;text-decoration:none}
 .course-subtitle{font-size:13.5px;color:var(--ink-2);margin-top:4px}
 .course-layout{display:grid;grid-template-columns:280px 1fr;gap:26px}
 @media(max-width:900px){.course-layout{grid-template-columns:1fr}}
-.course-side{
+{
   background:#fff;border:1px solid var(--line);border-radius:16px;
   padding:18px;position:sticky;top:96px;height:fit-content;
 }
@@ -688,6 +688,113 @@ a{color:inherit;text-decoration:none}
     flex-direction:column;padding:12px;
   }
 }
+  /* ============================================================
+   RESPONSIVE · DRAWER DE MÓDULOS EN MÓVIL
+   ============================================================ */
+
+/* Botón flotante: solo aparece en móvil */
+.course-side-toggle{
+  display:none;
+  position:fixed;bottom:22px;left:22px;z-index:80;
+  background:linear-gradient(135deg,var(--blue),var(--blue-2));
+  color:#fff;border-radius:50%;width:56px;height:56px;
+  font-size:22px;align-items:center;justify-content:center;
+  box-shadow:0 8px 24px rgba(0,114,206,.45),inset 0 1px 0 rgba(255,255,255,.2);
+  transition:.2s var(--t);
+  border:none;cursor:pointer;
+}
+.course-side-toggle:hover{transform:scale(1.06)}
+.course-side-toggle:active{transform:scale(.98)}
+
+/* Backdrop detrás del drawer */
+.course-side-backdrop{
+  display:none;
+  position:fixed;inset:0;z-index:75;
+  background:rgba(0,17,46,.55);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+.course-side-backdrop.show{display:block;animation:fadeBack .25s ease}
+@keyframes fadeBack{from{opacity:0}to{opacity:1}}
+
+/* Cabecera del sidebar con botón cerrar */
+.course-side-head{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;
+}
+.course-side-close{
+  display:none;width:30px;height:30px;border-radius:9px;
+  background:var(--line-2);color:var(--ink-2);font-size:16px;
+  align-items:center;justify-content:center;
+  border:none;cursor:pointer;transition:.15s;
+}
+.course-side-close:hover{background:var(--err-bg);color:var(--err)}
+
+/* Ajustes adicionales del sidebar (por si acaso) */
+.course-side{
+  max-height:calc(100vh - 120px);
+  overflow-y:auto;
+}
+.course-side::-webkit-scrollbar{width:6px}
+.course-side::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+
+/* ============ MÓVIL ============ */
+@media(max-width:900px){
+  .course-layout{grid-template-columns:1fr;gap:0}
+
+  /* Sidebar como drawer deslizante */
+  .course-side{
+    position:fixed;top:0;left:0;bottom:0;
+    width:min(320px,86vw);
+    border-radius:0;border:none;border-right:1px solid var(--line);
+    padding:22px 18px;
+    z-index:80;
+    max-height:100vh;
+    transform:translateX(-100%);
+    transition:transform .3s var(--t);
+    box-shadow:6px 0 32px rgba(0,17,46,.15);
+    overflow-y:auto;
+    background:#fff;
+  }
+  .course-side.open{transform:translateX(0)}
+  .course-side-toggle{display:flex}
+  .course-side-close{display:flex}
+
+  /* Ajustes de espaciado */
+  .course-shell{padding:20px 16px 100px}
+  .course-header{margin-bottom:18px}
+  .dlg-head{padding:22px 20px;border-radius:18px}
+  .dlg-head h2{font-size:20px}
+  .dlg-head .sub{font-size:12.5px}
+  .toolbar{padding:11px 13px;gap:7px}
+  .tool{padding:8px 12px;font-size:12px}
+  .sep{display:none}
+
+  .bubble{padding:12px 14px}
+  .text{font-size:14.6px;line-height:1.6}
+  .avatar{width:36px;height:36px;flex-basis:36px;font-size:12px;border-radius:11px}
+
+  .panel{padding:18px 18px}
+  .panel h3{font-size:15px}
+  .note{font-size:13.4px}
+  .phrase{padding:12px 13px}
+  .phrase .en{font-size:14px}
+  .phrase .es{font-size:12.5px}
+
+  .quiz-card{padding:22px 20px;border-radius:18px}
+  .qtext{font-size:18px}
+  .opt{padding:13px 15px;font-size:13.8px}
+}
+
+@media(max-width:480px){
+  .course-shell{padding:16px 12px 100px}
+  .dlg-head{padding:18px 16px}
+  .dlg-head h2{font-size:18px}
+  .bubble{padding:11px 13px}
+  .text{font-size:14px}
+  .avatar{width:34px;height:34px;flex-basis:34px}
+  .tool{padding:7px 10px;font-size:11.5px}
+} 
 </style>
 </head>
 <body>
@@ -1793,8 +1900,15 @@ function renderCourse(user){
       </div>
 
       <div class="course-layout">
-        <aside class="course-side">
-          <h4>Módulos de ${level.code}</h4>
+        <!-- Backdrop para móvil -->
+        <div class="course-side-backdrop" id="courseSideBackdrop"></div>
+
+        <!-- Sidebar de módulos -->
+        <aside class="course-side" id="courseSide">
+          <div class="course-side-head">
+            <h4>Módulos de ${level.code}</h4>
+            <button class="course-side-close" id="courseSideClose" aria-label="Cerrar">×</button>
+          </div>
           ${levelDialogues.map((x,i) => `
             <button class="side-item ${x.id===d.id?'active':''} ${prog.completed.includes(x.id)?'done':''}" data-open="${x.id}">
               <span class="si-num">${prog.completed.includes(x.id)?'✓':i+1}</span>
@@ -1803,6 +1917,7 @@ function renderCourse(user){
           `).join('')}
         </aside>
 
+        <!-- Contenido principal -->
         <div>
           ${UI.quiz ? renderQuiz() : ''}
           ${!UI.quiz ? `
@@ -1837,6 +1952,9 @@ function renderCourse(user){
         </div>
       </div>
     </div>
+
+    <!-- Botón flotante para abrir el menú en móvil -->
+    <button class="course-side-toggle" id="courseSideToggle" aria-label="Ver módulos">📚</button>
   </div>`;
 }
 
@@ -2187,7 +2305,15 @@ function speakAll(){
     speechSynthesis.speak(u);
   });
 }
-
+/* ============================================================
+   13a. CLOSE SIDE BAR
+   ============================================================ */
+function closeCourseSide(){
+  $('#courseSide')?.classList.remove('open');
+  $('#courseSideBackdrop')?.classList.remove('show');
+  document.body.style.overflow = '';
+}
+  
 /* ============================================================
    14. EVENTOS GLOBALES
    ============================================================ */
@@ -2246,9 +2372,25 @@ document.addEventListener('click', e => {
     UI.tab = 'dialogo';
     UI.quiz = null;
     UI.cloze = null;
+    closeCourseSide();  //  line to fis closeSideBar
     render();
     return;
   }
+// Drawer de módulos (móvil)
+if(e.target.id === 'courseSideToggle'){
+  document.getElementById('courseSide').classList.add('open');
+  document.getElementById('courseSideBackdrop').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  return;
+}
+if(e.target.id === 'courseSideClose' || e.target.id === 'courseSideBackdrop'){
+  closeCourseSide();
+  return;
+}
+// add line to fix closeSideBar on key Escape --JA
+if(e.key === 'Escape'){
+  closeCourseSide();
+} 
   // comprar
   const buy = e.target.closest('[data-buy]');
   if(buy){ openCheckout(buy.dataset.buy); return; }
