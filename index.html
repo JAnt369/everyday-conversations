@@ -1066,14 +1066,354 @@ a{color:inherit;text-decoration:none}
 
 <div class="toast-host" id="toasts"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const SUPABASE_URL = 'https://eqvmcpjnvxjhkevfmjql.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_MZxwwhVVhbHJyVUx-RiQ-Q_XTc-0ibC';
+  //Cliente global
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+  });    
+</script>
+  
+<script>
+/* ============================================================
+   STORE · Capa de datos sobre Supabase
+   ------------------------------------------------------------
+   Todos los métodos son asíncronos. Los componentes que los usan
+   deben hacer await. La sesión se cachea en memoria para evitar
+   llamadas repetidas a auth.getUser().
+   ============================================================ */
+const store = {
+  // Caché en memoria de la sesión y perfil actual
+  _session: null,
+  _profile: null,
+
+  /* ---------- AUTH ---------- */
+
+  async signUp({ name, email, password }){
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name },  // se pasa al trigger handle_new_user
+        emailRedirectTo: window.location.origin
+      }
+    });
+    if(error) throw new Error(traduceError(error.message));
+    // Si Supabase exige confirmar email, no hay session todavía
+    return { user: data.user, needsConfirmation: !data.session };
+  },
+
+  async signIn(email, password){
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if(error) throw new Error(traduceError(error.message));
+    this._session = data.session;
+    this._profile = await this._loadProfile(data.user.id);
+    return this._profile;
+  },
+
+  async signOut(){
+    await supabase.auth.signOut();
+    this._session = null;
+    this._profile = null;
+  },
+
+  async getSession(){
+    if(this._session) return this._session;
+    const { data } = await supabase.auth.getSession();
+    this._session = data.session;
+    return this._session;
+  },
+
+  async getUser(){
+    const session = await this.getSession();
+    if(!session?.user) return null;
+    if(this._profile && this._profile.id === session.user.id) return this._profile;
+    this._profile = await this._loadProfile(session.user.id);
+    return this._profile;
+  },
+
+  async _loadProfile(userId){
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+    if(error){
+      console.warn('No se pudo cargar el perfil:', error.message);
+      return null;
+    }
+    // Compatibilidad: exponer email desde la sesión (no está en profiles)
+    const session = await this.getSession();
+    return { ...data, email: session?.user?.email };
+  },
+
+  /* ---------- PROGRESO ---------- */
+
+  async getProgress(userId){
+    const { data, error } = await supabase
+      .from('progress')
+      .select('*')
+      .eq('user_id', userId);
+    if(error){ console.warn(error); return { completed: [], quizScores: [] }; }
+
+    // Compatibilidad con la forma antigua { completed: [], quizScores: [] }
+    const completed = data.filter(r => r.completed).map(r => r.dialogue_id);
+    const quizScores = data
+      .filter(r => r.quiz_total > 0)
+      .map(r => ({ dialogueId: r.dialogue_id, score: r.quiz_score, total: r.quiz_total }));
+
+    return { completed, quizScores, raw: data };
+  },
+
+  async saveProgress(userId, dialogueId, completed, quizScore = 0, quizTotal = 0){
+    const { error } = await supabase
+      .from('progress')
+      .upsert({
+        user_id: userId,
+        dialogue_id: dialogueId,
+        completed,
+        quiz_score: quizScore,
+        quiz_total: quizTotal,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id,dialogue_id' });
+    if(error) throw new Error('No se pudo guardar el progreso: ' + error.message);
+  },
+
+  async toggleModule(userId, dialogueId){
+    // Lee el estado actual, invierte, guarda
+    const { data } = await supabase
+      .from('progress')
+      .select('completed, quiz_score, quiz_total')
+      .eq('user_id', userId)
+      .eq('dialogue_id', dialogueId)
+      .maybeSingle();
+
+    const newCompleted = !(data?.completed);
+    await this.saveProgress(
+      userId,
+      dialogueId,
+      newCompleted,
+      data?.quiz_score || 0,
+      data?.quiz_total || 0
+    );
+    return newCompleted;
+  },
+
+  async saveQuizScore(userId, dialogueId, score, total){
+    // Actualiza el score sin tocar el estado 'completed'
+    const { data } = await supabase
+      .from('progress')
+      .select('completed')
+      .eq('user_id', userId)
+      .eq('dialogue_id', dialogueId)
+      .maybeSingle();
+
+    await this.saveProgress(userId, dialogueId, data?.completed || false, score, total);
+  },
+
+  /* ---------- PERFIL / NIVELES ---------- */
+
+  async updateLevels(userId, levels){
+    const { error } = await supabase
+      .from('profiles')
+      .update({ levels })
+      .eq('id', userId);
+    if(error) throw new Error(error.message);
+    if(this._profile?.id === userId) this._profile = { ...this._profile, levels };
+  },
+
+  async updateProfile(userId, patch){
+    const { error } = await supabase
+      .from('profiles')
+      .update(patch)
+      .eq('id', userId);
+    if(error) throw new Error(error.message);
+    if(this._profile?.id === userId) this._profile = { ...this._profile, ...patch };
+  },
+
+  /* ---------- PAYMENTS (solo lectura desde el frontend) ---------- */
+
+  async getMyPayments(userId){
+    const { data, error } = await supabase
+      .from('payments')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    if(error){ console.warn(error); return []; }
+    return data;
+  },
+
+  /* ---------- ADMIN ---------- */
+
+  async getAllUsers(){
+    const { data, error } = await supabase
+      .from('admin_user_stats')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if(error) throw new Error('Solo administradores pueden ver esto: ' + error.message);
+    return data;
+  },
+
+  async getGlobalStats(){
+    const { data, error } = await supabase
+      .from('admin_global_stats')
+      .select('*')
+      .single();
+    if(error) throw new Error(error.message);
+    return data;
+  },
+
+  async getRevenueByLevel(){
+    const { data, error } = await supabase
+      .from('admin_revenue_by_level')
+      .select('*');
+    if(error){ console.warn(error); return []; }
+    return data;
+  },
+
+  async updateUserRole(userId, role){
+    const { error } = await supabase
+      .from('profiles')
+      .update({ role })
+      .eq('id', userId);
+    if(error) throw new Error(error.message);
+  },
+
+  async unlockLevel(userId, levelId){
+    // Lee, modifica, guarda
+    const { data } = await supabase
+      .from('profiles')
+      .select('levels, plan')
+      .eq('id', userId)
+      .single();
+    const levels = { ...(data?.levels || {}), [levelId]: true };
+    const plan = levelId === 'all' ? 'premium' : (data?.plan || 'free');
+    const { error } = await supabase
+      .from('profiles')
+      .update({ levels, plan })
+      .eq('id', userId);
+    if(error) throw new Error(error.message);
+  },
+
+  async lockLevel(userId, levelId){
+    const { data } = await supabase
+      .from('profiles')
+      .select('levels')
+      .eq('id', userId)
+      .single();
+    const levels = { ...(data?.levels || {}), [levelId]: false };
+    const { error } = await supabase
+      .from('profiles')
+      .update({ levels })
+      .eq('id', userId);
+    if(error) throw new Error(error.message);
+  },
+
+  async deleteUser(userId){
+    // El borrado real requiere service_role (función serverless).
+    // Desde el frontend solo marcamos como 'deleted' en metadata.
+    const { error } = await supabase
+      .from('profiles')
+      .update({ plan: 'deleted' })
+      .eq('id', userId);
+    if(error) throw new Error(error.message);
+  },
+
+  async getAllProgress(){
+    const { data, error } = await supabase
+      .from('progress')
+      .select('user_id, dialogue_id, completed, quiz_score, quiz_total');
+    if(error) throw new Error(error.message);
+    // Devuelve el mismo formato que antes: { [userId]: { completed, quizScores } }
+    const out = {};
+    data.forEach(r => {
+      if(!out[r.user_id]) out[r.user_id] = { completed: [], quizScores: [] };
+      if(r.completed) out[r.user_id].completed.push(r.dialogue_id);
+      if(r.quiz_total > 0) out[r.user_id].quizScores.push({
+        dialogueId: r.dialogue_id, score: r.quiz_score, total: r.quiz_total
+      });
+    });
+    return out;
+  },
+
+  /* ---------- UTILIDADES ---------- */
+
+  async getAdminStats(){
+    // Combina las vistas globales para no hacer muchas llamadas
+    const [global, revenue] = await Promise.all([
+      this.getGlobalStats(),
+      this.getRevenueByLevel()
+    ]);
+
+    // Necesitamos también propietarios por nivel → lo leemos de profiles
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('levels');
+    const levelOwners = { b1:0, b2:0, c1:0, c2:0 };
+    (profiles || []).forEach(p => {
+      Object.keys(levelOwners).forEach(k => { if(p.levels?.[k]) levelOwners[k]++; });
+    });
+
+    // Completados por nivel → agregado del progress
+    const { data: prog } = await supabase
+      .from('progress')
+      .select('dialogue_id, completed')
+      .eq('completed', true);
+    const levelCompletions = { b1:0, b2:0, c1:0, c2:0 };
+    (prog || []).forEach(r => {
+      const d = DIALOGUES.find(x => x.id === r.dialogue_id);
+      if(d && levelCompletions[d.level] !== undefined) levelCompletions[d.level]++;
+    });
+
+    const dialoguesByLevel = { b1:[], b2:[], c1:[], c2:[] };
+    DIALOGUES.forEach(d => dialoguesByLevel[d.level]?.push(d.id));
+
+    return {
+      totalUsers: global.total_users,
+      adminCount: global.total_admins,
+      newThisWeek: global.new_this_week,
+      premiumUsers: global.premium_users,
+      totalCompleted: global.total_completions,
+      avgAccuracy: 0, // Requeriría otra agregación; dejar 0 o calcular en cliente
+      levelCompletions,
+      levelOwners,
+      dialoguesByLevel,
+      totalDialogues: DIALOGUES.length,
+      revenueCents: global.revenue_cents,
+      revenue30dCents: global.revenue_30d_cents,
+      revenueByLevel: revenue
+    };
+  }
+};
+
+/* ---------- Traducción de errores de Supabase ---------- */
+function traduceError(msg){
+  const m = msg.toLowerCase();
+  if(m.includes('invalid login')) return 'Email o contraseña incorrectos.';
+  if(m.includes('already registered') || m.includes('already been registered'))
+    return 'Ya existe una cuenta con ese email.';
+  if(m.includes('password') && m.includes('short'))
+    return 'La contraseña debe tener al menos 6 caracteres.';
+  if(m.includes('email') && m.includes('invalid'))
+    return 'El email no es válido.';
+  if(m.includes('rate limit'))
+    return 'Demasiados intentos. Espera unos minutos.';
+  return msg;
+}
+  
 /* ============================================================
    1. ALMACENAMIENTO (fácil de cambiar por backend)
    ------------------------------------------------------------
    Esta capa abstrae toda la persistencia. Para conectar
    Supabase/Firebase/backend propio, solo cambia los métodos
    de este objeto y el resto de la app sigue funcionando igual.
-   ============================================================ */
+   ============================================================ 
 const store = {
   KEY_USERS: 'toefl_users',
   KEY_SESSION: 'toefl_session',
@@ -1213,7 +1553,7 @@ const store = {
       totalDialogues: DIALOGUES.length
     };
   }
-};
+};*/
 
 /* ============================================================
    2. CATÁLOGO · Niveles CEFR + Diálogos
@@ -1779,9 +2119,10 @@ function render(){
   window.scrollTo({top:0,behavior:'instant'});
 }
 */
-  function render(){
+  async function render(){
   const app = $('#app');
-  const user = store.session ? store.findUser(store.session.email) : null;
+  //const user = store.session ? store.findUser(store.session.email) : null;
+    const user = await store.getUser();
 
   if(!user && UI.view !== 'landing' && UI.view !== 'pricing') UI.view = 'landing';
 
@@ -2000,8 +2341,9 @@ function renderTopNav(){
   </nav>`;
 }*/
 
-function renderTopNav(){
-  const user = store.session ? store.findUser(store.session.email) : null;
+async function renderTopNav(){
+  //const user = store.session ? store.findUser(store.session.email) : null;
+  const user = await store.getUser();
   const dark = UI.view === 'landing';
 
   return `
@@ -2033,8 +2375,9 @@ function renderTopNav(){
 /* ============================================================
    7. PRICING
    ============================================================ */
-function renderPricingCards(){
-  const user = store.session ? store.findUser(store.session.email) : null;
+async function renderPricingCards(){
+  //const user = store.session ? store.findUser(store.session.email) : null;
+  const user = await store.getUser();
   return `
     <div class="plan">
       <h3>Prueba</h3>
@@ -2115,8 +2458,8 @@ function injectPricingCards(){
 /* ============================================================
    8. DASHBOARD
    ============================================================ */
-function renderDashboard(user){
-  const prog = store.getUserProgress(user.id);
+async function renderDashboard(user){
+  const prog = await store.getUserProgress(user.id);
   const totalModules = LEVELS.reduce((s,l)=>s+l.modules,0);
   const completed = prog.completed.length;
   const accuracy = prog.quizScores.length
@@ -2164,8 +2507,8 @@ function renderDashboard(user){
   </div>`;
 }
 
-function renderDashLevels(user){
-  const prog = store.getUserProgress(user.id);
+async function renderDashLevels(user){
+  const prog = await store.getUserProgress(user.id);
   return `
     <div class="dash-levels">
       ${LEVELS.map(l => {
@@ -2258,12 +2601,12 @@ function renderDashInscripciones(user){
 /* ============================================================
    9. COURSE VIEW (diálogo dentro de un nivel)
    ============================================================ */
-function renderCourse(user){
+async function renderCourse(user){
   const d = getDialogue(UI.currentDialogue);
   if(!d) return renderDashboard(user);
   const level = getLevel(d.level);
   const levelDialogues = DIALOGUES.filter(x => x.level === d.level);
-  const prog = store.getUserProgress(user.id);
+  const prog = await store.getUserProgress(user.id);
   const speakers = [...new Set(d.lines.map(l=>l.s))];
   const done = prog.completed.includes(d.id);
 
@@ -2548,6 +2891,52 @@ function bindAuth(){
   };
 
   const loginForm = $('#loginForm');
+  if(loginForm) loginForm.onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(loginForm);
+    try {
+      await store.signIn(fd.get('email'), fd.get('password'));
+      $('#authModal').classList.remove('show');
+      toast('¡Bienvenido!', 'ok');
+      UI.view = 'dashboard';
+      render();
+    } catch(err){ showAlert(err.message); }
+  };
+
+  const registerForm = $('#registerForm');
+  if(registerForm) registerForm.onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(registerForm);
+    try {
+      const { needsConfirmation } = await store.signUp({
+        name: fd.get('name').trim(),
+        email: fd.get('email').trim(),
+        password: fd.get('password')
+      });
+      $('#authModal').classList.remove('show');
+      if(needsConfirmation){
+        toast('Revisa tu email para confirmar la cuenta.', 'ok');
+      } else {
+        toast('¡Cuenta creada!', 'ok');
+        UI.view = 'dashboard';
+      }
+      render();
+    } catch(err){ showAlert(err.message); }
+  };
+
+  $$('#authModal [data-auth]').forEach(el => {
+    el.onclick = () => openAuth(el.dataset.auth);
+  });
+}
+  
+/*function bindAuth(){
+  const alertEl = $('#authAlert');
+  const showAlert = (msg, type='err') => {
+    alertEl.className = `alert ${type} show`;
+    alertEl.textContent = msg;
+  };
+
+  const loginForm = $('#loginForm');
   if(loginForm) loginForm.onsubmit = e => {
     e.preventDefault();
     const fd = new FormData(loginForm);
@@ -2585,13 +2974,15 @@ function bindAuth(){
   $$('#authModal [data-auth]').forEach(el => {
     el.onclick = () => openAuth(el.dataset.auth);
   });
-}
+}*/
 
 /* ============================================================
    12. CHECKOUT MODAL
    ============================================================ */
-function openCheckout(levelId){
-  const user = store.session ? store.findUser(store.session.email) : null;
+async function openCheckout(levelId){
+  //const user = store.session ? store.findUser(store.session.email) : null;
+  const user = await store.getUser();
+  
   if(!user){ openAuth('register'); return; }
   const level = getLevel(levelId);
   $('#checkoutContent').innerHTML = `
@@ -2697,7 +3088,7 @@ function closeCourseSide(){
 /* ============================================================
    14. EVENTOS GLOBALES
    ============================================================ */
-document.addEventListener('click', e => {
+document.addEventListener('click', async e => {
   // Admin tabs
 const adminTab = e.target.closest('.admin-tab');
 if(adminTab){
@@ -2792,7 +3183,8 @@ if(e.target.id === 'adminRefresh'){ render(); toast('Datos actualizados', 'ok');
   if(auth){ openAuth(auth.dataset.auth); return; }
   // logout
   if(e.target.closest('[data-logout]')){
-    store.session = null;
+    await store.signOut();
+    //store.session = null;
     toast('Sesión cerrada.', 'ok');
     UI.view = 'landing';
     render();
@@ -2856,8 +3248,8 @@ if(e.key === 'Escape'){
   if(e.target.id === 'btnStop'){ speechSynthesis.cancel(); $$('.line').forEach(el=>el.classList.remove('speaking')); return; }
   if(e.target.id === 'btnHideText'){ UI.hideText = !UI.hideText; render(); return; }
   if(e.target.id === 'btnDone'){
-    const user = store.findUser(store.session.email);
-    const prog = store.getUserProgress(user.id);
+    const user = await store.findUser(store.session.email);
+    const prog = await store.getUserProgress(user.id);
     const i = prog.completed.indexOf(UI.currentDialogue);
     if(i>=0) prog.completed.splice(i,1); else prog.completed.push(UI.currentDialogue);
     store.saveUserProgress(user.id, prog);
@@ -3061,7 +3453,25 @@ function renderFooter(){
 
 /* ============================================================
    15. INIT
-   ============================================================ 
+   ============================================================ */
+(async function init(){
+  // Escuchar cambios de sesión
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if(event === 'SIGNED_OUT'){
+      store._session = null;
+      store._profile = null;
+      UI.view = 'landing';
+      render();
+    }
+  });
+
+  const user = await store.getUser();
+  if(user){
+    UI.view = 'dashboard';
+  }
+  render();
+})();
+  /* 
 (function init(){
   // Registrar pricing cards en landing y pricing view después del render
   const origRender = render;
@@ -3079,7 +3489,7 @@ function renderFooter(){
 /* ============================================================
    16. ADMIN PANEL
    ============================================================ */
-function renderAdmin(currentUser){
+async function renderAdmin(currentUser){
   if(!currentUser || currentUser.role !== 'admin'){
     return `<div class="app-shell">${renderTopNav()}
       <div class="admin-content">
@@ -3553,13 +3963,13 @@ function downloadCSV(rows, filename){
 }
 
 // Asegurar que existe un admin
-(function initAdmin(){
-  const admin = store.ensureAdminExists();
-  console.log('%c👑 Admin creado automáticamente', 'color:#FFB81C;font-weight:bold');
-  console.log('%cEmail: admin@toefl.local', 'color:#0072CE');
-  console.log('%cPassword: admin123', 'color:#0072CE');
-  console.log('%c⚠️  Cambia estas credenciales en producción', 'color:#D93025;font-weight:bold');
-})();
+//(function initAdmin(){
+  //const admin = store.ensureAdminExists();
+  //console.log('%c👑 Admin creado automáticamente', 'color:#FFB81C;font-weight:bold');
+  //console.log('%cEmail: admin@toefl.local', 'color:#0072CE');
+  //console.log('%cPassword: admin123', 'color:#0072CE');
+  //console.log('%c⚠️  Cambia estas credenciales en producción', 'color:#D93025;font-weight:bold');
+//})();
 
 render();
 </script>
