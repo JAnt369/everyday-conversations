@@ -1219,7 +1219,7 @@ const store = {
 
   /* ---------- PERFIL / NIVELES ---------- */
 
-  async updateLevels(userId, levels){
+  async pudateLevels(userId, levels){
     const { error } = await supabase
       .from('profiles')
       .update({ levels })
@@ -1347,8 +1347,8 @@ const store = {
   async getAdminStats(){
     // Combina las vistas globales para no hacer muchas llamadas
     const [global, revenue] = await Promise.all([
-      this.getGlobalStats(),
-      this.getRevenueByLevel()
+      await this.getGlobalStats(),
+      await this.getRevenueByLevel()
     ]);
 
     // Necesitamos también propietarios por nivel → lo leemos de profiles
@@ -3024,15 +3024,26 @@ async function openCheckout(levelId){
   `;
   $('#checkoutModal').classList.add('show');
 
-  $('#btnPay').onclick = () => {
+  /* $('#btnPay').onclick = async () => {
     user.levels = user.levels || {};
     user.levels[levelId] = true;
-    store.updateUser(user.id, {levels: user.levels, plan: 'premium'});
+    await store.updateUser(user.id, {levels: user.levels, plan: 'premium'});
     $('#checkoutModal').classList.remove('show');
     toast(`¡${level.code} desbloqueado! Ya puedes empezar.`, 'ok');
     UI.view = 'dashboard';
     render();
-  };
+  }; */
+  
+  $('#btnPay').onclick = async () => {
+  const level = getLevel(levelId);
+  try {
+    await store.unlockLevel(user.id, levelId);
+    $('#checkoutModal').classList.remove('show');
+    toast(`¡${level.code} desbloqueado!`, 'ok');
+    UI.view = 'dashboard';
+    render();
+  } catch(err){ toast(err.message, 'err'); }
+};
 }
 
 /* ============================================================
@@ -3101,7 +3112,7 @@ if(adminTab){
 
 // Ver detalle de usuario
 const adminUser = e.target.closest('[data-admin-user]');
-if(adminUser){ openUserDetail(adminUser.dataset.adminUser); return; }
+if(adminUser){ await openUserDetail(adminUser.dataset.adminUser); return; }
 
 // Cambiar rol
 const adminRole = e.target.closest('[data-admin-role]');
@@ -3109,7 +3120,7 @@ if(adminRole){
   const u = store.users.find(x => x.id === adminRole.dataset.adminRole);
   const newRole = u.role === 'admin' ? 'student' : 'admin';
   if(confirm(`¿Cambiar el rol de "${u.name}" a ${newRole}?`)){
-    store.updateUserRole(u.id, newRole);
+    await store.updateUserRole(u.id, newRole);
     toast(`${u.name} ahora es ${newRole}`, 'ok');
     render();
   }
@@ -3121,7 +3132,7 @@ const adminDelete = e.target.closest('[data-admin-delete]');
 if(adminDelete){
   const u = store.users.find(x => x.id === adminDelete.dataset.adminDelete);
   if(confirm(`¿Eliminar permanentemente a "${u.name}"? Esta acción no se puede deshacer.`)){
-    store.deleteUser(u.id);
+    await store.deleteUser(u.id);
     toast(`Usuario "${u.name}" eliminado`, 'ok');
     render();
   }
@@ -3132,9 +3143,9 @@ if(adminDelete){
 const adminUnlock = e.target.closest('[data-admin-unlock]');
 if(adminUnlock){
   const [userId, levelId] = adminUnlock.dataset.adminUnlock.split('|');
-  store.unlockLevel(userId, levelId);
+  await store.unlockLevel(userId, levelId);
   toast(`Nivel ${levelId.toUpperCase()} desbloqueado`, 'ok');
-  openUserDetail(userId);  // recargar modal
+  await openUserDetail(userId);  // recargar modal
   return;
 }
 
@@ -3142,9 +3153,9 @@ if(adminUnlock){
 const adminLock = e.target.closest('[data-admin-lock]');
 if(adminLock){
   const [userId, levelId] = adminLock.dataset.adminLock.split('|');
-  store.lockLevel(userId, levelId);
+  await store.lockLevel(userId, levelId);
   toast(`Nivel ${levelId.toUpperCase()} bloqueado`, 'ok');
-  openUserDetail(userId);
+  await openUserDetail(userId);
   return;
 }
 
@@ -3195,7 +3206,8 @@ if(e.target.id === 'adminRefresh'){ render(); toast('Datos actualizados', 'ok');
   if(dashTab){
     $$('.dash-tab').forEach(t=>t.classList.remove('active'));
     dashTab.classList.add('active');
-    const user = store.findUser(store.session.email);
+    //const user = store.findUser(store.session.email);
+    const user = await store.getUser();
     $('#dashBody').innerHTML = dashTab.dataset.dash === 'inscripciones'
       ? renderDashInscripciones(user)
       : renderDashLevels(user);
@@ -3248,7 +3260,8 @@ if(e.key === 'Escape'){
   if(e.target.id === 'btnStop'){ speechSynthesis.cancel(); $$('.line').forEach(el=>el.classList.remove('speaking')); return; }
   if(e.target.id === 'btnHideText'){ UI.hideText = !UI.hideText; render(); return; }
   if(e.target.id === 'btnDone'){
-    const user = await store.findUser(store.session.email);
+    //const user = await store.findUser(store.session.email);
+    const user = await store.getUser();
     const prog = await store.getUserProgress(user.id);
     const i = prog.completed.indexOf(UI.currentDialogue);
     if(i>=0) prog.completed.splice(i,1); else prog.completed.push(UI.currentDialogue);
@@ -3502,7 +3515,7 @@ async function renderAdmin(currentUser){
     </div>`;
   }
 
-  const stats = store.getAdminStats();
+  const stats = await store.getAdminStats();
   const admin = store.users.find(u => u.role === 'admin');
 
   return `
@@ -3801,8 +3814,8 @@ function renderAdminUsers(){
   `;
 }
 
-function renderAdminLevels(){
-  const stats = store.getAdminStats();
+async function renderAdminLevels(){
+  const stats = await store.getAdminStats();
   return `
     <div class="chart-grid" style="grid-template-columns:1fr 1fr">
       ${LEVELS.map(l => {
@@ -3845,7 +3858,7 @@ function renderAdminLevels(){
 }
 
 /* Modal de detalle de usuario */
-function openUserDetail(userId){
+async function openUserDetail(userId){
   const u = store.users.find(x => x.id === userId);
   if(!u) return;
   const p = store.progress[userId] || { completed: [], quizScores: [] };
