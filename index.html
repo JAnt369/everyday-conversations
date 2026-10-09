@@ -2126,12 +2126,12 @@ function render(){
 
   if(!user && UI.view !== 'landing' && UI.view !== 'pricing') UI.view = 'landing';
 
-  if(UI.view === 'landing')        app.innerHTML = renderLanding();
-  else if(UI.view === 'dashboard') app.innerHTML = renderDashboard(user);
-  else if(UI.view === 'course')    app.innerHTML = renderCourse(user);
-  else if(UI.view === 'pricing')   app.innerHTML = renderPricing(user);
-  else if(UI.view === 'admin')     app.innerHTML = renderAdmin(user);
-  else                             app.innerHTML = renderLanding();
+  if(UI.view === 'landing')        app.innerHTML = await renderLanding();
+  else if(UI.view === 'dashboard') app.innerHTML = await renderDashboard(user);
+  else if(UI.view === 'course')    app.innerHTML = await renderCourse(user);
+  else if(UI.view === 'pricing')   app.innerHTML = await renderPricing(user);
+  else if(UI.view === 'admin')     app.innerHTML = await renderAdmin(user);
+  else                             app.innerHTML = await renderLanding();
 
   // Post-render: inyectar pricing cards donde exista #pricing
   injectPricingCards();
@@ -2140,13 +2140,13 @@ function render(){
   if(user && UI.view === 'dashboard'){
     const body = $('#dashBody');
     if(body && !body.innerHTML.trim()){
-      body.innerHTML = renderDashLevels(user);
+      body.innerHTML = await renderDashLevels(user);
     }
   }
 
   if(user && user.role == 'admin' && UI.view === 'admin'){
     const body = $('#adminBody');
-    if(body) body.innerHTML = renderAdminBody();    
+    if(body) body.innerHTML = await renderAdminBody();    
   }
     
   window.scrollTo({top:0,behavior:'instant'});
@@ -2155,10 +2155,10 @@ function render(){
 /* ============================================================
    5. LANDING
    ============================================================ */
-function renderLanding(){
+async function renderLanding(){
   return `
   <div class="landing">
-    ${renderTopNav()}
+    ${await renderTopNav()}
 
     <section class="hero">
       <div class="hero-inner">
@@ -2433,10 +2433,10 @@ async function renderPricingCards(){
   `;
 }
 
-function renderPricing(){
+async function renderPricing(){
   return `
   <div class="app-shell">
-    ${renderTopNav()}
+    ${await renderTopNav()}
     <div style="max-width:1180px;margin:0 auto;padding:60px 32px">
       <div class="section-head">
         <div class="section-eyebrow">Inscripciones</div>
@@ -2450,9 +2450,9 @@ function renderPricing(){
 }
 
 /* Inyecta las pricing cards donde exista el div #pricing */
-function injectPricingCards(){
+async function injectPricingCards(){
   const target = $('#pricing');
-  if(target) target.innerHTML = renderPricingCards();
+  if(target) target.innerHTML = await renderPricingCards();
 }
 
 /* ============================================================
@@ -2470,7 +2470,7 @@ async function renderDashboard(user){
 
   return `
   <div class="app-shell">
-    ${renderTopNav()}
+    ${await renderTopNav()}
 
     <div class="dash-hero">
       <div class="dash-hero-inner">
@@ -2603,7 +2603,7 @@ function renderDashInscripciones(user){
    ============================================================ */
 async function renderCourse(user){
   const d = getDialogue(UI.currentDialogue);
-  if(!d) return renderDashboard(user);
+  if(!d) return await renderDashboard(user);
   const level = getLevel(d.level);
   const levelDialogues = DIALOGUES.filter(x => x.level === d.level);
   const prog = await store.getUserProgress(user.id);
@@ -2612,7 +2612,7 @@ async function renderCourse(user){
 
   return `
   <div class="app-shell">
-    ${renderTopNav()}
+    ${await renderTopNav()}
     <div class="course-shell">
       <div class="course-header">
         <div>
@@ -3335,7 +3335,7 @@ document.addEventListener('input', e => {
     UI.adminSearch = e.target.value;
     const body = $('#adminBody');
     if(body){
-      body.innerHTML = renderAdminUsers();
+      body.innerHTML = await renderAdminUsers();
       // Re-enfocar el input después de re-render
       const inp = $('#adminSearchInput');
       if(inp){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
@@ -3347,12 +3347,12 @@ document.addEventListener('change', e => {
   if(e.target.id === 'adminFilterRole'){
     UI.adminFilterRole = e.target.value;
     const body = $('#adminBody');
-    if(body) body.innerHTML = renderAdminUsers();
+    if(body) body.innerHTML = await renderAdminUsers();
   }
   if(e.target.id === 'adminFilterPlan'){
     UI.adminFilterPlan = e.target.value;
     const body = $('#adminBody');
-    if(body) body.innerHTML = renderAdminUsers();
+    if(body) body.innerHTML = await renderAdminUsers();
   }
 });
   
@@ -3504,7 +3504,7 @@ function renderFooter(){
    ============================================================ */
 async function renderAdmin(currentUser){
   if(!currentUser || currentUser.role !== 'admin'){
-    return `<div class="app-shell">${renderTopNav()}
+    return `<div class="app-shell">${await renderTopNav()}
       <div class="admin-content">
         <div class="admin-empty">
           <div class="big">🔒</div>
@@ -3520,7 +3520,7 @@ async function renderAdmin(currentUser){
 
   return `
   <div class="app-shell">
-    ${renderTopNav()}
+    ${await renderTopNav()}
     <div class="admin-hero">
       <div class="admin-hero-inner">
         <h1>Panel de administración</h1>
@@ -3563,14 +3563,14 @@ async function renderAdmin(currentUser){
 }
 
 function renderAdminBody(){
-  if(UI.adminTab === 'overview') return renderAdminOverview();
-  if(UI.adminTab === 'users')    return renderAdminUsers();
-  if(UI.adminTab === 'levels')   return renderAdminLevels();
+  if(UI.adminTab === 'overview') return await renderAdminOverview();
+  if(UI.adminTab === 'users')    return await renderAdminUsers();
+  if(UI.adminTab === 'levels')   return await renderAdminLevels();
   return '';
 }
 
-function renderAdminOverview(){
-  const stats = store.getAdminStats();
+async function renderAdminOverview(){
+  const stats = await store.getAdminStats();
   const users = store.users;
   const progress = store.progress;
 
@@ -3715,7 +3715,7 @@ function renderAdminOverview(){
   `;
 }
 
-function renderAdminUsers(){
+async function renderAdminUsers(){
   const progress = store.progress;
   const search = (UI.adminSearch || '').toLowerCase();
   const roleFilter = UI.adminFilterRole;
@@ -3858,7 +3858,7 @@ async function renderAdminLevels(){
 }
 
 /* Modal de detalle de usuario */
-async function openUserDetail(userId){
+function openUserDetail(userId){
   const u = store.users.find(x => x.id === userId);
   if(!u) return;
   const p = store.progress[userId] || { completed: [], quizScores: [] };
