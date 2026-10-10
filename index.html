@@ -2509,7 +2509,7 @@ async function renderDashboard(user){
 }
 
 async function renderDashLevels(user){
-  const prog = await store.getUserProgress(user.id);
+  const prog = await store.getProgress(user.id);
   return `
     <div class="dash-levels">
       ${LEVELS.map(l => {
@@ -2607,7 +2607,7 @@ async function renderCourse(user){
   if(!d) return await renderDashboard(user);
   const level = getLevel(d.level);
   const levelDialogues = DIALOGUES.filter(x => x.level === d.level);
-  const prog = await store.getUserProgress(user.id);
+  const prog = await store.getProgress(user.id);
   const speakers = [...new Set(d.lines.map(l=>l.s))];
   const done = prog.completed.includes(d.id);
 
