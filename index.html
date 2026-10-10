@@ -2460,7 +2460,7 @@ async function injectPricingCards(){
    8. DASHBOARD
    ============================================================ */
 async function renderDashboard(user){
-  const prog = await store.getUserProgress(user.id);
+  const prog = await store.getProgress(user.id);
   const totalModules = LEVELS.reduce((s,l)=>s+l.modules,0);
   const completed = prog.completed.length;
   const accuracy = prog.quizScores.length
@@ -3263,11 +3263,13 @@ if(e.key === 'Escape'){
   if(e.target.id === 'btnDone'){
     //const user = await store.findUser(store.session.email);
     const user = await store.getUser();
-    const prog = await store.getUserProgress(user.id);
+    const prog = await store.getProgress(user.id);
     const i = prog.completed.indexOf(UI.currentDialogue);
     if(i>=0) prog.completed.splice(i,1); else prog.completed.push(UI.currentDialogue);
-    store.saveUserProgress(user.id, prog);
-    toast(i>=0?'Módulo desmarcado.':'¡Módulo completado! 🎉','ok');
+    //store.saveUserProgress(user.id, prog);
+    const nowDone = await store.toggleModule(user.id, UI.currentDialogue);
+    toast(nowDone ? '¡Módulo completado! 🎉' : 'Módulo desmarcado.', 'ok');
+    //toast(i>=0?'Módulo desmarcado.':'¡Módulo completado! 🎉','ok');
     render();
     return;
   }
@@ -3485,21 +3487,7 @@ function renderFooter(){
   }
   render();
 })();
-  /* 
-(function init(){
-  // Registrar pricing cards en landing y pricing view después del render
-  const origRender = render;
-  render = function(){
-    origRender();
-    injectPricingCards();
-    // Si el usuario está logueado y la vista es dashboard, renderiza dashBody
-    const user = store.session ? store.findUser(store.session.email) : null;
-    if(user && UI.view === 'dashboard' && $('#dashBody') && !$('#dashBody').innerHTML){
-      $('#dashBody').innerHTML = renderDashLevels(user);
-    }
-  };
-  render();
-})();  */
+  
 /* ============================================================
    16. ADMIN PANEL
    ============================================================ */
