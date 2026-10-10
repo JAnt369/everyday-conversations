@@ -1102,7 +1102,7 @@ const store = {
       password,
       options: {
         data: { name },  // se pasa al trigger handle_new_user
-        emailRedirectTo: window.location.origin
+        emailRedirectTo: 'https://jant369.github.io/everyday-conversations/' //window.location.origin
       }
     });
     if(error) throw new Error(traduceError(error.message));
@@ -2153,6 +2153,31 @@ function render(){
   window.scrollTo({top:0,behavior:'instant'});
 }
 
+// ================================= manage of Callback on the App
+
+  // Detectar retorno desde email de confirmación
+(async function handleAuthCallback(){
+  // Si la URL tiene un hash con access_token (venimos del email)
+  if(window.location.hash.includes('access_token')){
+    // Esperar un momento a que Supabase procese el token del hash
+    await new Promise(r => setTimeout(r, 500));
+    
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    
+    if(session){
+      toast('¡Email confirmado! Bienvenido.', 'ok');
+      // Limpiar el hash de la URL (para que no quede feo)
+      history.replaceState(null, '', window.location.pathname);
+      UI.view = 'dashboard';
+      render();
+    } else if(error){
+      toast('Error al confirmar: ' + error.message, 'err');
+      history.replaceState(null, '', window.location.pathname);
+      render();
+    }
+  }
+})();
+  
 /* ============================================================
    5. LANDING
    ============================================================ */
