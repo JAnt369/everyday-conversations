@@ -1072,13 +1072,13 @@ a{color:inherit;text-decoration:none}
   const SUPABASE_URL = 'https://eqvmcpjnvxjhkevfmjql.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_MZxwwhVVhbHJyVUx-RiQ-Q_XTc-0ibC';
   //Cliente global
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true }
   }); 
-  window.supabaseClient = supabase;
+  window.supabaseClient = supabaseClient;
 </script>
   
 <script>
@@ -1097,7 +1097,7 @@ const store = {
   /* ---------- AUTH ---------- */
 
   async signUp({ name, email, password }){
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
       options: {
@@ -1111,7 +1111,7 @@ const store = {
   },
 
   async signIn(email, password){
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if(error) throw new Error(traduceError(error.message));
     this._session = data.session;
     this._profile = await this._loadProfile(data.user.id);
@@ -1119,14 +1119,14 @@ const store = {
   },
 
   async signOut(){
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     this._session = null;
     this._profile = null;
   },
 
   async getSession(){
     if(this._session) return this._session;
-    const { data } = await supabase.auth.getSession();
+    const { data } = await supabaseClient.auth.getSession();
     this._session = data.session;
     return this._session;
   },
@@ -1140,7 +1140,7 @@ const store = {
   },
 
   async _loadProfile(userId){
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('profiles')
       .select('*')
       .eq('id', userId)
@@ -1157,7 +1157,7 @@ const store = {
   /* ---------- PROGRESO ---------- */
 
   async getProgress(userId){
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('progress')
       .select('*')
       .eq('user_id', userId);
@@ -1173,7 +1173,7 @@ const store = {
   },
 
   async saveProgress(userId, dialogueId, completed, quizScore = 0, quizTotal = 0){
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('progress')
       .upsert({
         user_id: userId,
@@ -1188,7 +1188,7 @@ const store = {
 
   async toggleModule(userId, dialogueId){
     // Lee el estado actual, invierte, guarda
-    const { data } = await supabase
+    const { data } = await supabaseClient
       .from('progress')
       .select('completed, quiz_score, quiz_total')
       .eq('user_id', userId)
@@ -1208,7 +1208,7 @@ const store = {
 
   async saveQuizScore(userId, dialogueId, score, total){
     // Actualiza el score sin tocar el estado 'completed'
-    const { data } = await supabase
+    const { data } = await supabaseClient
       .from('progress')
       .select('completed')
       .eq('user_id', userId)
@@ -1221,7 +1221,7 @@ const store = {
   /* ---------- PERFIL / NIVELES ---------- */
 
   async pudateLevels(userId, levels){
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('profiles')
       .update({ levels })
       .eq('id', userId);
@@ -1230,7 +1230,7 @@ const store = {
   },
 
   async updateProfile(userId, patch){
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('profiles')
       .update(patch)
       .eq('id', userId);
@@ -1241,7 +1241,7 @@ const store = {
   /* ---------- PAYMENTS (solo lectura desde el frontend) ---------- */
 
   async getMyPayments(userId){
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('payments')
       .select('*')
       .eq('user_id', userId)
@@ -1253,7 +1253,7 @@ const store = {
   /* ---------- ADMIN ---------- */
 
   async getAllUsers(){
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('admin_user_stats')
       .select('*')
       .order('created_at', { ascending: false });
@@ -1262,7 +1262,7 @@ const store = {
   },
 
   async getGlobalStats(){
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('admin_global_stats')
       .select('*')
       .single();
@@ -1271,7 +1271,7 @@ const store = {
   },
 
   async getRevenueByLevel(){
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('admin_revenue_by_level')
       .select('*');
     if(error){ console.warn(error); return []; }
@@ -1279,7 +1279,7 @@ const store = {
   },
 
   async updateUserRole(userId, role){
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('profiles')
       .update({ role })
       .eq('id', userId);
@@ -1288,14 +1288,14 @@ const store = {
 
   async unlockLevel(userId, levelId){
     // Lee, modifica, guarda
-    const { data } = await supabase
+    const { data } = await supabaseClient
       .from('profiles')
       .select('levels, plan')
       .eq('id', userId)
       .single();
     const levels = { ...(data?.levels || {}), [levelId]: true };
     const plan = levelId === 'all' ? 'premium' : (data?.plan || 'free');
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('profiles')
       .update({ levels, plan })
       .eq('id', userId);
@@ -1303,13 +1303,13 @@ const store = {
   },
 
   async lockLevel(userId, levelId){
-    const { data } = await supabase
+    const { data } = await supabaseClient
       .from('profiles')
       .select('levels')
       .eq('id', userId)
       .single();
     const levels = { ...(data?.levels || {}), [levelId]: false };
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('profiles')
       .update({ levels })
       .eq('id', userId);
@@ -1319,7 +1319,7 @@ const store = {
   async deleteUser(userId){
     // El borrado real requiere service_role (función serverless).
     // Desde el frontend solo marcamos como 'deleted' en metadata.
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('profiles')
       .update({ plan: 'deleted' })
       .eq('id', userId);
@@ -1327,7 +1327,7 @@ const store = {
   },
 
   async getAllProgress(){
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('progress')
       .select('user_id, dialogue_id, completed, quiz_score, quiz_total');
     if(error) throw new Error(error.message);
@@ -1353,7 +1353,7 @@ const store = {
     ]);
 
     // Necesitamos también propietarios por nivel → lo leemos de profiles
-    const { data: profiles } = await supabase
+    const { data: profiles } = await supabaseClient
       .from('profiles')
       .select('levels');
     const levelOwners = { b1:0, b2:0, c1:0, c2:0 };
@@ -1362,7 +1362,7 @@ const store = {
     });
 
     // Completados por nivel → agregado del progress
-    const { data: prog } = await supabase
+    const { data: prog } = await supabaseClient
       .from('progress')
       .select('dialogue_id, completed')
       .eq('completed', true);
@@ -3470,7 +3470,7 @@ function renderFooter(){
    ============================================================ */
 (async function init(){
   // Escuchar cambios de sesión
-  supabase.auth.onAuthStateChange(async (event, session) => {
+  supabaseClient.auth.onAuthStateChange(async (event, session) => {
     if(event === 'SIGNED_OUT'){
       store._session = null;
       store._profile = null;
