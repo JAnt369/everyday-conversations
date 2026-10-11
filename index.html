@@ -3530,7 +3530,7 @@ async function renderAdmin(currentUser){
   }
 
   const stats = await store.getAdminStats();
-  const admin = store.users.find(u => u.role === 'admin');
+  //const admin = store.users.find(u => u.role === 'admin');
 
   return `
   <div class="app-shell">
@@ -3585,8 +3585,8 @@ async function renderAdminBody(){
 
 async function renderAdminOverview(){
   const stats = await store.getAdminStats();
-  const users = store.users;
-  const progress = store.progress;
+  const users = await store.getAllUsers();
+  const allProgress = await store.getAllProgress();
 
   // Distribución por plan
   const planFree = users.filter(u => u.plan === 'free').length;
@@ -3602,7 +3602,7 @@ async function renderAdminOverview(){
   const maxOwners = Math.max(...ownersData.map(x => x.count), 1);
 
   // Actividad reciente: últimos 8 usuarios con progreso
-  const recent = users
+  /*const recent = users
     .filter(u => u.role !== 'admin')
     .map(u => {
       const p = progress[u.id] || { completed: [], quizScores: [] };
@@ -3613,6 +3613,11 @@ async function renderAdminOverview(){
       };
     })
     .sort((a,b) => b.createdAt - a.createdAt)
+    .slice(0, 8);*/
+  
+    const recent = users
+    .filter(u => u.role !== 'admin')
+    .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))  // ← created_at, no createdAt
     .slice(0, 8);
 
   return `
@@ -3730,20 +3735,21 @@ async function renderAdminOverview(){
 }
 
 async function renderAdminUsers(){
-  const progress = store.progress;
+  const allProgress = await store.getAllProgress();       // ← async
+  let users = await store.getAllUsers();                  // ← async
+
   const search = (UI.adminSearch || '').toLowerCase();
   const roleFilter = UI.adminFilterRole;
   const planFilter = UI.adminFilterPlan;
 
-  let users = store.users.filter(u => {
-    if(search && !u.name.toLowerCase().includes(search) && !u.email.toLowerCase().includes(search)) return false;
+  users = users.filter(u => {
+    if(search && !u.name.toLowerCase().includes(search) && !(u.email||'').toLowerCase().includes(search)) return false;
     if(roleFilter !== 'all' && (u.role || 'student') !== roleFilter) return false;
     if(planFilter !== 'all' && u.plan !== planFilter) return false;
     return true;
   });
 
-  // Ordenar por fecha de registro descendente
-  users = users.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  users = users.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
 
   return `
     <div class="admin-table-wrap">
@@ -3776,7 +3782,7 @@ async function renderAdminUsers(){
           </thead>
           <tbody>
             ${users.length ? users.map(u => {
-              const p = progress[u.id] || { completed: [], quizScores: [] };
+              const p = allProgress[u.id] || { completed: [], quizScores: [] };
               const pct = Math.round(p.completed.length / DIALOGUES.length * 100);
               const isAdmin = u.role === 'admin';
               return `<tr>
@@ -3785,16 +3791,12 @@ async function renderAdminUsers(){
                     <div class="admin-avatar ${isAdmin?'admin':''}">${initials(u.name)}</div>
                     <div class="cell-user-info">
                       <b>${esc(u.name)}</b>
-                      <small>${esc(u.email)}</small>
+                      <small>${esc(u.email || '')}</small>
                     </div>
                   </div>
                 </td>
-                <td>
-                  <span class="badge-role ${isAdmin?'admin':'student'}">${isAdmin?'★ Admin':'Estudiante'}</span>
-                </td>
-                <td>
-                  <span class="badge-plan ${u.plan}">${u.plan}</span>
-                </td>
+                <td><span class="badge-role ${isAdmin?'admin':'student'}">${isAdmin?'★ Admin':'Estudiante'}</span></td>
+                <td><span class="badge-plan ${u.plan}">${u.plan}</span></td>
                 <td>
                   <div class="level-pips">
                     ${LEVELS.map(l => `
@@ -3872,10 +3874,13 @@ async function renderAdminLevels(){
 }
 
 /* Modal de detalle de usuario */
-function openUserDetail(userId){
-  const u = store.users.find(x => x.id === userId);
+async function openUserDetail(userId){
+  const users = await store.getAllUsers();
+  const u = users.find(x => x.id === userId);
   if(!u) return;
-  const p = store.progress[userId] || { completed: [], quizScores: [] };
+
+  const allProgress = await store.getAllProgress();
+  const p = allProgress[userId] || { completed: [], quizScores: [] };
   const acc = p.quizScores.length
     ? Math.round(p.quizScores.reduce((s,q)=>s+q.score,0) / p.quizScores.reduce((s,q)=>s+q.total,0) * 100)
     : 0;
@@ -3885,7 +3890,7 @@ function openUserDetail(userId){
       <div class="admin-avatar ${u.role==='admin'?'admin':''}" style="width:52px;height:52px;flex-basis:52px;font-size:16px">${initials(u.name)}</div>
       <div style="flex:1">
         <h2>${esc(u.name)}</h2>
-        <p>${esc(u.email)}</p>
+        <p>${esc(u.email || '')}</p>
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
           <span class="badge-role ${u.role==='admin'?'admin':'student'}">${u.role==='admin'?'★ Admin':'Estudiante'}</span>
           <span class="badge-plan ${u.plan}">${u.plan}</span>
@@ -3936,7 +3941,7 @@ function openUserDetail(userId){
 
     <div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3)">
       <span>ID: <b style="color:var(--ink-2)">${u.id}</b></span>
-      <span>Registro: <b style="color:var(--ink-2)">${new Date(u.createdAt).toLocaleDateString('es-MX')}</b></span>
+      <span>Registro: <b style="color:var(--ink-2)">${new Date(u.created_at).toLocaleDateString('es-MX')}</b></span>
     </div>
   `;
 
@@ -3945,13 +3950,16 @@ function openUserDetail(userId){
 }
 
 /* CSV Export */
-function exportUsersCSV(){
-  const users = store.users;
+async function exportUsersCSV(){
+  const users = await store.getAllUsers();
+  const allProgress = await store.getAllProgress();
+
   const rows = [
     ['ID','Nombre','Email','Rol','Plan','Niveles','Módulos completados','Precisión (%)','Registro']
   ];
+
   users.forEach(u => {
-    const p = store.progress[u.id] || { completed: [], quizScores: [] };
+    const p = allProgress[u.id] || { completed: [], quizScores: [] };
     const acc = p.quizScores.length
       ? Math.round(p.quizScores.reduce((s,q)=>s+q.score,0) / p.quizScores.reduce((s,q)=>s+q.total,0) * 100)
       : 0;
@@ -3959,16 +3967,21 @@ function exportUsersCSV(){
     rows.push([
       u.id, u.name, u.email, u.role||'student', u.plan,
       levels, p.completed.length, acc,
-      new Date(u.createdAt).toLocaleDateString('es-MX')
+      new Date(u.created_at).toLocaleDateString('es-MX')
     ]);
   });
+
   downloadCSV(rows, 'usuarios-toefl.csv');
 }
 
-function exportProgressCSV(){
+async function exportProgressCSV(){
+  const users = await store.getAllUsers();
+  const allProgress = await store.getAllProgress();
+
   const rows = [['Usuario','Email','Nivel','Módulo','Completado','Quiz Score','Quiz Total']];
-  store.users.forEach(u => {
-    const p = store.progress[u.id] || { completed: [], quizScores: [] };
+
+  users.forEach(u => {
+    const p = allProgress[u.id] || { completed: [], quizScores: [] };
     DIALOGUES.forEach(d => {
       if(p.completed.includes(d.id)){
         const q = p.quizScores.find(x => x.dialogueId === d.id);
@@ -3976,6 +3989,7 @@ function exportProgressCSV(){
       }
     });
   });
+
   downloadCSV(rows, 'progreso-toefl.csv');
 }
 
