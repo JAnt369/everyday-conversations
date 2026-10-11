@@ -1372,7 +1372,7 @@ const store = {
       if(d && levelCompletions[d.level] !== undefined) levelCompletions[d.level]++;
     });
 
-    const dialoguesByLevel = { b1:[], b2:[], c1:[], c2:[] };
+    const dialoguesByLevel = stats?.dialoguesByLevel || { b1:[], b2:[], c1:[], c2:[] };
     DIALOGUES.forEach(d => dialoguesByLevel[d.level]?.push(d.id));
 
     return {
@@ -3401,8 +3401,8 @@ async function renderAdminBody(){
 
 async function renderAdminOverview(){
   const stats = await store.getAdminStats();
-  const users = await store.getAllUsers();
-  const allProgress = await store.getAllProgress();
+  const users = (await store.getAllUsers()).filter(u => u && u.id && u.name);
+  const allProgress = (await store.getAllProgress()) || {};
 
   // Distribución por plan
   const planFree = users.filter(u => u.plan === 'free').length;
@@ -3410,18 +3410,21 @@ async function renderAdminOverview(){
   const maxPlan = Math.max(planFree, planPremium, 1);
 
   // Distribución de propietarios por nivel
-  const ownersData = LEVELS.map(l => ({
-    code: l.code,
-    color: l.color,
-    count: stats.levelOwners[l.id] || 0
-  }));
-  const maxOwners = Math.max(...ownersData.map(x => x.count), 1);
+  const ownersData = LEVELS
+    .filter(l => l && l.id)
+    .map(l => ({
+      code: l.code || l.id.toUpperCase(),
+      color: l.color || '#0072CE',
+      count: (stats?.levelOwners?.[l.id]) || 0
+    }));
+  const maxOwners = Math.max(...ownersData.map(x => x.count || 0), 1);
+
 
   // Actividad reciente: últimos 8 usuarios con progreso
     
     const recent = users
-    .filter(u => u.role !== 'admin')
-    .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))  // ← created_at, no createdAt
+    .filter(u => u && u.role !== 'admin' && u.id)   // ← quita undefined
+    .sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
     .slice(0, 8);
 
   return `
@@ -3500,22 +3503,25 @@ async function renderAdminOverview(){
         </thead>
         <tbody>
           ${recent.length ? recent.map(r => {
-            const p = allProgress[r.user.id] || { completed: [], quizScores: [] };
-            const acc = p.quizScores.length
-              ? Math.round(p.quizScores.reduce((s,q)=>s+q.score,0) / p.quizScores.reduce((s,q)=>s+q.total,0) * 100)
-              : 0;
-            const pct = Math.round(p.completed.length / DIALOGUES.length * 100);
+            const p = (allProgress && allProgress[r.id]) || { completed: [], quizScores: [] };
+            const totalScore = (p.quizScores || []).reduce((s,q) => s + (q?.score || 0), 0);
+            const totalQuiz = (p.quizScores || []).reduce((s,q) => s + (q?.total || 0), 0);
+            const acc = totalQuiz ? Math.round(totalScore / totalQuiz * 100) : 0;
+            const pct = Math.round((p.completed?.length || 0) / DIALOGUES.length * 100);
+            const safeName = r.name || 'Sin nombre';
+            const safeEmail = r.email || '';
+            const safeDate = r.created_at ? new Date(r.created_at).toLocaleDateString('es-MX') : '—';
             return `<tr>
               <td>
                 <div class="cell-user">
-                  <div class="admin-avatar">${initials(r.user.name)}</div>
+                  <div class="admin-avatar">${initials(safeName)}</div>
                   <div class="cell-user-info">
-                    <b>${esc(r.user.name)}</b>
-                    <small>${esc(r.user.email)}</small>
+                    <b>${esc(safeName)}</b>
+                    <small>${esc(safeEmail)}</small>
                   </div>
                 </div>
               </td>
-              <td style="color:var(--ink-2);font-size:12.5px">${new Date(r.user.createdAt).toLocaleDateString('es-MX')}</td>
+              <td style="color:var(--ink-2);font-size:12.5px">${safeDate}</td>
               <td>
                 <div class="progress-mini">
                   <div class="pm-bar"><div style="width:${pct}%"></div></div>
@@ -3525,7 +3531,7 @@ async function renderAdminOverview(){
               <td style="font-weight:700;color:${acc>=70?'var(--ok)':acc>=50?'var(--gold-2)':'var(--ink-2)'}">${acc}%</td>
               <td style="text-align:right">
                 <div class="row-actions" style="justify-content:flex-end">
-                  <button class="row-btn" data-admin-user="${r.user.id}" title="Ver detalle">👁</button>
+                  <button class="row-btn" data-admin-user="${r.id}" title="Ver detalle">👁</button>
                 </div>
               </td>
             </tr>`;
