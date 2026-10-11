@@ -1415,146 +1415,7 @@ function traduceError(msg){
    Supabase/Firebase/backend propio, solo cambia los métodos
    de este objeto y el resto de la app sigue funcionando igual.
    ============================================================ 
-const store = {
-  KEY_USERS: 'toefl_users',
-  KEY_SESSION: 'toefl_session',
-  KEY_PROGRESS: 'toefl_progress',
-
-  get users(){ return JSON.parse(localStorage.getItem(this.KEY_USERS) || '[]'); },
-  set users(v){ localStorage.setItem(this.KEY_USERS, JSON.stringify(v)); },
-
-  get session(){ return JSON.parse(localStorage.getItem(this.KEY_SESSION) || 'null'); },
-  set session(v){ v ? localStorage.setItem(this.KEY_SESSION, JSON.stringify(v)) : localStorage.removeItem(this.KEY_SESSION); },
-
-  get progress(){ return JSON.parse(localStorage.getItem(this.KEY_PROGRESS) || '{}'); },
-  set progress(v){ localStorage.setItem(this.KEY_PROGRESS, JSON.stringify(v)); },
-
-  findUser(email){
-    return this.users.find(u => u.email.toLowerCase() === email.toLowerCase());
-  },
-  createUser({name, email, password}){
-    if(this.findUser(email)) throw new Error('Ya existe una cuenta con ese email.');
-    const user = {
-      id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-      name, email: email.toLowerCase(), password,  // ⚠️ demo: hashear en backend real
-      role: 'student',
-      createdAt: new Date().toISOString(),
-      plan: 'free',
-      levels: { b1:false, b2:false, c1:false, c2:false }
-    };
-    this.users = [...this.users, user];
-    return user;
-  },
-  login(email, password){
-    const u = this.findUser(email);
-    if(!u) throw new Error('No existe una cuenta con ese email.');
-    if(u.password !== password) throw new Error('Contraseña incorrecta.');
-    return u;
-  },
-  updateUser(id, patch){
-    this.users = this.users.map(u => u.id === id ? {...u, ...patch} : u);
-  },
-  getUserProgress(userId){
-    return this.progress[userId] || { completed: [], quizScores: [] };
-  },
-  saveUserProgress(userId, data){
-    const p = this.progress;
-    p[userId] = data;
-    this.progress = p;
-  },
-
-  getAllUsers(){ return this.users; },
-
-  getAllProgress(){ return this.progress; },
-
-  updateUserRole(userId, role){
-    this.updateUser(userId, { role });
-  },
-
-  unlockLevel(userId, levelId){
-    const user = this.users.find(u => u.id === userId);
-    if(!user) return;
-    user.levels = user.levels || {};
-    user.levels[levelId] = true;
-    this.updateUser(userId, { levels: user.levels, plan: 'premium' });
-  },
-
-  lockLevel(userId, levelId){
-    const user = this.users.find(u => u.id === userId);
-    if(!user) return;
-    user.levels = user.levels || {};
-    user.levels[levelId] = false;
-    this.updateUser(userId, { levels: user.levels });
-  },
-
-  deleteUser(userId){
-    this.users = this.users.filter(u => u.id !== userId);
-    const p = this.progress;
-    delete p[userId];
-    this.progress = p;
-  },
-
-  ensureAdminExists(){
-    const admin = this.users.find(u => u.role === 'admin');
-    if(admin) return admin;
-    const newAdmin = {
-      id: 'u_admin_' + Date.now().toString(36),
-      name: 'Administrador',
-      email: 'admin@toefl.local',
-      password: 'admin123',
-      role: 'admin',
-      plan: 'premium',
-      levels: { b1:true, b2:true, c1:true, c2:true },
-      createdAt: new Date().toISOString()
-    };
-    this.users = [...this.users, newAdmin];
-    return newAdmin;
-  },
-
-  getAdminStats(){
-    const users = this.users;
-    const progress = this.progress;
-    const now = Date.now();
-    const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
-
-    const totalUsers = users.length;
-    const adminCount = users.filter(u => u.role === 'admin').length;
-    const newThisWeek = users.filter(u => new Date(u.createdAt).getTime() > weekAgo).length;
-    const premiumUsers = users.filter(u => u.plan === 'premium').length;
-
-    let totalCompleted = 0;
-    let totalQuizScore = 0;
-    let totalQuizTotal = 0;
-    const levelCompletions = { b1:0, b2:0, c1:0, c2:0 };
-    const levelOwners = { b1:0, b2:0, c1:0, c2:0 };
-    const dialoguesByLevel = { b1:[], b2:[], c1:[], c2:[] };
-    DIALOGUES.forEach(d => dialoguesByLevel[d.level]?.push(d.id));
-
-    users.forEach(u => {
-      const p = progress[u.id] || { completed: [], quizScores: [] };
-      totalCompleted += p.completed.length;
-      p.quizScores.forEach(q => {
-        totalQuizScore += q.score;
-        totalQuizTotal += q.total;
-      });
-      Object.keys(levelOwners).forEach(lv => {
-        if(u.levels?.[lv]) levelOwners[lv]++;
-      });
-      p.completed.forEach(id => {
-        const d = DIALOGUES.find(x => x.id === id);
-        if(d && levelCompletions[d.level] !== undefined) levelCompletions[d.level]++;
-      });
-    });
-
-    return {
-      totalUsers, adminCount, newThisWeek, premiumUsers,
-      totalCompleted,
-      avgAccuracy: totalQuizTotal ? Math.round(totalQuizScore / totalQuizTotal * 100) : 0,
-      levelCompletions, levelOwners, dialoguesByLevel,
-      totalDialogues: DIALOGUES.length
-    };
-  }
-};*/
+*/
 
 /* ============================================================
    2. CATÁLOGO · Niveles CEFR + Diálogos
@@ -2955,52 +2816,7 @@ function bindAuth(){
   });
 }
   
-/*function bindAuth(){
-  const alertEl = $('#authAlert');
-  const showAlert = (msg, type='err') => {
-    alertEl.className = `alert ${type} show`;
-    alertEl.textContent = msg;
-  };
 
-  const loginForm = $('#loginForm');
-  if(loginForm) loginForm.onsubmit = e => {
-    e.preventDefault();
-    const fd = new FormData(loginForm);
-    try {
-      const user = store.login(fd.get('email'), fd.get('password'));
-      store.session = {email: user.email, at: Date.now()};
-      $('#authModal').classList.remove('show');
-      toast(`¡Bienvenido, ${user.name.split(' ')[0]}!`, 'ok');
-      UI.view = 'dashboard';
-      render();
-    } catch(err){ showAlert(err.message); }
-  };
-
-  const registerForm = $('#registerForm');
-  if(registerForm) registerForm.onsubmit = e => {
-    e.preventDefault();
-    const fd = new FormData(registerForm);
-    try {
-      const user = store.createUser({
-        name: fd.get('name').trim(),
-        email: fd.get('email').trim(),
-        password: fd.get('password')
-      });
-      // B1 módulo 1 gratis
-      user.levels.b1 = true;
-      store.updateUser(user.id, {levels: user.levels});
-      store.session = {email: user.email, at: Date.now()};
-      $('#authModal').classList.remove('show');
-      toast('¡Cuenta creada! Tienes acceso a B1 módulo 1.', 'ok');
-      UI.view = 'dashboard';
-      render();
-    } catch(err){ showAlert(err.message); }
-  };
-
-  $$('#authModal [data-auth]').forEach(el => {
-    el.onclick = () => openAuth(el.dataset.auth);
-  });
-}*/
 
 /* ============================================================
    12. CHECKOUT MODAL
@@ -3602,19 +3418,7 @@ async function renderAdminOverview(){
   const maxOwners = Math.max(...ownersData.map(x => x.count), 1);
 
   // Actividad reciente: últimos 8 usuarios con progreso
-  /*const recent = users
-    .filter(u => u.role !== 'admin')
-    .map(u => {
-      const p = progress[u.id] || { completed: [], quizScores: [] };
-      return {
-        user: u,
-        completed: p.completed.length,
-        createdAt: new Date(u.createdAt).getTime()
-      };
-    })
-    .sort((a,b) => b.createdAt - a.createdAt)
-    .slice(0, 8);*/
-  
+    
     const recent = users
     .filter(u => u.role !== 'admin')
     .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))  // ← created_at, no createdAt
@@ -3696,7 +3500,7 @@ async function renderAdminOverview(){
         </thead>
         <tbody>
           ${recent.length ? recent.map(r => {
-            const p = progress[r.user.id] || { completed: [], quizScores: [] };
+            const p = allProgress[r.user.id] || { completed: [], quizScores: [] };
             const acc = p.quizScores.length
               ? Math.round(p.quizScores.reduce((s,q)=>s+q.score,0) / p.quizScores.reduce((s,q)=>s+q.total,0) * 100)
               : 0;
