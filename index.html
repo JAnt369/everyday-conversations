@@ -3186,8 +3186,8 @@ if(adminLock){
 }
 
 // Export CSV
-if(e.target.id === 'adminExportUsers'){ exportUsersCSV(); return; }
-if(e.target.id === 'adminExportProgress'){ exportProgressCSV(); return; }
+if(e.target.id === 'adminExportUsers'){ await exportUsersCSV(); return; }
+if(e.target.id === 'adminExportProgress'){ await exportProgressCSV(); return; }
 if(e.target.id === 'adminRefresh'){ render(); toast('Datos actualizados', 'ok'); return; }
   
   // navegación
