@@ -3044,17 +3044,27 @@ if(e.target.id === 'adminRefresh'){ render(); toast('Datos actualizados', 'ok');
     return;
   }
   // dashboard tabs
-  const dashTab = e.target.closest('.dash-tab');
-  if(dashTab){
-    $$('.dash-tab').forEach(t=>t.classList.remove('active'));
-    dashTab.classList.add('active');
-    //const user = store.findUser(store.session.email);
-    const user = await store.getUser();
-    $('#dashBody').innerHTML = dashTab.dataset.dash === 'inscripciones'
-      ? renderDashInscripciones(user)
-      : renderDashLevels(user);
-    return;
+ const dashTab = e.target.closest('.dash-tab');
+ if(dashTab){
+  e.preventDefault();
+  
+  $$('.dash-tab').forEach(t => t.classList.remove('active'));
+  dashTab.classList.add('active');
+  
+  const user = await store.getUser();
+  if(!user) return;
+  
+  const body = $('#dashBody');
+  if(body){
+    if(dashTab.dataset.dash === 'inscripciones'){
+      body.innerHTML = renderDashInscripciones(user);
+    } else {
+      body.innerHTML = await renderDashLevels(user);   // ← AQUÍ el await
+    }
   }
+  return;
+}
+  
   // abrir curso
   const openBtn = e.target.closest('[data-open]');
   if(openBtn){
