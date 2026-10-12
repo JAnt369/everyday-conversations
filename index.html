@@ -1931,6 +1931,17 @@ const DIALOGUES = [
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+// Fisher-Yates shuffle — baraja un array sin mutar el original
+const shuffle = a => {
+  const arr = [...a];
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
+  
 const getLevel = id => LEVELS.find(l => l.id === id);
 const getDialogue = id => DIALOGUES.find(d => d.id === id);
 const initials = name => name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
@@ -2655,7 +2666,7 @@ function renderPracticaTab(d){
 function makeCloze(d){
   const items = [];
   const candidates = d.lines.filter(l => l.t.split(' ').length >= 6);
-  candidates.slice(0,5).forEach(l => {
+  shuffle(candidates).slice(0,5).forEach(l => {
     const words = l.t.split(' ');
     const opts = words.map((w,idx)=>({w,idx})).filter(o => o.idx>0 && o.w.replace(/[^A-Za-z']/g,'').length>=5);
     if(!opts.length) return;
