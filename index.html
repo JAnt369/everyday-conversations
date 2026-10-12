@@ -1372,7 +1372,7 @@ const store = {
       if(d && levelCompletions[d.level] !== undefined) levelCompletions[d.level]++;
     });
 
-    const dialoguesByLevel = stats?.dialoguesByLevel || { b1:[], b2:[], c1:[], c2:[] };
+    const dialoguesByLevel = { b1:[], b2:[], c1:[], c2:[] };
     DIALOGUES.forEach(d => dialoguesByLevel[d.level]?.push(d.id));
 
     return {
