@@ -3063,6 +3063,30 @@ function closeCourseSide(){
   $('#courseSideBackdrop')?.classList.remove('show');
   document.body.style.overflow = '';
 }
+  /* ---------- Menú móvil ---------- */
+function openNavMobile(){
+  const panel = $('#navMobilePanel');
+  const backdrop = $('#navMobileBackdrop');
+  const icon = $('#navMobileIcon');
+  if(panel) panel.classList.add('open');
+  if(backdrop) backdrop.classList.add('open');
+  if(icon) icon.textContent = '×';
+}
+
+function closeNavMobile(){
+  const panel = $('#navMobilePanel');
+  const backdrop = $('#navMobileBackdrop');
+  const icon = $('#navMobileIcon');
+  if(panel) panel.classList.remove('open');
+  if(backdrop) backdrop.classList.remove('open');
+  if(icon) icon.textContent = '☰';
+}
+
+function toggleNavMobile(){
+  const panel = $('#navMobilePanel');
+  if(panel?.classList.contains('open')) closeNavMobile();
+  else openNavMobile();
+}
   
 /* ============================================================
    14. EVENTOS GLOBALES
@@ -3070,6 +3094,22 @@ function closeCourseSide(){
 document.addEventListener('click', async e => {
   // Admin tabs
 const adminTab = e.target.closest('.admin-tab');
+
+// Toggle del menú móvil
+if(e.target.closest('#navMobileToggle')){ toggleNavMobile(); return; }
+
+// Cerrar al tocar el backdrop
+if(e.target.closest('#navMobileBackdrop')){ closeNavMobile(); return; }
+
+// Cerrar al pulsar cualquier botón dentro del panel
+if(e.target.closest('#navMobilePanel button')){
+  closeNavMobile();
+  // Nota: no hacemos return aquí porque queremos que los handlers de
+  // data-nav, data-logout, etc., sigan ejecutándose abajo.
+}
+if(e.key === 'Escape'){
+  closeNavMobile();
+}
 if(adminTab){
   UI.adminTab = adminTab.dataset.admin;
   $$('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.admin === UI.adminTab));
