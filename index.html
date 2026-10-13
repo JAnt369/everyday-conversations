@@ -2308,39 +2308,12 @@ async function renderLanding(){
 /* ============================================================
    6. TOP NAV
    ============================================================ 
-function renderTopNav(){
-  const user = store.session ? store.findUser(store.session.email) : null;
-  const dark = UI.view === 'landing';
-
-  return `
-  <nav class="topnav ${dark?'dark':''}">
-    <div class="logo" style="cursor:pointer" data-nav="landing">
-      <div class="logo-icon">🎓</div>
-      <div>
-        <div>TOEFL ITP Academy</div>
-        <small>Everyday Conversations</small>
-      </div>
-    </div>
-    <div class="nav-spacer"></div>
-    <div class="nav-links">
-      ${user ? `
-        <button data-nav="dashboard">Mi panel</button>
-        <button data-nav="pricing">Inscripciones</button>
-        <button data-logout>Cerrar sesión</button>
-      ` : `
-        <button data-scroll="levels">Niveles</button>
-        <button data-scroll="pricing-top">Precios</button>
-        <button data-auth="login">Iniciar sesión</button>
-        <button class="btn btn-gold btn-sm" data-auth="register">Registrarse</button>
-      `}
-    </div>
-  </nav>`;
-}*/
+*/
 
 async function renderTopNav(){
-  //const user = store.session ? store.findUser(store.session.email) : null;
   const user = await store.getUser();
   const dark = UI.view === 'landing';
+  const isAdmin = user?.role === 'admin';
 
   return `
   <nav class="topnav ${dark?'dark':''}">
@@ -2352,9 +2325,11 @@ async function renderTopNav(){
       </div>
     </div>
     <div class="nav-spacer"></div>
+
+    <!-- Desktop: enlaces normales -->
     <div class="nav-links">
       ${user ? `
-        ${user.role === 'admin' ? `<button data-nav="admin" style="color:var(--gold-2);font-weight:800">⚡ Admin</button>` : ''}
+        ${isAdmin ? `<button data-nav="admin" style="color:var(--gold-2);font-weight:800">⚡ Admin</button>` : ''}
         <button data-nav="dashboard">Mi panel</button>
         <button data-nav="pricing">Inscripciones</button>
         <button data-logout>Cerrar sesión</button>
@@ -2365,7 +2340,49 @@ async function renderTopNav(){
         <button class="btn btn-gold btn-sm" data-auth="register">Registrarse</button>
       `}
     </div>
-  </nav>`;
+
+    <!-- Móvil: botón hamburguesa -->
+    <button class="nav-mobile-toggle" id="navMobileToggle" aria-label="Menú">
+      <span id="navMobileIcon">☰</span>
+    </button>
+
+    <!-- Móvil: panel desplegable -->
+    <div class="nav-mobile-panel" id="navMobilePanel">
+      ${user ? `
+        <button data-nav="dashboard">
+          <span class="icon">📊</span> Mi panel
+        </button>
+        ${isAdmin ? `
+          <button data-nav="admin" class="admin">
+            <span class="icon">⚡</span> Panel de administración
+          </button>
+        ` : ''}
+        <button data-nav="pricing">
+          <span class="icon">💳</span> Inscripciones
+        </button>
+        <button data-logout class="danger">
+          <span class="icon">🚪</span> Cerrar sesión
+        </button>
+      ` : `
+        <button data-scroll="levels">
+          <span class="icon">📚</span> Niveles
+        </button>
+        <button data-scroll="pricing-top">
+          <span class="icon">💵</span> Precios
+        </button>
+        <button data-auth="login">
+          <span class="icon">🔑</span> Iniciar sesión
+        </button>
+        <button data-auth="register" class="admin">
+          <span class="icon">✨</span> Registrarse
+        </button>
+      `}
+    </div>
+  </nav>
+
+  <!-- Backdrop para cerrar al tocar fuera (solo móvil) -->
+  <div class="nav-mobile-backdrop" id="navMobileBackdrop"></div>
+  `;
 }
   
 /* ============================================================
