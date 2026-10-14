@@ -1231,6 +1231,12 @@ body.modal-open .wa-float{
   .wa-tooltip{display:none}
 }
 
+  @media(max-width:900px){
+  .course-side-toggle{
+    bottom:22px;left:16px;   /*  lo tienes */
+  }
+}
+
 /* En la vista de curso, aleja el botón del drawer 📚 */
 body.view-course .wa-float{
   bottom:22px;right:16px;
@@ -1292,10 +1298,8 @@ body.view-course .wa-float{
   window.supabaseClient = supabaseClient;
 </script>
 
-/* ============================================================
-   CONFIGURACIÓN DE WHATSAPP
-   ============================================================ */
-  
+//CONFIGURACIÓN DE WHATSAPP
+ 
 const WHATSAPP_CONFIG = {
   //  tu número real (código país + número, sin + ni espacios)
   phone: '527821210630',
@@ -1310,11 +1314,9 @@ const WHATSAPP_CONFIG = {
   }
 };
 
-/*
-  Genera la URL de WhatsApp con el mensaje según el contexto actual.
-  @param {string} context - 'landing' | 'pricing' | 'dashboard' | 'course' | 'admin'
-  @returns {string} URL completa
- */
+  // Genera la URL de WhatsApp con el mensaje según el contexto actual.
+  // @param {string} context - 'landing' | 'pricing' | 'dashboard' | 'course' | 'admin'
+  // @returns {string} URL completa
   
 function buildWhatsAppURL(context = 'landing'){
   const msg = WHATSAPP_CONFIG.messages[context] || WHATSAPP_CONFIG.messages.landing;
@@ -2218,19 +2220,6 @@ const UI = {
 /* ============================================================
    4. ROUTER / RENDER
    ============================================================ 
-function render(){
-  const app = $('#app');
-  const user = store.session ? store.findUser(store.session.email) : null;
-
-  if(!user && UI.view !== 'landing' && UI.view !== 'pricing') UI.view = 'landing';
-
-  if(UI.view === 'landing')      app.innerHTML = renderLanding();
-  else if(UI.view === 'dashboard') app.innerHTML = renderDashboard(user);
-  else if(UI.view === 'course')    app.innerHTML = renderCourse(user);
-  else if(UI.view === 'pricing')   app.innerHTML = renderPricing(user);
-
-  window.scrollTo({top:0,behavior:'instant'});
-}
 */
   async function render(){
   const app = $('#app');
@@ -2265,8 +2254,36 @@ function render(){
   window.scrollTo({top:0,behavior:'instant'});
     // Después de window.scrollTo(...)
  closeNavMobile();
+ updateWhatsAppButton();
 }
 
+//=============================== updateWhatsAppButton
+  function updateWhatsAppButton(){
+  const float = document.getElementById('waFloat');
+  if(!float) return;
+
+  // Contexto según la vista actual
+  let context = 'landing';
+  if(UI.view === 'dashboard') context = 'dashboard';
+  else if(UI.view === 'course') context = 'course';
+  else if(UI.view === 'pricing') context = 'pricing';
+  else if(UI.view === 'admin') context = 'admin';
+
+  float.href = buildWhatsAppURL(context);
+
+  // Marcar el body para ajustes responsive
+  document.body.classList.toggle('view-course', UI.view === 'course');
+
+  // Mostrar tooltip automáticamente la primera vez que se ve
+  if(!sessionStorage.getItem('wa_tip_shown')){
+    setTimeout(() => {
+      float.classList.add('show-tip');
+      setTimeout(() => float.classList.remove('show-tip'), 4000);
+      sessionStorage.setItem('wa_tip_shown', '1');
+    }, 3000);
+  }
+}
+  
 // ================================= manage of Callback on the App
 
   // Detectar retorno desde email de confirmación
@@ -3647,6 +3664,16 @@ function renderFooter(){
   if(user){
     UI.view = 'dashboard';
   }
+
+  // Observer para detectar cuándo se abren/cierran modales
+  const modalObserver = new MutationObserver(() => {
+  const anyOpen = document.querySelector('.modal-backdrop.show');
+  document.body.classList.toggle('modal-open', !!anyOpen);
+});
+
+  document.querySelectorAll('.modal-backdrop').forEach(m => {
+  modalObserver.observe(m, { attributes: true, attributeFilter: ['class'] });
+});  
   render();
 })();
   
