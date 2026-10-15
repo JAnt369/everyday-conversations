@@ -1299,7 +1299,7 @@ body.view-course .wa-float{
 </script>
 
 //CONFIGURACIÓN DE WHATSAPP
- 
+<script> 
 const WHATSAPP_CONFIG = {
   //  tu número real (código país + número, sin + ni espacios)
   phone: '527821210630',
@@ -1322,6 +1322,7 @@ function buildWhatsAppURL(context = 'landing'){
   const msg = WHATSAPP_CONFIG.messages[context] || WHATSAPP_CONFIG.messages.landing;
   return `https://wa.me/${WHATSAPP_CONFIG.phone}?text=${encodeURIComponent(msg)}`;
 }
+</script>
   
 <script>
 /* ============================================================
