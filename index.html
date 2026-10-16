@@ -1300,14 +1300,11 @@ body.view-course .wa-float{
 
 
  
- <script> 
-  
-
+ <script>   
   /* ============================================================
    CONFIGURACIÓN DE WHATSAPP
    ============================================================ */
-const WHATSAPP_CONFIG = {
-  // ⚠️ REEMPLAZA con tu número real
+  const WHATSAPP_CONFIG = {
   phone: '527821210630',
 
   // Mensajes por contexto (para usuarios anónimos)
@@ -1377,7 +1374,7 @@ function buildWhatsAppURL(context = 'landing', user = null){
 
   return `https://wa.me/${WHATSAPP_CONFIG.phone}?text=${encodeURIComponent(message)}`;
 }
-</body>script>
+</script>
   
 <script>
 /* ============================================================
