@@ -1299,31 +1299,85 @@ body.view-course .wa-float{
 </script>
 
 
-<script> 
-  //CONFIGURACIÓN DE WHATSAPP
+ 
+ <script> 
+  
+
+  /* ============================================================
+   CONFIGURACIÓN DE WHATSAPP
+   ============================================================ */
 const WHATSAPP_CONFIG = {
-  //  tu número real (código país + número, sin + ni espacios)
+  // ⚠️ REEMPLAZA con tu número real
   phone: '527821210630',
 
-  // Mensajes por contexto (se personalizan según la vista)
+  // Mensajes por contexto (para usuarios anónimos)
   messages: {
     landing:   'Hola, vengo de TOEFL ITP Academy. Quiero información sobre los cursos de inglés.',
     pricing:   'Hola, me interesa inscribirme a un nivel de TOEFL ITP Academy. ¿Me ayudan?',
     dashboard: 'Hola, soy alumno de TOEFL ITP Academy y tengo una pregunta sobre mi curso.',
     course:    'Hola, soy alumno de TOEFL ITP Academy y necesito ayuda con un módulo.',
     admin:     'Hola, contacto desde el panel de administración de TOEFL ITP Academy.'
+  },
+
+  // Etiquetas por contexto para el mensaje enriquecido
+  contextLabels: {
+    landing:   'información general',
+    pricing:   'inscripciones y pagos',
+    dashboard: 'mi panel de alumno',
+    course:    'un módulo del curso',
+    admin:     'administración'
   }
 };
 
-  // Genera la URL de WhatsApp con el mensaje según el contexto actual.
-  // @param {string} context - 'landing' | 'pricing' | 'dashboard' | 'course' | 'admin'
-  // @returns {string} URL completa
-  
-function buildWhatsAppURL(context = 'landing'){
-  const msg = WHATSAPP_CONFIG.messages[context] || WHATSAPP_CONFIG.messages.landing;
-  return `https://wa.me/${WHATSAPP_CONFIG.phone}?text=${encodeURIComponent(msg)}`;
+/**
+ * Genera la URL de WhatsApp con mensaje enriquecido.
+ * Si hay usuario logueado, incluye nombre, email, ID y niveles.
+ * Si no, usa el mensaje genérico del contexto.
+ *
+ * @param {string} context - 'landing' | 'pricing' | 'dashboard' | 'course' | 'admin'
+ * @param {object|null} user - Objeto usuario (opcional, ya cargado)
+ * @returns {string} URL completa de WhatsApp
+ */
+function buildWhatsAppURL(context = 'landing', user = null){
+  const ctxLabel = WHATSAPP_CONFIG.contextLabels[context] || 'información';
+
+  let message;
+
+  if(user){
+    // Usuario identificado: mensaje enriquecido
+    const firstName = user.name?.split(' ')[0] || 'alumno';
+    const levels = Object.entries(user.levels || {})
+      .filter(([k,v]) => v)
+      .map(([k]) => k.toUpperCase())
+      .join(', ') || 'ninguno';
+
+    const dialogue = UI.currentDialogue
+      ? DIALOGUES.find(d => d.id === UI.currentDialogue)
+      : null;
+
+    const lines = [
+      `Hola 👋`,
+      ``,
+      `Soy ${user.name || 'alumno'}.`,
+      `📧 ${user.email || 'sin email'}`,
+      `🆔 ${user.id || 'sin id'}`,
+      `📚 Niveles activos: ${levels}`,
+    ];
+
+    if(dialogue) lines.push(`📖 Viendo ahora: ${dialogue.title} (${dialogue.level.toUpperCase()})`);
+
+    lines.push('');
+    lines.push(`Vengo de TOEFL ITP Academy y necesito ayuda con ${ctxLabel}.`);
+
+    message = lines.join('\n');
+  } else {
+    // Anónimo: mensaje simple
+    message = WHATSAPP_CONFIG.messages[context] || WHATSAPP_CONFIG.messages.landing;
+  }
+
+  return `https://wa.me/${WHATSAPP_CONFIG.phone}?text=${encodeURIComponent(message)}`;
 }
-</script>
+</body>script>
   
 <script>
 /* ============================================================
@@ -2256,11 +2310,11 @@ const UI = {
   window.scrollTo({top:0,behavior:'instant'});
     // Después de window.scrollTo(...)
  closeNavMobile();
- updateWhatsAppButton();
+ await updateWhatsAppButton();
 }
 
 //=============================== updateWhatsAppButton
-  function updateWhatsAppButton(){
+async function updateWhatsAppButton(){
   const float = document.getElementById('waFloat');
   if(!float) return;
 
@@ -2271,12 +2325,21 @@ const UI = {
   else if(UI.view === 'pricing') context = 'pricing';
   else if(UI.view === 'admin') context = 'admin';
 
-  float.href = buildWhatsAppURL(context);
+  // Obtener usuario si hay sesión activa
+  let user = null;
+  try {
+    user = await store.getUser();
+  } catch(e) {
+    // Sin sesión, usuario anónimo
+    user = null;
+  }
+
+  float.href = buildWhatsAppURL(context, user);
 
   // Marcar el body para ajustes responsive
   document.body.classList.toggle('view-course', UI.view === 'course');
 
-  // Mostrar tooltip automáticamente la primera vez que se ve
+  // Tooltip automático (una vez por sesión)
   if(!sessionStorage.getItem('wa_tip_shown')){
     setTimeout(() => {
       float.classList.add('show-tip');
@@ -2284,6 +2347,13 @@ const UI = {
       sessionStorage.setItem('wa_tip_shown', '1');
     }, 3000);
   }
+  // Dentro de updateWhatsAppButton, después de obtener `user`:
+ const tooltip = document.getElementById('waTooltip');
+ if(tooltip){
+  tooltip.textContent = user
+    ? `¿Te ayudo, ${user.name.split(' ')[0]}? 💬`
+    : '¿Necesitas ayuda? 💬';
+ }
 }
   
 // ================================= manage of Callback on the App
