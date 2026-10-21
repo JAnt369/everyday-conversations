@@ -3022,6 +3022,7 @@ async function renderTopNav(){
   const user = await store.getUser();
   const dark = UI.view === 'landing';
   const isAdmin = user?.role === 'admin';
+  const isTeacher = user?.role === 'teacher';
 
   return `
   <nav class="topnav ${dark?'dark':''}">
@@ -3038,6 +3039,9 @@ async function renderTopNav(){
     <div class="nav-links">
       ${user ? `
         ${isAdmin ? `<button data-nav="admin" style="color:var(--gold-2);font-weight:800">⚡ Admin</button>` : ''}
+        ${isTeacher ? `
+          <button data-nav="teacher" style="color:var(--gold-2);font-weight:800">👨‍🏫 Docente </button>
+        ` : ''}
         <button data-nav="dashboard">Mi panel</button>
         <button data-nav="pricing">Inscripciones</button>
         <button data-logout>Cerrar sesión</button>
@@ -3063,6 +3067,11 @@ async function renderTopNav(){
         ${isAdmin ? `
           <button data-nav="admin" class="admin">
             <span class="icon">⚡</span> Panel de administración
+          </button>
+        ` : ''}
+        ${isTeacher ? `
+          <button data-nav="teacher" class="teacher">
+            <span class="icon">👨‍🏫</span> Docente
           </button>
         ` : ''}
         <button data-nav="pricing">
