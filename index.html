@@ -2744,6 +2744,7 @@ const UI = {
   quiz: null,
   authMode: 'login',       // login | register
   adminTab: 'overview',      // 'overview' | 'users' | 'levels'
+  teacherTab: 'overview',
   adminSearch: '',
   adminFilterRole: 'all',    // 'all' | 'student' | 'admin'
   adminFilterPlan: 'all',    // 'all' | 'free' | 'premium'
@@ -2755,9 +2756,8 @@ const UI = {
    ============================================================ 
 */
   async function render(){
-  const app = $('#app');
-  //const user = store.session ? store.findUser(store.session.email) : null;
-    const user = await store.getUser();
+  const app = $('#app');  
+  const user = await store.getUser();
 
   if(!user && UI.view !== 'landing' && UI.view !== 'pricing') UI.view = 'landing';
 
@@ -2766,6 +2766,7 @@ const UI = {
   else if(UI.view === 'course')    app.innerHTML = await renderCourse(user);
   else if(UI.view === 'pricing')   app.innerHTML = await renderPricing(user);
   else if(UI.view === 'admin')     app.innerHTML = await renderAdmin(user);
+  else if(UI.view === 'teacher')   app.innerHTML = await renderTeacher(user);
   else                             app.innerHTML = await renderLanding();
 
   // Post-render: inyectar pricing cards donde exista #pricing
@@ -2783,7 +2784,12 @@ const UI = {
     const body = $('#adminBody');
     if(body) body.innerHTML = await renderAdminBody();    
   }
-    
+  
+  if(user && user.role === 'teacher' && UI.view === 'teacher'){
+    const body = $('#teacherBody');
+    if(body) body.innerHTML = await renderTeacherBody(user);
+  }
+  
   window.scrollTo({top:0,behavior:'instant'});
     // Después de window.scrollTo(...)
  closeNavMobile();
@@ -3935,10 +3941,31 @@ if(adminLock){
   return;
 }
 
+// Pestañas del docente
+const teacherTab = e.target.closest('[data-teacher]');
+if(teacherTab){
+  UI.teacherTab = teacherTab.dataset.teacher;
+  $$('[data-teacher]').forEach(t => t.classList.toggle('active', t.dataset.teacher === UI.teacherTab));
+  const body = $('#teacherBody');
+  const user = await store.getUser();
+  if(body) body.innerHTML = await renderTeacherBody(user);
+  return;
+}
+
+// Ver detalle de alumno (vista docente, sin privilegios de modificación)
+const teacherUser = e.target.closest('[data-teacher-user]');
+if(teacherUser){
+  await openTeacherUserDetail(teacherUser.dataset.teacherUser);
+  return;
+}
+
 // Export CSV
 if(e.target.id === 'adminExportUsers'){ await exportUsersCSV(); return; }
 if(e.target.id === 'adminExportProgress'){ await exportProgressCSV(); return; }
 if(e.target.id === 'adminRefresh'){ render(); toast('Datos actualizados', 'ok'); return; }
+// Exportar CSV (versión del docente)
+if(e.target.id === 'teacherExportUsers'){ await exportTeacherUsersCSV(); return; }
+if(e.target.id === 'teacherExportProgress'){ await exportTeacherProgressCSV(); return; }
   
   // navegación
   const nav = e.target.closest('[data-nav]');
@@ -3948,6 +3975,7 @@ if(e.target.id === 'adminRefresh'){ render(); toast('Datos actualizados', 'ok');
     if(dest === 'dashboard'){ UI.view='dashboard'; render(); }
     if(dest === 'pricing'){ UI.view='pricing'; render(); }
     if(dest === 'admin'){ UI.view='admin'; UI.adminTab='overview'; render(); }
+    if(dest === 'teacher'){ UI.view='teacher'; UI.teacherTab='overview'; render(); }
     return;
   }
   // scroll interno
