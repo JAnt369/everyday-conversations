@@ -4771,7 +4771,7 @@ async function openUserDetail(userId){
   $('#checkoutModal').classList.add('show');
 }
 
-/* CSV Export */
+/*---------------------------------- CSV Export */
 async function exportUsersCSV(){
   const users = await store.getAllUsers();
   const allProgress = await store.getAllProgress();
@@ -4824,16 +4824,44 @@ function downloadCSV(rows, filename){
   URL.revokeObjectURL(url);
   toast(`Descargado: ${filename}`, 'ok');
 }
+  
+//------------------------------- exportTeacherUsersCSV
+async function exportTeacherUsersCSV(){
+  const user = await store.getUser();
+  const stats = await store.getTeacherStats(user.id);
+  const rows = [
+    ['ID','Nombre','Email','Plan','Niveles','Módulos completados','Precisión (%)','Registro']
+  ];
+  stats.students.forEach(s => {
+    const p = stats.progressByUser[s.id] || { completed: [], quizScores: [] };
+    const acc = p.quizScores.length
+      ? Math.round(p.quizScores.reduce((x,q)=>x+q.score,0) / p.quizScores.reduce((x,q)=>x+q.total,0) * 100)
+      : 0;
+    const levels = Object.entries(s.levels||{}).filter(([k,v])=>v).map(([k])=>k.toUpperCase()).join(' ');
+    rows.push([
+      s.id, s.name, s.email || '', s.plan, levels,
+      p.completed.length, acc, new Date(s.created_at).toLocaleDateString('es-MX')
+    ]);
+  });
+  downloadCSV(rows, 'mis-alumnos-toefl.csv');
+}
 
-// Asegurar que existe un admin
-//(function initAdmin(){
-  //const admin = store.ensureAdminExists();
-  //console.log('%c👑 Admin creado automáticamente', 'color:#FFB81C;font-weight:bold');
-  //console.log('%cEmail: admin@toefl.local', 'color:#0072CE');
-  //console.log('%cPassword: admin123', 'color:#0072CE');
-  //console.log('%c⚠️  Cambia estas credenciales en producción', 'color:#D93025;font-weight:bold');
-//})();
-
+async function exportTeacherProgressCSV(){
+  const user = await store.getUser();
+  const stats = await store.getTeacherStats(user.id);
+  const rows = [['Usuario','Email','Nivel','Módulo','Completado','Quiz Score','Quiz Total']];
+  stats.students.forEach(s => {
+    const p = stats.progressByUser[s.id] || { completed: [], quizScores: [] };
+    DIALOGUES.forEach(d => {
+      if(p.completed.includes(d.id)){
+        const q = p.quizScores.find(x => x.dialogueId === d.id);
+        rows.push([s.name, s.email || '', d.level.toUpperCase(), d.title, 'Sí', q?.score||'', q?.total||'']);
+      }
+    });
+  });
+  downloadCSV(rows, 'progreso-mis-alumnos-toefl.csv');
+}
+  
 render();
 </script>
 </body>
