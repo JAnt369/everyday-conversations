@@ -1257,6 +1257,29 @@ body.view-course .wa-float{
     bottom:88px;   /* deja espacio al botón 📚 */
   }
 }
+/* ============================================================
+   SELECTOR DE ROL EN REGISTRO
+   ============================================================ */
+.role-options{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;
+}
+.role-option{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:13px 14px;border:1.5px solid var(--line);
+  border-radius:12px;cursor:pointer;transition:.18s var(--t);
+  background:#fff;position:relative;
+}
+.role-option:hover{border-color:var(--blue);background:var(--blue-50)}
+.role-option:has(input:checked){
+  border-color:var(--blue);background:var(--blue-50);
+  box-shadow:0 0 0 3px rgba(0,114,206,.12);
+}
+.role-option input{accent-color:var(--blue);margin-top:3px;flex:0 0 auto}
+.role-option .role-emoji{font-size:22px;line-height:1;flex:0 0 auto}
+.role-option .role-text{flex:1}
+.role-option .role-text b{display:block;font-size:13.5px;font-weight:800;color:var(--navy);margin-bottom:2px}
+.role-option .role-text span{font-size:11.5px;color:var(--ink-3);line-height:1.4;display:block}
+@media(max-width:420px){.role-options{grid-template-columns:1fr}}
   
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1396,12 +1419,16 @@ const store = {
 
   /* ---------- AUTH ---------- */
 
-  async signUp({ name, email, password }){
+  async signUp({ name, email, password, role = 'student', teacherId = null }){
     const { data, error } = await supabaseClient.auth.signUp({
       email,
       password,
       options: {
-        data: { name },  // se pasa al trigger handle_new_user
+        data: {
+        name,
+        role,
+        teacher_id: teacherId || ''
+      },  // se pasa al trigger handle_new_user
         emailRedirectTo: 'https://jant369.github.io/everyday-conversations/' //window.location.origin
       }
     });
@@ -1690,9 +1717,117 @@ const store = {
       revenue30dCents: global.revenue_30d_cents,
       revenueByLevel: revenue
     };
-  }
-};
+  } //end getAdminStats
 
+  /* ---------- DOCENTES ---------- */
+
+async getTeachers(){
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, name, email')
+    .eq('role', 'teacher')
+    .order('name');
+  if(error){ console.warn(error); return []; }
+  return data || [];
+},
+
+async getTeacherStudents(teacherId){
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('teacher_id', teacherId)
+    .eq('role', 'student')
+    .order('created_at', { ascending: false });
+  if(error) throw new Error(error.message);
+  return data || [];
+},
+
+async getTeacherProgress(teacherId){
+  const students = await this.getTeacherStudents(teacherId);
+  if(!students.length) return {};
+  const ids = students.map(s => s.id);
+  const { data } = await supabase.from('progress').select('*').in('user_id', ids);
+  const out = {};
+  (data || []).forEach(r => {
+    if(!out[r.user_id]) out[r.user_id] = { completed: [], quizScores: [] };
+    if(r.completed) out[r.user_id].completed.push(r.dialogue_id);
+    if(r.quiz_total > 0) out[r.user_id].quizScores.push({
+      dialogueId: r.dialogue_id, score: r.quiz_score, total: r.quiz_total
+    });
+  });
+  return out;
+},
+
+async getTeacherStats(teacherId){
+  const students = await this.getTeacherStudents(teacherId);
+  const dialoguesByLevel = { b1:[], b2:[], c1:[], c2:[] };
+  DIALOGUES.forEach(d => dialoguesByLevel[d.level]?.push(d.id));
+
+  if(!students.length){
+    return {
+      totalStudents: 0, newThisWeek: 0, totalCompleted: 0, avgAccuracy: 0,
+      levelOwners: {b1:0,b2:0,c1:0,c2:0},
+      levelCompletions: {b1:0,b2:0,c1:0,c2:0},
+      dialoguesByLevel, recentActivity: [], students: [], progressByUser: {}
+    };
+  }
+
+  const studentIds = students.map(s => s.id);
+  const { data: progress } = await supabase
+    .from('progress').select('*').in('user_id', studentIds);
+
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const newThisWeek = students.filter(s =>
+    new Date(s.created_at).getTime() > weekAgo
+  ).length;
+
+  let totalCompleted = 0, totalQuizScore = 0, totalQuizTotal = 0;
+  const levelOwners = {b1:0,b2:0,c1:0,c2:0};
+  const levelCompletions = {b1:0,b2:0,c1:0,c2:0};
+  const progressByUser = {};
+
+  students.forEach(s => {
+    progressByUser[s.id] = { completed: [], quizScores: [] };
+    Object.keys(levelOwners).forEach(k => { if(s.levels?.[k]) levelOwners[k]++; });
+  });
+
+  (progress || []).forEach(r => {
+    if(!progressByUser[r.user_id]) return;
+    if(r.completed){
+      progressByUser[r.user_id].completed.push(r.dialogue_id);
+      totalCompleted++;
+      const d = DIALOGUES.find(x => x.id === r.dialogue_id);
+      if(d && levelCompletions[d.level] !== undefined) levelCompletions[d.level]++;
+    }
+    if(r.quiz_total > 0){
+      progressByUser[r.user_id].quizScores.push({
+        dialogueId: r.dialogue_id, score: r.quiz_score, total: r.quiz_total
+      });
+      totalQuizScore += r.quiz_score;
+      totalQuizTotal += r.quiz_total;
+    }
+  });
+
+  const recentActivity = students
+    .map(s => ({ user: s, progress: progressByUser[s.id] }))
+    .sort((a,b) => new Date(b.user.created_at) - new Date(a.user.created_at))
+    .slice(0, 8);
+
+  return {
+    totalStudents: students.length,
+    newThisWeek,
+    totalCompleted,
+    avgAccuracy: totalQuizTotal ? Math.round(totalQuizScore/totalQuizTotal*100) : 0,
+    levelOwners,
+    levelCompletions,
+    dialoguesByLevel,
+    recentActivity,
+    students,
+    progressByUser
+  };
+}//end getTeachers
+}; // end to object store
+  
 /* ---------- Traducción de errores de Supabase ---------- */
 function traduceError(msg){
   const m = msg.toLowerCase();
@@ -3099,7 +3234,7 @@ function renderLoginForm(){
 function renderRegisterForm(){
   return `
     <h2>Crea tu cuenta</h2>
-    <p class="modal-sub">Accede al primer módulo de B1 gratis. Sin tarjeta.</p>
+    <p class="modal-sub">Elige cómo vas a usar la plataforma.</p>
     <div id="authAlert"></div>
     <form id="registerForm">
       <div class="field">
@@ -3113,16 +3248,61 @@ function renderRegisterForm(){
       <div class="field">
         <label>Contraseña</label>
         <input type="password" name="password" required minlength="6" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
-        <div class="hint">Al menos 6 caracteres.</div>
       </div>
-      <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" type="submit">Crear cuenta gratis</button>
+      <div class="field">
+        <label>¿Cómo vas a usar la plataforma?</label>
+        <div class="role-options">
+          <label class="role-option">
+            <input type="radio" name="role" value="student" checked>
+            <span class="role-emoji">🎓</span>
+            <span class="role-text">
+              <b>Estudiante</b>
+              <span>Aprendo inglés</span>
+            </span>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="teacher">
+            <span class="role-emoji">👨‍🏫</span>
+            <span class="role-text">
+              <b>Docente</b>
+              <span>Enseño a alumnos</span>
+            </span>
+          </label>
+        </div>
+      </div>
+      <div class="field" id="teacherSelectField">
+        <label>Selecciona tu docente <span style="color:var(--ink-3);font-weight:500">(opcional)</span></label>
+        <select name="teacher_id" id="teacherSelect">
+          <option value="">Cargando docentes…</option>
+        </select>
+        <div class="hint">Si un docente te invitó, selecciónalo para que vea tu progreso.</div>
+      </div>
+      <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" type="submit">Crear cuenta</button>
     </form>
     <div class="modal-switch">
       ¿Ya tienes cuenta? <a data-auth="login">Inicia sesión</a>
     </div>
   `;
-}
+}//renderRegisterForm
 
+async function loadTeachersIntoSelect(){
+  const select = document.getElementById('teacherSelect');
+  if(!select) return;
+  try {
+    const teachers = await store.getTeachers();
+    if(!teachers.length){
+      select.innerHTML = '<option value="">No hay docentes registrados aún</option>';
+      return;
+    }
+    select.innerHTML = '<option value="">— Ninguno en particular —</option>' +
+      teachers.map(t =>
+        `<option value="${t.id}">${esc(t.name)}${t.email ? ' · ' + esc(t.email) : ''}</option>`
+      ).join('');
+  } catch(err){
+    select.innerHTML = '<option value="">Error al cargar docentes</option>';
+  }
+}
+//--------------------------------bindAuth
 function bindAuth(){
   const alertEl = $('#authAlert');
   const showAlert = (msg, type='err') => {
@@ -3142,27 +3322,48 @@ function bindAuth(){
       render();
     } catch(err){ showAlert(err.message); }
   };
-
+  //----------------------registerForm
   const registerForm = $('#registerForm');
-  if(registerForm) registerForm.onsubmit = async e => {
-    e.preventDefault();
-    const fd = new FormData(registerForm);
-    try {
-      const { needsConfirmation } = await store.signUp({
-        name: fd.get('name').trim(),
-        email: fd.get('email').trim(),
-        password: fd.get('password')
-      });
-      $('#authModal').classList.remove('show');
-      if(needsConfirmation){
-        toast('Revisa tu email para confirmar la cuenta.', 'ok');
-      } else {
-        toast('¡Cuenta creada!', 'ok');
-        UI.view = 'dashboard';
-      }
-      render();
-    } catch(err){ showAlert(err.message); }
-  };
+  if(registerForm){
+    // Cargar docentes y conectar el toggle de rol
+    loadTeachersIntoSelect();
+
+    // Toggle de rol → mostrar/ocultar el selector de docente
+    const toggleTeacherField = () => {
+      const role = registerForm.querySelector('input[name="role"]:checked')?.value || 'student';
+      const field = $('#teacherSelectField');
+      if(field) field.style.display = role === 'student' ? 'block' : 'none';
+    };
+    registerForm.querySelectorAll('input[name="role"]').forEach(r => {
+      r.onchange = toggleTeacherField;
+    });
+    toggleTeacherField();
+
+    registerForm.onsubmit = async e => {
+      e.preventDefault();
+      const fd = new FormData(registerForm);
+      const role = fd.get('role') || 'student';
+      const teacherId = role === 'student' ? (fd.get('teacher_id') || null) : null;
+
+      try {
+        const { needsConfirmation } = await store.signUp({
+          name: fd.get('name').trim(),
+          email: fd.get('email').trim(),
+          password: fd.get('password'),
+          role,
+          teacherId
+        });
+        $('#authModal').classList.remove('show');
+        if(needsConfirmation){
+          toast('Revisa tu email para confirmar la cuenta.', 'ok');
+        } else {
+          toast('¡Cuenta creada!', 'ok');
+          UI.view = 'dashboard';
+        }
+        render();
+      } catch(err){ showAlert(err.message); }
+    };
+  }
 
   $$('#authModal [data-auth]').forEach(el => {
     el.onclick = () => openAuth(el.dataset.auth);
