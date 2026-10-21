@@ -3363,12 +3363,12 @@ function bindAuth(){
         render();
       } catch(err){ showAlert(err.message); }
     };
-  }
+  }//end registerForm
 
   $$('#authModal [data-auth]').forEach(el => {
     el.onclick = () => openAuth(el.dataset.auth);
   });
-}
+}//end bindAuth 
   
 
 
