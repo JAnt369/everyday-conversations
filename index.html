@@ -3694,9 +3694,11 @@ if(e.key === 'Escape'){
   closeNavMobile();
 }
 if(adminTab){
-  UI.adminTab = adminTab.dataset.admin;
-  $$('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.admin === UI.adminTab));
-  const body = $('#adminBody');
+  UI.adminTab = adminTab.dataset.admin;  
+  document.querySelectorAll('.admin-tab[data-admin]').forEach(t => {
+    t.classList.toggle('active', t.dataset.admin === UI.adminTab);
+  });
+  const body = document.getElementById('adminBody');  
   if(body) body.innerHTML = await renderAdminBody();
   return;
 }
