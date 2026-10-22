@@ -1724,7 +1724,7 @@ const store = {
   /* ---------- DOCENTES ---------- */
 
 async getTeachers(){
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from('profiles')
     .select('id, name, email')
     .eq('role', 'teacher')
@@ -1734,7 +1734,7 @@ async getTeachers(){
 },
 
 async getTeacherStudents(teacherId){
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from('profiles')
     .select('*')
     .eq('teacher_id', teacherId)
@@ -1748,7 +1748,7 @@ async getTeacherProgress(teacherId){
   const students = await this.getTeacherStudents(teacherId);
   if(!students.length) return {};
   const ids = students.map(s => s.id);
-  const { data } = await supabase.from('progress').select('*').in('user_id', ids);
+  const { data } = await supabaseClient.from('progress').select('*').in('user_id', ids);
   const out = {};
   (data || []).forEach(r => {
     if(!out[r.user_id]) out[r.user_id] = { completed: [], quizScores: [] };
@@ -1775,7 +1775,7 @@ async getTeacherStats(teacherId){
   }
 
   const studentIds = students.map(s => s.id);
-  const { data: progress } = await supabase
+  const { data: progress } = await supabaseClient
     .from('progress').select('*').in('user_id', studentIds);
 
   const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
