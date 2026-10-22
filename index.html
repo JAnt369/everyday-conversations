@@ -1111,6 +1111,13 @@ a{color:inherit;text-decoration:none}
 .nav-mobile-panel button.admin .icon{
   background:var(--gold);color:var(--navy);
 }
+.nav-mobile-panel button.teacher{
+  background:linear-gradient(135deg,#E8F0FE,#D2E3FC);
+  color:#1A73E8;
+}
+.nav-mobile-panel button.teacher:hover{background:#1A73E8;color:#fff}
+.nav-mobile-panel button.teacher .icon{background:#1A73E8;color:#fff}
+  
 .nav-mobile-panel button.danger{color:var(--err)}
 .nav-mobile-panel button.danger .icon{background:var(--err-bg);color:var(--err)}
 .nav-mobile-panel button.danger:hover{background:var(--err-bg)}
@@ -4752,8 +4759,8 @@ async function renderAdminUsers(){
               const isAdmin = role === 'admin';
               return `<tr>
                 <td>
-                  <div class="cell-user">
-                    <div class="admin-avatar ${isAdmin?'admin':''}">${initials(u.name)}</div>
+                  <div class="cell-user">                    
+                    <div class="admin-avatar ${role === 'admin' ? 'admin' : role === 'teacher' ? 'teacher' : ''}">${initials(u.name)}</div>
                     <div class="cell-user-info">
                       <b>${esc(u.name)}</b>
                       <small>${esc(u.email || '')}</small>
@@ -4852,7 +4859,7 @@ async function openUserDetail(userId){
 
   const content = `
     <div class="user-detail-head">
-      <div class="admin-avatar ${u.role==='admin'?'admin':''}" style="width:52px;height:52px;flex-basis:52px;font-size:16px">${initials(u.name)}</div>
+      <div class="admin-avatar ${u.role==='admin'?'admin': u.role === 'teacher'?'teacher':''}" style="width:52px;height:52px;flex-basis:52px;font-size:16px">${initials(u.name)}</div>
       <div style="flex:1">
         <h2>${esc(u.name)}</h2>
         <p>${esc(u.email || '')}</p>        
