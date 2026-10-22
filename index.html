@@ -949,6 +949,7 @@ a{color:inherit;text-decoration:none}
 }
 .badge-role.admin{background:linear-gradient(135deg,var(--gold-light),#FFE9B0);color:var(--gold-2)}
 .badge-role.student{background:var(--blue-50);color:var(--blue-2)}
+.badge-role.teacher{background:linear-gradient(135deg,#E8F0FE,#D2E3FC);color:#1A73E8}
 .badge-plan{
   display:inline-block;padding:3px 9px;border-radius:16px;
   font-size:10.5px;font-weight:800;letter-spacing:.03em;
@@ -3258,6 +3259,17 @@ function makeCloze(d){
   return items;
 }
 
+  /**
+ * Devuelve el HTML del badge de rol según el valor.
+ * Soporta: student, teacher, admin.
+ */
+function renderRoleBadge(role){
+  const r = (role || 'student').toLowerCase();
+  if(r === 'admin')   return `<span class="badge-role admin">★ Admin</span>`;
+  if(r === 'teacher') return `<span class="badge-role teacher">👨‍🏫 Docente</span>`;
+  return `<span class="badge-role student">🎓 Estudiante</span>`;
+}
+  
 /* ============================================================
    10. QUIZ
    ============================================================ */
@@ -4733,8 +4745,9 @@ async function renderAdminUsers(){
           <tbody>
             ${users.length ? users.map(u => {
               const p = allProgress[u.id] || { completed: [], quizScores: [] };
-              const pct = Math.round(p.completed.length / DIALOGUES.length * 100);
-              const isAdmin = u.role === 'admin';
+              const pct = Math.round(p.completed.length / DIALOGUES.length * 100);              
+              const role = u.role || 'student';
+              const isAdmin = role === 'admin';
               return `<tr>
                 <td>
                   <div class="cell-user">
@@ -4744,8 +4757,8 @@ async function renderAdminUsers(){
                       <small>${esc(u.email || '')}</small>
                     </div>
                   </div>
-                </td>
-                <td><span class="badge-role ${isAdmin?'admin':'student'}">${isAdmin?'★ Admin':'Estudiante'}</span></td>
+                </td>                
+                <td>${renderRoleBadge(role)}</td>
                 <td><span class="badge-plan ${u.plan}">${u.plan}</span></td>
                 <td>
                   <div class="level-pips">
