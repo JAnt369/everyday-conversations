@@ -1282,6 +1282,52 @@ body.view-course .wa-float{
 .role-option .role-text b{display:block;font-size:13.5px;font-weight:800;color:var(--navy);margin-bottom:2px}
 .role-option .role-text span{font-size:11.5px;color:var(--ink-3);line-height:1.4;display:block}
 @media(max-width:420px){.role-options{grid-template-columns:1fr}}
+
+/* ============================================================
+   TOGGLE DE MOSTRAR/OCULTAR CONTRASEÑA
+   ============================================================ */
+.password-wrap{
+  position:relative;
+  display:block;
+}
+.password-wrap input{
+  padding-right:46px !important;   /* deja espacio para el botón */
+}
+.password-toggle{
+  position:absolute;
+  top:50%;
+  right:8px;
+  transform:translateY(-50%);
+  width:34px;
+  height:34px;
+  border-radius:8px;
+  border:none;
+  background:transparent;
+  color:var(--ink-3);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition:.18s var(--t);
+  font-size:16px;
+  line-height:1;
+  padding:0;
+}
+.password-toggle:hover{
+  background:var(--blue-50);
+  color:var(--blue);
+}
+.password-toggle:active{
+  transform:translateY(-50%) scale(.92);
+}
+.password-toggle svg{
+  width:18px;
+  height:18px;
+  stroke:currentColor;
+  fill:none;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
   
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2393,7 +2439,43 @@ function toast(msg, type='ok'){
   host.appendChild(el);
   setTimeout(() => { el.style.opacity='0'; el.style.transition='.3s'; setTimeout(()=>el.remove(),300); }, 3200);
 }
+/**
+ * Alterna entre type="password" y type="text" en un input de contraseña.
+ * Cambia también el ícono del botón (ojo abierto / ojo cerrado).
+ */
+function togglePasswordVisibility(inputId, btn){
+  const input = document.getElementById(inputId);
+  if(!input) return;
 
+  const isPassword = input.type === 'password';
+  input.type = isPassword ? 'text' : 'password';
+
+  // Actualizar ícono
+  if(isPassword){
+    // Ahora se ve la contraseña → mostrar ojo cerrado
+    btn.innerHTML = `
+      <svg viewBox="0 0 24 24">
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+        <line x1="1" y1="1" x2="23" y2="23"/>
+      </svg>`;
+    btn.setAttribute('aria-label','Ocultar contraseña');
+  } else {
+    // Ahora está oculta → mostrar ojo abierto
+    btn.innerHTML = `
+      <svg viewBox="0 0 24 24">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>`;
+    btn.setAttribute('aria-label','Mostrar contraseña');
+  }
+
+  // Mantener el foco en el input después del cambio
+  input.focus();
+  // Mover el cursor al final
+  const val = input.value;
+  input.setSelectionRange(val.length, val.length);
+}
+  
 /* Estado global de la vista */
 const UI = {
   view: 'landing',        // landing | dashboard | course | checkout | pricing
@@ -3235,12 +3317,25 @@ function renderLoginForm(){
       <div class="field">
         <label>Email</label>
         <input type="email" name="email" required autocomplete="email" placeholder="tu@email.com">
-      </div>
+      </div>    
       <div class="field">
         <label>Contraseña</label>
-        <input type="password" name="password" required autocomplete="current-password" placeholder="••••••••">
-      </div>
+        <div class="password-wrap">
+           <input type="password" name="password" id="loginPassword" required autocomplete="current-password" placeholder="••••••••">
+           <button type="button" class="password-toggle" data-toggle-password="loginPassword" aria-label="Mostrar contraseña">
+              <svg viewBox="0 0 24 24" class="eye-open">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+              </svg>
+           </button>
+        </div>
+      </div>      
       <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" type="submit">Iniciar sesión</button>
+      <div style="text-align:center;margin-top:12px">
+        <a style="color:var(--blue);font-size:13px;font-weight:600;cursor:pointer" data-forgot-password>
+            ¿Olvidaste tu contraseña?
+        </a>
+      </div>
     </form>
     <div class="modal-switch">
       ¿No tienes cuenta? <a data-auth="register">Crear una gratis</a>
@@ -3256,16 +3351,25 @@ function renderRegisterForm(){
     <form id="registerForm">
       <div class="field">
         <label>Nombre completo</label>
-        <input type="text" name="name" required placeholder="María García" autocomplete="name">
+        <input type="text" name="name" required placeholder="Roberto Lima" autocomplete="name">
       </div>
       <div class="field">
         <label>Email</label>
         <input type="email" name="email" required placeholder="tu@email.com" autocomplete="email">
       </div>
+      
       <div class="field">
-        <label>Contraseña</label>
-        <input type="password" name="password" required minlength="6" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
-      </div>
+         <label>Contraseña</label>
+         <div class="password-wrap">
+            <input type="password" name="password" id="registerPassword" required minlength="6" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+            <button type="button" class="password-toggle" data-toggle-password="registerPassword" aria-label="Mostrar contraseña">
+               <svg viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+               </svg>
+            </button>
+         </div>
+      </div>      
       <div class="field">
         <label>¿Cómo vas a usar la plataforma?</label>
         <div class="role-options">
@@ -3540,12 +3644,26 @@ document.addEventListener('click', async e => {
   // Admin tabs
 const adminTab = e.target.closest('.admin-tab');
 
+ // Toggle de mostrar/ocultar contraseña
+const pwdToggle = e.target.closest('[data-toggle-password]');
+if(pwdToggle){
+  e.preventDefault();
+  togglePasswordVisibility(pwdToggle.dataset.togglePassword, pwdToggle);
+  return;
+}  
 // Toggle del menú móvil
 if(e.target.closest('#navMobileToggle')){ toggleNavMobile(); return; }
 
 // Cerrar al tocar el backdrop
 if(e.target.closest('#navMobileBackdrop')){ closeNavMobile(); return; }
 
+// recuperacion password  
+if(e.target.closest('[data-forgot-password]')){
+  toast('Te enviaremos un enlace de recuperación (próximamente).', 'ok');
+  // Próximamente: UI.view = 'forgot-password'; render();
+  return;
+} 
+  
 // Cerrar al pulsar cualquier botón dentro del panel
 if(e.target.closest('#navMobilePanel button')){
   closeNavMobile();
