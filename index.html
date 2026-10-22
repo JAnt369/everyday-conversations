@@ -937,6 +937,7 @@ a{color:inherit;text-decoration:none}
   box-shadow:0 3px 8px rgba(0,114,206,.25);
 }
 .admin-avatar.admin{background:linear-gradient(135deg,var(--gold),#FFCD4A);color:var(--navy)}
+.admin-avatar.teacher{background:linear-gradient(135deg,#1A73E8,#4AA3E8)}
 .admin-avatar.inactive{background:linear-gradient(135deg,#8494AB,#A8BBD2)}
 .admin-table .cell-user-info b{display:block;font-weight:700;font-size:13.5px}
 .admin-table .cell-user-info small{color:var(--ink-3);font-size:11.5px}
@@ -4722,6 +4723,7 @@ async function renderAdminUsers(){
         <select class="admin-filter" id="adminFilterRole">
           <option value="all" ${roleFilter==='all'?'selected':''}>Todos los roles</option>
           <option value="student" ${roleFilter==='student'?'selected':''}>Estudiantes</option>
+          <option value="teacher" ${roleFilter==='teacher'?'selected':''}>Docentes</option>
           <option value="admin" ${roleFilter==='admin'?'selected':''}>Administradores</option>
         </select>
         <select class="admin-filter" id="adminFilterPlan">
@@ -4853,11 +4855,11 @@ async function openUserDetail(userId){
       <div class="admin-avatar ${u.role==='admin'?'admin':''}" style="width:52px;height:52px;flex-basis:52px;font-size:16px">${initials(u.name)}</div>
       <div style="flex:1">
         <h2>${esc(u.name)}</h2>
-        <p>${esc(u.email || '')}</p>
-        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
-          <span class="badge-role ${u.role==='admin'?'admin':'student'}">${u.role==='admin'?'★ Admin':'Estudiante'}</span>
+        <p>${esc(u.email || '')}</p>        
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">          
+          ${renderRoleBadge(u.role)}
           <span class="badge-plan ${u.plan}">${u.plan}</span>
-        </div>
+        </div>        
       </div>
     </div>
 
