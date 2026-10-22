@@ -3662,7 +3662,7 @@ function toggleNavMobile(){
    ============================================================ */
 document.addEventListener('click', async e => {
   // Admin tabs
-const adminTab = e.target.closest('.admin-tab');
+const adminTab = e.target.closest('.admin-tab[data-admin]');
 
  // Toggle de mostrar/ocultar contraseña
 const pwdToggle = e.target.closest('[data-toggle-password]');
