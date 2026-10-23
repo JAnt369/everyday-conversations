@@ -3719,35 +3719,37 @@ if(adminTab){
 const adminUser = e.target.closest('[data-admin-user]');
 if(adminUser){ await openUserDetail(adminUser.dataset.adminUser); return; }
 
-// Cambiar rol (admin ⇄ student)
-const adminRole = e.target.closest('[data-admin-role]');
-if(adminRole){
-  const userId = adminRole.dataset.adminRole;
+// Cambiar rol (admin ⇄ teacher ⇄ student)
+const changeRoleBtn = e.target.closest('[data-admin-role]');
+if(changeRoleBtn){
+  const userId = changeRoleBtn.dataset.adminRole;
   try {
     const users = await store.getAllUsers();
     const u = users.find(x => x.id === userId);
     if(!u){ toast('Usuario no encontrado', 'err'); return; }
 
     const currentRole = u.role || 'student';
-    const newRole = currentRole === 'admin' ? 'student' : 'admin';
-    const label = newRole === 'admin' ? 'administrador' : 'estudiante';
+    const nextRole = currentRole === 'student' ? 'teacher'
+                   : currentRole === 'teacher' ? 'admin'
+                   : 'student';
+    const labels = { student: 'estudiante', teacher: 'docente', admin: 'administrador' };
 
-    if(confirm(`¿Cambiar el rol de "${u.name}" a ${label}?`)){
-      await store.updateUserRole(u.id, newRole);
-      toast(`${u.name} ahora es ${label}`, 'ok');
+    if(confirm(`¿Cambiar el rol de "${u.name}" de ${labels[currentRole]} a ${labels[nextRole]}?`)){
+      await store.updateUserRole(u.id, nextRole);
+      toast(`${u.name} ahora es ${labels[nextRole]}`, 'ok');
       render();
     }
   } catch(err){
-    console.error('[adminRole] Error:', err);
+    console.error('[changeRole] Error:', err);
     toast('Error al cambiar el rol: ' + err.message, 'err');
   }
   return;
 }
 
 // Eliminar usuario
-const adminDelete = e.target.closest('[data-admin-delete]');
-if(adminDelete){
-  const userId = adminDelete.dataset.adminDelete;
+const deleteUserBtn = e.target.closest('[data-admin-delete]');
+if(deleteUserBtn){
+  const userId = deleteUserBtn.dataset.adminDelete;
   try {
     const users = await store.getAllUsers();
     const u = users.find(x => x.id === userId);
@@ -3759,7 +3761,7 @@ if(adminDelete){
       render();
     }
   } catch(err){
-    console.error('[adminDelete] Error:', err);
+    console.error('[deleteUser] Error:', err);
     toast('Error al eliminar: ' + err.message, 'err');
   }
   return;
