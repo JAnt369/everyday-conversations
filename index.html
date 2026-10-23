@@ -3691,6 +3691,41 @@ document.addEventListener('click', async e => {
   // Admin tabs
 const adminTab = e.target.closest('.admin-tab[data-admin]');
 
+  // Guardar asignación de docente
+if(e.target.id === 'btnSaveTeacher'){
+  e.preventDefault();
+  const select = document.getElementById('assignTeacherSelect');
+  if(!select){ toast('Error: selector no encontrado', 'err'); return; }
+  
+  const teacherId = select.value || null;
+  const userInModal = document.querySelector('.user-detail-head h2')?.textContent;
+  
+  // Buscar el userId desde el modal abierto
+  // Necesitamos saber a qué alumno estamos asignando.
+  // Usamos una variable global temporal o leemos del botón que abrió el modal.
+  const currentDetailUserId = window._currentDetailUserId;
+  if(!currentDetailUserId){
+    toast('Error: no se pudo identificar al usuario', 'err');
+    return;
+  }
+  
+  try {
+    await store.assignTeacher(currentDetailUserId, teacherId);
+    toast(teacherId ? 'Docente asignado correctamente' : 'Docente desasignado', 'ok');
+    // Recargar el modal para reflejar el cambio
+    await openUserDetail(currentDetailUserId);
+    // Si estamos en la tabla, también actualizar (opcional)
+    if(UI.adminTab === 'users'){
+      const body = document.getElementById('adminBody');
+      if(body) body.innerHTML = await renderAdminUsers();
+    }
+  } catch(err){
+    console.error('[assignTeacher] Error:', err);
+    toast(err.message, 'err');
+  }
+  return;
+}
+  
  // Toggle de mostrar/ocultar contraseña
 const pwdToggle = e.target.closest('[data-toggle-password]');
 if(pwdToggle){
@@ -4597,6 +4632,45 @@ async function openTeacherUserDetail(userId){
         </div>
       </div>`;
     })()}
+
+     <!-- Docente asignado a alumno -->
+<div style="background:var(--blue-50);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:20px">
+  <h3 style="font-size:12px;font-weight:800;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+    👨‍🏫 Docente asignado
+  </h3>
+  ${u.role === 'teacher' 
+    ? `<p style="font-size:13px;color:var(--ink-3);line-height:1.5">
+        Este usuario es docente. Solo los alumnos pueden tener un docente asignado.
+      </p>`
+    : u.role === 'admin'
+    ? `<p style="font-size:13px;color:var(--ink-3);line-height:1.5">
+        Este usuario es administrador. Solo los alumnos pueden tener un docente asignado.
+      </p>`
+    : `
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <select id="assignTeacherSelect" style="flex:1;min-width:200px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:13.5px;font-weight:500;background:#fff;color:var(--ink);cursor:pointer">
+          <option value="">— Sin asignar —</option>
+          ${teachers.map(t => `
+            <option value="${t.id}" ${t.id === currentTeacherId ? 'selected' : ''}>
+              ${esc(t.name)}${t.email ? ' · ' + esc(t.email) : ''}
+            </option>
+          `).join('')}
+        </select>
+        <button class="btn btn-primary btn-sm" id="btnSaveTeacher" style="white-space:nowrap">
+          💾 Guardar
+        </button>
+      </div>
+      ${currentTeacher 
+        ? `<div style="font-size:11.5px;color:var(--ink-3);margin-top:8px">Actualmente asignado a: <b style="color:var(--ink-2)">${esc(currentTeacher.name)}</b></div>`
+        : `<div style="font-size:11.5px;color:var(--ink-3);margin-top:8px">Sin docente asignado</div>`
+      }
+      ${!teachers.length 
+        ? `<div style="font-size:11.5px;color:var(--gold-2);margin-top:8px">⚠️ No hay docentes registrados aún. Primero crea una cuenta con rol docente.</div>`
+        : ''
+      }
+    `
+  }
+</div>
     
     <h3 style="font-size:12px;font-weight:800;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Detalle por nivel</h3>
     
