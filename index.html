@@ -3984,6 +3984,8 @@ if(e.key === 'Escape'){
   // cerrar modales
   if(e.target.closest('[data-close]') || e.target.classList.contains('modal-backdrop')){
     $$('.modal-backdrop').forEach(m => m.classList.remove('show'));
+    window._currentDetailUserId = null;   // ← limpiar
+    return;
   }
   // tools del course view
   const tool = e.target.closest('[data-tab]');
@@ -5074,6 +5076,8 @@ async function renderAdminLevels(){
 
 /* Modal de detalle de usuario */
 async function openUserDetail(userId){
+  //Guardar el userId actual en variable global para que el handler lo lea
+  window._currentDetailUserId = userId;
   const users = await store.getAllUsers();
   const u = users.find(x => x.id === userId);
   if(!u) return;
