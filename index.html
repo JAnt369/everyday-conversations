@@ -1497,6 +1497,18 @@ const store = {
   async signIn(email, password){
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if(error) throw new Error(traduceError(error.message));
+    // Verificar si está marcado como eliminado
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('plan')
+      .eq('id', data.user.id)
+      .single();
+  
+    if(profile?.plan === 'deleted'){
+       await supabaseClient.auth.signOut();
+       throw new Error('Esta cuenta ha sido eliminada.');
+    }
+    
     this._session = data.session;
     this._profile = await this._loadProfile(data.user.id);
     return this._profile;
