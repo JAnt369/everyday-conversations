@@ -3929,7 +3929,23 @@ if(e.key === 'Escape'){
     render();
     return;
   }
-  if(e.target.id === 'btnExitQuiz'){ UI.quiz = null; render(); return; }
+  if(e.target.id === 'btnExitQuiz'){
+  const z = UI.quiz;
+  // Guardar score parcial si respondió al menos 1
+  if(z && z.answered && z.score > 0 && !z.saved){
+    try {
+      const user = await store.getUser();
+      const dialogueId = UI.currentDialogue;
+      if(user && dialogueId){
+        await store.saveQuizScore(user.id, dialogueId, z.score, z.index + 1);
+        z.saved = true;
+      }
+    } catch(err){ console.error(err); }
+  }
+  UI.quiz = null;
+  render();
+  return;
+}
   if(e.target.id === 'btnRestartQuiz'){
     const d = getDialogue(UI.currentDialogue);
     startQuiz(d.phrases);
@@ -4026,13 +4042,15 @@ function startQuiz(phrases){
   render();
 }
 
-function answerQuiz(btn){
+async function answerQuiz(btn){
   const z = UI.quiz; if(z.answered) return;
   z.answered = true;
   const q = z.questions[z.index];
   const chosen = q.options[+btn.dataset.i];
   const correct = chosen === q.answer;
   if(correct) z.score++;
+
+  // Marcar visualmente
   $$('.opt').forEach((b,i) => {
     b.disabled = true;
     if(q.options[i] === q.answer){ b.classList.add('correct'); b.querySelector('.mark').textContent='✓'; }
@@ -4043,7 +4061,23 @@ function answerQuiz(btn){
     next.style.display='inline-block';
     next.textContent = z.index === z.questions.length-1 ? 'Ver resultado →' : 'Siguiente →';
   }
+
+  // ⬇️ NUEVO: si este era el último quiz, guardar el score
+  if(z.index === z.questions.length - 1 && !z.saved){
+    z.saved = true;
+    try {
+      const user = await store.getUser();
+      const dialogueId = UI.currentDialogue;
+      if(user && dialogueId){
+        await store.saveQuizScore(user.id, dialogueId, z.score, z.questions.length);
+        console.log('[Quiz] Score guardado:', z.score, '/', z.questions.length);
+      }
+    } catch(err){
+      console.error('[Quiz] Error guardando score:', err);
+    }
+  }
 }
+  
 /* ============================================================
    14.b FOOTER
    ============================================================ */
@@ -4329,7 +4363,7 @@ async function renderTeacherOverview(currentUser){
 
 async function renderTeacherUsers(currentUser){
   const stats = await store.getTeacherStats(currentUser.id);
-  const students = stats.students;
+  const students = stats.students || [];
 
   return `
     <div class="admin-table-wrap">
@@ -4344,6 +4378,7 @@ async function renderTeacherUsers(currentUser){
               <th>Plan</th>
               <th>Niveles</th>
               <th>Progreso</th>
+              <th>Precisión</th>
               <th style="text-align:right">Detalle</th>
             </tr>
           </thead>
@@ -4351,6 +4386,11 @@ async function renderTeacherUsers(currentUser){
             ${students.length ? students.map(u => {
               const p = stats.progressByUser[u.id] || { completed: [], quizScores: [] };
               const pct = Math.round(p.completed.length / DIALOGUES.length * 100);
+              const totalScore = (p.quizScores || []).reduce((s,q) => s + (q.score || 0), 0);
+              const totalQuiz = (p.quizScores || []).reduce((s,q) => s + (q.total || 0), 0);
+              const acc = totalQuiz ? Math.round(totalScore / totalQuiz * 100) : 0;
+              const accColor = acc >= 70 ? 'var(--ok)' : acc >= 50 ? 'var(--gold-2)' : 'var(--err)';
+              
               return `<tr>
                 <td>
                   <div class="cell-user">
@@ -4375,6 +4415,12 @@ async function renderTeacherUsers(currentUser){
                     <div class="pm-val">${pct}%</div>
                   </div>
                 </td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <b style="color:${accColor};font-weight:800;font-size:14px">${acc}%</b>
+                    <span style="font-size:11px;color:var(--ink-3)">${p.quizScores.length} quiz${p.quizScores.length === 1 ? '' : 'zes'}</span>
+                  </div>
+                </td>
                 <td style="text-align:right">
                   <div class="row-actions" style="justify-content:flex-end">
                     <button class="row-btn" data-teacher-user="${u.id}" title="Ver detalle">👁</button>
@@ -4382,7 +4428,7 @@ async function renderTeacherUsers(currentUser){
                 </td>
               </tr>`;
             }).join('') : `
-              <tr><td colspan="5"><div class="admin-empty"><div class="big">👥</div><p>Ningún alumno te ha seleccionado como docente todavía.</p></div></td></tr>
+              <tr><td colspan="6"><div class="admin-empty"><div class="big">👥</div><p>Ningún alumno te ha seleccionado como docente todavía.</p></div></td></tr>
             `}
           </tbody>
         </table>
@@ -4449,21 +4495,33 @@ async function openTeacherUserDetail(userId){
         </div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
-      <div style="background:var(--blue-50);border-radius:11px;padding:14px;text-align:center">
-        <div style="font-size:22px;font-weight:900;color:var(--blue);letter-spacing:-.02em">${p.completed.length}</div>
-        <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Módulos</div>
-      </div>
-      <div style="background:var(--gold-light);border-radius:11px;padding:14px;text-align:center">
-        <div style="font-size:22px;font-weight:900;color:var(--gold-2);letter-spacing:-.02em">${acc}%</div>
-        <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Precisión</div>
-      </div>
-      <div style="background:var(--ok-bg);border-radius:11px;padding:14px;text-align:center">
-        <div style="font-size:22px;font-weight:900;color:var(--ok);letter-spacing:-.02em">${Object.values(u.levels||{}).filter(Boolean).length}</div>
-        <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Niveles</div>
-      </div>
-    </div>
+    ${(() => {
+      const totalScore = (p.quizScores || []).reduce((s,q) => s + (q.score || 0), 0);
+      const totalQuiz = (p.quizScores || []).reduce((s,q) => s + (q.total || 0), 0);
+      const quizCount = (p.quizScores || []).length;
+      return `
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+        <div style="background:var(--blue-50);border-radius:11px;padding:14px;text-align:center">
+          <div style="font-size:22px;font-weight:900;color:var(--blue);letter-spacing:-.02em">${p.completed.length}</div>
+          <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Módulos</div>
+        </div>
+        <div style="background:var(--gold-light);border-radius:11px;padding:14px;text-align:center">
+           <div style="font-size:22px;font-weight:900;color:var(--gold-2);letter-spacing:-.02em">${acc}%</div>
+           <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Precisión</div>
+        </div>
+        <div style="background:#F0F4FA;border-radius:11px;padding:14px;text-align:center">
+           <div style="font-size:22px;font-weight:900;color:#5A6B85;letter-spacing:-.02em">${quizCount}</div>
+           <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Quizzes</div>
+        </div>
+        <div style="background:var(--ok-bg);border-radius:11px;padding:14px;text-align:center">
+           <div style="font-size:22px;font-weight:900;color:var(--ok);letter-spacing:-.02em">${totalScore}/${totalQuiz || 0}</div>
+           <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Aciertos</div>
+        </div>
+      </div>`;
+    })()}
+    
     <h3 style="font-size:12px;font-weight:800;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Detalle por nivel</h3>
+    
     ${LEVELS.map(l => {
       const levelDialogues = DIALOGUES.filter(d => d.level === l.id);
       const doneIds = p.completed.filter(id => levelDialogues.some(d => d.id === id));
@@ -4480,6 +4538,21 @@ async function openTeacherUserDetail(userId){
             </span>
           `).join('')}
         </div>
+        ${(() => {
+          const levelQuizzes = (p.quizScores || []).filter(q =>
+             levelDialogues.some(d => d.id === q.dialogueId)
+          );
+          if(!levelQuizzes.length) return '';
+          const totalScore = levelQuizzes.reduce((s,q) => s + (q.score || 0), 0);
+          const totalQuiz = levelQuizzes.reduce((s,q) => s + (q.total || 0), 0);
+          const levelAcc = totalQuiz ? Math.round(totalScore / totalQuiz * 100) : 0;
+          const accColor = levelAcc >= 70 ? 'var(--ok)' : levelAcc >= 50 ? 'var(--gold-2)' : 'var(--err)';
+          return `
+          <div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;font-size:12px">
+            <span style="color:var(--ink-2);font-weight:600">Precisión en ${l.code}:</span>
+            <b style="color:${accColor};font-weight:800">${levelAcc}% (${totalScore}/${totalQuiz})</b>
+         </div>`;
+        })()}
       </div>`;
     }).join('')}
     <div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3)">
