@@ -957,6 +957,7 @@ a{color:inherit;text-decoration:none}
 }
 .badge-plan.free{background:var(--line-2);color:var(--ink-3)}
 .badge-plan.premium{background:var(--ok-bg);color:#0A6B3E}
+.badge-plan.deleted{background:#F0F4FA;color:#8494AB;text-decoration:line-through}
 
 .level-pips{display:flex;gap:4px}
 .level-pip{
@@ -4905,8 +4906,8 @@ async function renderAdminUsers(){
                     </div>
                   </div>
                 </td>                
-                <td>${renderRoleBadge(role)}</td>
-                <td><span class="badge-plan ${u.plan}">${u.plan}</span></td>
+                <td>${renderRoleBadge(role)}</td>                
+                <td><span class="badge-plan ${u.plan}">${u.plan === 'deleted' ? 'eliminado' : u.plan}</span></td>
                 <td>
                   <div class="level-pips">
                     ${LEVELS.map(l => `
