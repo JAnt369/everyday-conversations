@@ -3707,15 +3707,27 @@ if(adminTab){
 const adminUser = e.target.closest('[data-admin-user]');
 if(adminUser){ await openUserDetail(adminUser.dataset.adminUser); return; }
 
-// Cambiar rol
+// Cambiar rol (admin ⇄ student)
 const adminRole = e.target.closest('[data-admin-role]');
 if(adminRole){
-  const u = store.users.find(x => x.id === adminRole.dataset.adminRole);
-  const newRole = u.role === 'admin' ? 'student' : 'admin';
-  if(confirm(`¿Cambiar el rol de "${u.name}" a ${newRole}?`)){
-    await store.updateUserRole(u.id, newRole);
-    toast(`${u.name} ahora es ${newRole}`, 'ok');
-    render();
+  const userId = adminRole.dataset.adminRole;
+  try {
+    const users = await store.getAllUsers();
+    const u = users.find(x => x.id === userId);
+    if(!u){ toast('Usuario no encontrado', 'err'); return; }
+
+    const currentRole = u.role || 'student';
+    const newRole = currentRole === 'admin' ? 'student' : 'admin';
+    const label = newRole === 'admin' ? 'administrador' : 'estudiante';
+
+    if(confirm(`¿Cambiar el rol de "${u.name}" a ${label}?`)){
+      await store.updateUserRole(u.id, newRole);
+      toast(`${u.name} ahora es ${label}`, 'ok');
+      render();
+    }
+  } catch(err){
+    console.error('[adminRole] Error:', err);
+    toast('Error al cambiar el rol: ' + err.message, 'err');
   }
   return;
 }
@@ -3723,15 +3735,52 @@ if(adminRole){
 // Eliminar usuario
 const adminDelete = e.target.closest('[data-admin-delete]');
 if(adminDelete){
-  const u = store.users.find(x => x.id === adminDelete.dataset.adminDelete);
-  if(confirm(`¿Eliminar permanentemente a "${u.name}"? Esta acción no se puede deshacer.`)){
-    await store.deleteUser(u.id);
-    toast(`Usuario "${u.name}" eliminado`, 'ok');
-    render();
+  const userId = adminDelete.dataset.adminDelete;
+  try {
+    const users = await store.getAllUsers();
+    const u = users.find(x => x.id === userId);
+    if(!u){ toast('Usuario no encontrado', 'err'); return; }
+
+    if(confirm(`¿Eliminar permanentemente a "${u.name}"? Esta acción no se puede deshacer.`)){
+      await store.deleteUser(u.id);
+      toast(`Usuario "${u.name}" eliminado`, 'ok');
+      render();
+    }
+  } catch(err){
+    console.error('[adminDelete] Error:', err);
+    toast('Error al eliminar: ' + err.message, 'err');
   }
   return;
 }
 
+// Cambiar rol (ciclo: student → teacher → admin → student)
+const adminRole = e.target.closest('[data-admin-role]');
+if(adminRole){
+  const userId = adminRole.dataset.adminRole;
+  try {
+    const users = await store.getAllUsers();
+    const u = users.find(x => x.id === userId);
+    if(!u){ toast('Usuario no encontrado', 'err'); return; }
+
+    const currentRole = u.role || 'student';
+    // Ciclo de roles
+    const nextRole = currentRole === 'student' ? 'teacher'
+                   : currentRole === 'teacher' ? 'admin'
+                   : 'student';
+    const labels = { student: 'estudiante', teacher: 'docente', admin: 'administrador' };
+
+    if(confirm(`¿Cambiar el rol de "${u.name}" de ${labels[currentRole]} a ${labels[nextRole]}?`)){
+      await store.updateUserRole(u.id, nextRole);
+      toast(`${u.name} ahora es ${labels[nextRole]}`, 'ok');
+      render();
+    }
+  } catch(err){
+    console.error('[adminRole] Error:', err);
+    toast('Error al cambiar el rol: ' + err.message, 'err');
+  }
+  return;
+}
+  
 // Desbloquear nivel
 const adminUnlock = e.target.closest('[data-admin-unlock]');
 if(adminUnlock){
@@ -4861,8 +4910,8 @@ async function renderAdminUsers(){
                 </td>
                 <td style="text-align:right">
                   <div class="row-actions" style="justify-content:flex-end">
-                    <button class="row-btn" data-admin-user="${u.id}" title="Ver detalle">👁</button>
-                    <button class="row-btn gold" data-admin-role="${u.id}" title="${isAdmin?'Quitar admin':'Hacer admin'}">★</button>
+                    <button class="row-btn" data-admin-user="${u.id}" title="Ver detalle">👁</button>                    
+                    <button class="row-btn gold" data-admin-role="${u.id}" title="Cambiar rol (actual: ${u.role || 'student'})">★</button>
                     <button class="row-btn danger" data-admin-delete="${u.id}" title="Eliminar">🗑</button>
                   </div>
                 </td>
