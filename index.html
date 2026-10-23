@@ -1896,6 +1896,20 @@ async getTeacherStats(teacherId){
     progressByUser
   };
 }//end getTeachers
+
+/**
+ * Asigna (o desasigna) un alumno a un docente.
+ * @param {string} studentId - UUID del alumno
+ * @param {string|null} teacherId - UUID del docente, o null para desasignar
+ */
+async assignTeacher(studentId, teacherId){
+  const { error } = await supabaseClient
+    .from('profiles')
+    .update({ teacher_id: teacherId || null })
+    .eq('id', studentId);
+  if(error) throw new Error('Error al asignar docente: ' + error.message);
+}
+  
 }; // end to object store
   
 /* ---------- Traducción de errores de Supabase ---------- */
@@ -4996,6 +5010,15 @@ async function openUserDetail(userId){
     ? Math.round(p.quizScores.reduce((s,q)=>s+q.score,0) / p.quizScores.reduce((s,q)=>s+q.total,0) * 100)
     : 0;
 
+  // NUEVO: cargar lista de docentes
+  let teachers = [];
+  try {
+    teachers = await store.getTeachers();
+  } catch(err){ console.warn(err); }
+
+  const currentTeacherId = u.teacher_id || '';
+  const currentTeacher = teachers.find(t => t.id === currentTeacherId);
+  
   const content = `
     <div class="user-detail-head">
       <div class="admin-avatar ${u.role==='admin'?'admin': u.role === 'teacher'?'teacher':''}" style="width:52px;height:52px;flex-basis:52px;font-size:16px">${initials(u.name)}</div>
