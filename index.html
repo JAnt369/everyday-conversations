@@ -2528,6 +2528,7 @@ const UI = {
   adminSearch: '',
   adminFilterRole: 'all',    // 'all' | 'student' | 'admin'
   adminFilterPlan: 'all',    // 'all' | 'free' | 'premium'
+  adminFilterTeacher: 'all',
   adminUserId: null          // para el modal de detalle
 };
 
@@ -4112,6 +4113,11 @@ document.addEventListener('change', async e => {
     const body = $('#adminBody');
     if(body) body.innerHTML = await renderAdminUsers();
   }
+  if(e.target.id === 'adminFilterTeacher'){
+    UI.adminFilterTeacher = e.target.value;
+    const body = document.getElementById('adminBody');
+    if(body) body.innerHTML = await renderAdminUsers();
+  }
 });
   
 document.addEventListener('change', e => {
@@ -4936,15 +4942,19 @@ async function renderAdminOverview(){
 async function renderAdminUsers(){
   const allProgress = await store.getAllProgress();       // ← async
   let users = await store.getAllUsers();                  // ← async
-
+  const teachers = await store.getTeachers();
   const search = (UI.adminSearch || '').toLowerCase();
   const roleFilter = UI.adminFilterRole;
   const planFilter = UI.adminFilterPlan;
-
+  const teacherFilter = UI.adminFilterTeacher || 'all';
+  
   users = users.filter(u => {
     if(search && !u.name.toLowerCase().includes(search) && !(u.email||'').toLowerCase().includes(search)) return false;
     if(roleFilter !== 'all' && (u.role || 'student') !== roleFilter) return false;
     if(planFilter !== 'all' && u.plan !== planFilter) return false;
+    // Filtro por docente
+    if(teacherFilter === 'none' && u.teacher_id) return false;
+    if(teacherFilter !== 'all' && teacherFilter !== 'none' && u.teacher_id !== teacherFilter) return false;
     return true;
   });
 
@@ -4966,6 +4976,13 @@ async function renderAdminUsers(){
           <option value="all" ${planFilter==='all'?'selected':''}>Todos los planes</option>
           <option value="free" ${planFilter==='free'?'selected':''}>Free</option>
           <option value="premium" ${planFilter==='premium'?'selected':''}>Premium</option>
+        </select>
+        <select class="admin-filter" id="adminFilterTeacher">
+         <option value="all">Todos los docentes</option>
+         <option value="none">Sin asignar</option>
+          ${teachers.map(t => `
+              <option value="${t.id}">${esc(t.name)}</option>
+         `).join('')}
         </select>
       </div>
       <div style="overflow-x:auto">
