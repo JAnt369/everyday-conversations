@@ -4993,6 +4993,7 @@ async function renderAdminUsers(){
               <th>Rol</th>
               <th>Plan</th>
               <th>Niveles</th>
+              <th>Docente</th>
               <th>Progreso</th>
               <th style="text-align:right">Acciones</th>
             </tr>
@@ -5012,9 +5013,11 @@ async function renderAdminUsers(){
                       <small>${esc(u.email || '')}</small>
                     </div>
                   </div>
-                </td>                
+                </td>    
+                
                 <td>${renderRoleBadge(role)}</td>                
                 <td><span class="badge-plan ${u.plan}">${u.plan === 'deleted' ? 'eliminado' : u.plan}</span></td>
+                
                 <td>
                   <div class="level-pips">
                     ${LEVELS.map(l => `
@@ -5024,12 +5027,23 @@ async function renderAdminUsers(){
                     `).join('')}
                   </div>
                 </td>
+                
+                <td>
+                 ${u.role === 'student' 
+                   ? (u.teacher_id 
+                     ? `<span style="font-size:12px;color:var(--ink-2)">${esc(teachers.find(t=>t.id===u.teacher_id)?.name || 'Docente')}</span>`
+                     : `<span style="font-size:11.5px;color:var(--ink-3);font-style:italic">Sin asignar</span>`)
+                   : `<span style="font-size:11.5px;color:var(--ink-3)">—</span>`
+                 }
+                </td>
+                
                 <td>
                   <div class="progress-mini">
                     <div class="pm-bar"><div style="width:${pct}%"></div></div>
                     <div class="pm-val">${pct}%</div>
                   </div>
                 </td>
+                
                 <td style="text-align:right">
                   <div class="row-actions" style="justify-content:flex-end">
                     <button class="row-btn" data-admin-user="${u.id}" title="Ver detalle">👁</button>                    
@@ -5037,9 +5051,10 @@ async function renderAdminUsers(){
                     <button class="row-btn danger" data-admin-delete="${u.id}" title="Eliminar">🗑</button>
                   </div>
                 </td>
+                
               </tr>`;
             }).join('') : `
-              <tr><td colspan="6"><div class="admin-empty"><div class="big">🔍</div><p>No se encontraron usuarios con esos filtros.</p></div></td></tr>
+              <tr><td colspan="7"><div class="admin-empty"><div class="big">🔍</div><p>No se encontraron usuarios con esos filtros.</p></div></td></tr>
             `}
           </tbody>
         </table>
