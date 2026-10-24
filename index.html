@@ -4960,13 +4960,14 @@ async function renderAdminUsers(){
           <option value="free" ${planFilter==='free'?'selected':''}>Free</option>
           <option value="premium" ${planFilter==='premium'?'selected':''}>Premium</option>
         </select>
+        
         <select class="admin-filter" id="adminFilterTeacher">
-         <option value="all">Todos los docentes</option>
-         <option value="none">Sin asignar</option>
-          ${teachers.map(t => `
-              <option value="${t.id}">${esc(t.name)}</option>
-         `).join('')}
-        </select>
+           <option value="all" ${UI.adminFilterTeacher === 'all' ? 'selected' : ''}>Todos los docentes</option>
+           <option value="none" ${UI.adminFilterTeacher === 'none' ? 'selected' : ''}>Sin asignar</option>
+           ${teachers.map(t => `
+               <option value="${t.id}" ${UI.adminFilterTeacher === t.id ? 'selected' : ''}>${esc(t.name)}</option>
+           `).join('')}
+        </select>        
       </div>
       <div style="overflow-x:auto">
         <table class="admin-table">
