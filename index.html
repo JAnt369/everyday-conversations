@@ -1908,6 +1908,19 @@ async assignTeacher(studentId, teacherId){
     .update({ teacher_id: teacherId || null })
     .eq('id', studentId);
   if(error) throw new Error('Error al asignar docente: ' + error.message);
+},
+
+  /* ---------- PASSWORD RECOVERY ---------- */
+async requestPasswordReset(email){
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://jant369.github.io/everyday-conversations/?mode=reset-password'
+  });
+  if(error) throw new Error(traduceError(error.message));
+},
+
+async updatePassword(newPassword){
+  const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+  if(error) throw new Error(traduceError(error.message));
 }
   
 }; // end to object store
@@ -2536,7 +2549,7 @@ const UI = {
    4. ROUTER / RENDER
    ============================================================ 
 */
-  async function render(){
+async function render(){
   const app = $('#app');  
   const user = await store.getUser();
 
@@ -2548,6 +2561,8 @@ const UI = {
   else if(UI.view === 'pricing')   app.innerHTML = await renderPricing(user);
   else if(UI.view === 'admin')     app.innerHTML = await renderAdmin(user);
   else if(UI.view === 'teacher')   app.innerHTML = await renderTeacher(user);
+  else if(UI.view === 'forgot-password') app.innerHTML = await renderForgotPassword();
+  else if(UI.view === 'reset-password')  app.innerHTML = await renderResetPassword();
   else                             app.innerHTML = await renderLanding();
 
   // Post-render: inyectar pricing cards donde exista #pricing
@@ -3545,6 +3560,45 @@ function bindAuth(){
   $$('#authModal [data-auth]').forEach(el => {
     el.onclick = () => openAuth(el.dataset.auth);
   });
+
+  // Formulario de recuperación de contraseña
+const forgotForm = $('#forgotForm');
+if(forgotForm) forgotForm.onsubmit = async e => {
+  e.preventDefault();
+  const email = new FormData(forgotForm).get('email');
+  try {
+    await store.requestPasswordReset(email);
+    toast('Revisa tu email. Te enviamos un enlace de recuperación.', 'ok');
+    UI.view = 'landing';
+    render();
+  } catch(err){
+    alertEl.className = 'alert err show';
+    alertEl.textContent = err.message;
+  }
+};
+
+// Formulario de nueva contraseña
+const resetForm = $('#resetForm');
+if(resetForm) resetForm.onsubmit = async e => {
+  e.preventDefault();
+  const fd = new FormData(resetForm);
+  if(fd.get('password') !== fd.get('confirm')){
+    alertEl.className = 'alert err show';
+    alertEl.textContent = 'Las contraseñas no coinciden.';
+    return;
+  }
+  try {
+    await store.updatePassword(fd.get('password'));
+    toast('¡Contraseña actualizada! Ya puedes iniciar sesión.', 'ok');
+    await store.signOut();
+    UI.view = 'landing';
+    render();
+  } catch(err){
+    alertEl.className = 'alert err show';
+    alertEl.textContent = err.message;
+  }
+}; //end forms password recovery
+  
 }//end bindAuth 
   
 
@@ -3700,6 +3754,15 @@ document.addEventListener('click', async e => {
   // Admin tabs
 const adminTab = e.target.closest('.admin-tab[data-admin]');
 
+// Link de "¿Olvidaste tu contraseña?"
+if(e.target.closest('[data-forgot-password]')){
+  e.preventDefault();
+  $('#authModal').classList.remove('show');
+  UI.view = 'forgot-password';
+  render();
+  return;
+}
+  
   // Guardar asignación de docente
 if(e.target.id === 'btnSaveTeacher'){
   e.preventDefault();
@@ -4341,11 +4404,85 @@ function renderFooter(){
     </div>
   </footer>`;
 }
+/* ============================================================
+   PASSWORD RECOVERY VIEWS
+   ============================================================ */
+async function renderForgotPassword(){
+  return `<div class="app-shell">
+    ${await renderTopNav()}
+    <div style="max-width:440px;margin:80px auto;padding:0 20px">
+      <div class="panel" style="padding:34px 32px">
+        <h2 style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px">Recuperar contraseña</h2>
+        <p style="font-size:13.5px;color:var(--ink-2);margin-bottom:24px;line-height:1.55">
+          Te enviaremos un enlace a tu email para restablecer tu contraseña.
+        </p>
+        <div id="authAlert"></div>
+        <form id="forgotForm">
+          <div class="field">
+            <label>Email</label>
+            <input type="email" name="email" required placeholder="tu@email.com" autocomplete="email">
+          </div>
+          <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" type="submit">
+            Enviar enlace
+          </button>
+        </form>
+        <div class="modal-switch">
+          <a style="cursor:pointer" data-nav="landing">← Volver al inicio</a>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
 
+async function renderResetPassword(){
+  return `<div class="app-shell">
+    ${await renderTopNav()}
+    <div style="max-width:440px;margin:80px auto;padding:0 20px">
+      <div class="panel" style="padding:34px 32px">
+        <h2 style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px">Nueva contraseña</h2>
+        <p style="font-size:13.5px;color:var(--ink-2);margin-bottom:24px;line-height:1.55">
+          Elige una contraseña nueva. Mínimo 6 caracteres.
+        </p>
+        <div id="authAlert"></div>
+        <form id="resetForm">
+          <div class="field">
+            <label>Nueva contraseña</label>
+            <input type="password" name="password" required minlength="6" placeholder="••••••••" autocomplete="new-password">
+          </div>
+          <div class="field">
+            <label>Confirmar contraseña</label>
+            <input type="password" name="confirm" required minlength="6" placeholder="••••••••" autocomplete="new-password">
+          </div>
+          <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" type="submit">
+            Guardar nueva contraseña
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>`;
+} //end password Recovery views
+
+  
 /* ============================================================
    15. INIT
    ============================================================ */
 (async function init(){
+  // Detectar retorno desde email de recuperación
+const params = new URLSearchParams(window.location.search);
+const hashParams = new URLSearchParams(window.location.hash.substring(1));
+const isRecovery = params.get('mode') === 'reset-password'
+  || hashParams.get('type') === 'recovery'
+  || params.get('type') === 'recovery';
+
+if(isRecovery){
+  // Supabase procesa el token automáticamente
+  UI.view = 'reset-password';
+  // Limpiar la URL para que no quede fea
+  history.replaceState(null, '', window.location.pathname);
+  render();
+  return;
+}
+  
   // Escuchar cambios de sesión
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
     if(event === 'SIGNED_OUT'){
@@ -4353,6 +4490,10 @@ function renderFooter(){
       store._profile = null;
       UI.view = 'landing';
       render();
+    }
+    if(event === 'PASSWORD_RECOVERY'){
+       UI.view = 'reset-password';
+       render();
     }
   });
 
