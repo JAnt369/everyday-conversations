@@ -2553,8 +2553,9 @@ async function render(){
   const app = $('#app');  
   const user = await store.getUser();
 
-  if(!user && UI.view !== 'landing' && UI.view !== 'pricing') UI.view = 'landing';
-
+  const publicViews = ['landing', 'pricing', 'forgot-password', 'reset-password'];
+  if(!user && !publicViews.includes(UI.view)) UI.view = 'landing';
+  
   if(UI.view === 'landing')        app.innerHTML = await renderLanding();
   else if(UI.view === 'dashboard') app.innerHTML = await renderDashboard(user);
   else if(UI.view === 'course')    app.innerHTML = await renderCourse(user);
