@@ -4596,13 +4596,22 @@ async function renderTeacherLevels(currentUser){
 }
 
 async function openTeacherUserDetail(userId){
-  const stats = await store.getTeacherStats((await store.getUser()).id);
+  const currentUser = await store.getUser();
+  const stats = await store.getTeacherStats(currentUser.id);
   const u = stats.students.find(x => x.id === userId);
-  if(!u) return;
+  if(!u){
+    toast('Alumno no encontrado o no asignado a ti', 'err');
+    return;
+  }
+
   const p = stats.progressByUser[userId] || { completed: [], quizScores: [] };
   const acc = p.quizScores.length
     ? Math.round(p.quizScores.reduce((s,q)=>s+q.score,0) / p.quizScores.reduce((s,q)=>s+q.total,0) * 100)
     : 0;
+
+  // ⬇️ El docente es el usuario actual. Como es el docente quien ve al alumno, sabemos
+  //    que el alumno está asignado a él mismo. Lo mostramos como texto informativo.
+  const currentTeacher = { id: currentUser.id, name: currentUser.name, email: currentUser.email };
 
   const content = `
     <div class="user-detail-head">
@@ -4611,80 +4620,62 @@ async function openTeacherUserDetail(userId){
         <h2>${esc(u.name)}</h2>
         <p>${esc(u.email || '')}</p>
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
-          <span class="badge-role student">Estudiante</span>
+          <span class="badge-role student">🎓 Estudiante</span>
           <span class="badge-plan ${u.plan}">${u.plan}</span>
         </div>
       </div>
     </div>
-    ${(() => {
-      const totalScore = (p.quizScores || []).reduce((s,q) => s + (q.score || 0), 0);
-      const totalQuiz = (p.quizScores || []).reduce((s,q) => s + (q.total || 0), 0);
-      const quizCount = (p.quizScores || []).length;
-      return `
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
-        <div style="background:var(--blue-50);border-radius:11px;padding:14px;text-align:center">
-          <div style="font-size:22px;font-weight:900;color:var(--blue);letter-spacing:-.02em">${p.completed.length}</div>
-          <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Módulos</div>
-        </div>
-        <div style="background:var(--gold-light);border-radius:11px;padding:14px;text-align:center">
-           <div style="font-size:22px;font-weight:900;color:var(--gold-2);letter-spacing:-.02em">${acc}%</div>
-           <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Precisión</div>
-        </div>
-        <div style="background:#F0F4FA;border-radius:11px;padding:14px;text-align:center">
-           <div style="font-size:22px;font-weight:900;color:#5A6B85;letter-spacing:-.02em">${quizCount}</div>
-           <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Quizzes</div>
-        </div>
-        <div style="background:var(--ok-bg);border-radius:11px;padding:14px;text-align:center">
-           <div style="font-size:22px;font-weight:900;color:var(--ok);letter-spacing:-.02em">${totalScore}/${totalQuiz || 0}</div>
-           <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Aciertos</div>
-        </div>
-      </div>`;
-    })()}
 
-     <!-- Docente asignado a alumno -->
-<div style="background:var(--blue-50);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:20px">
-  <h3 style="font-size:12px;font-weight:800;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px">
-    👨‍🏫 Docente asignado
-  </h3>
-  ${u.role === 'teacher' 
-    ? `<p style="font-size:13px;color:var(--ink-3);line-height:1.5">
-        Este usuario es docente. Solo los alumnos pueden tener un docente asignado.
-      </p>`
-    : u.role === 'admin'
-    ? `<p style="font-size:13px;color:var(--ink-3);line-height:1.5">
-        Este usuario es administrador. Solo los alumnos pueden tener un docente asignado.
-      </p>`
-    : `
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <select id="assignTeacherSelect" style="flex:1;min-width:200px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:13.5px;font-weight:500;background:#fff;color:var(--ink);cursor:pointer">
-          <option value="">— Sin asignar —</option>
-          ${teachers.map(t => `
-            <option value="${t.id}" ${t.id === currentTeacherId ? 'selected' : ''}>
-              ${esc(t.name)}${t.email ? ' · ' + esc(t.email) : ''}
-            </option>
-          `).join('')}
-        </select>
-        <button class="btn btn-primary btn-sm" id="btnSaveTeacher" style="white-space:nowrap">
-          💾 Guardar
-        </button>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+      <div style="background:var(--blue-50);border-radius:11px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-weight:900;color:var(--blue);letter-spacing:-.02em">${p.completed.length}</div>
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Módulos</div>
       </div>
-      ${currentTeacher 
-        ? `<div style="font-size:11.5px;color:var(--ink-3);margin-top:8px">Actualmente asignado a: <b style="color:var(--ink-2)">${esc(currentTeacher.name)}</b></div>`
-        : `<div style="font-size:11.5px;color:var(--ink-3);margin-top:8px">Sin docente asignado</div>`
-      }
-      ${!teachers.length 
-        ? `<div style="font-size:11.5px;color:var(--gold-2);margin-top:8px">⚠️ No hay docentes registrados aún. Primero crea una cuenta con rol docente.</div>`
-        : ''
-      }
-    `
-  }
-</div>
-    
+      <div style="background:var(--gold-light);border-radius:11px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-weight:900;color:var(--gold-2);letter-spacing:-.02em">${acc}%</div>
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Precisión</div>
+      </div>
+      <div style="background:#F0F4FA;border-radius:11px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-weight:900;color:#5A6B85;letter-spacing:-.02em">${(p.quizScores || []).length}</div>
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Quizzes</div>
+      </div>
+      <div style="background:var(--ok-bg);border-radius:11px;padding:14px;text-align:center">
+        <div style="font-size:22px;font-weight:900;color:var(--ok);letter-spacing:-.02em">${(p.quizScores || []).reduce((s,q)=>s+(q.score||0),0)}/${(p.quizScores || []).reduce((s,q)=>s+(q.total||0),0)}</div>
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Aciertos</div>
+      </div>
+    </div>
+
+    <!-- Docente asignado (solo lectura) -->
+    <div style="background:var(--blue-50);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:20px">
+      <h3 style="font-size:12px;font-weight:800;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+        👨‍🏫 Docente asignado
+      </h3>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="admin-avatar teacher" style="width:36px;height:36px;flex-basis:36px;font-size:12px">${initials(currentTeacher.name)}</div>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:700;color:var(--navy)">${esc(currentTeacher.name)}</div>
+          <div style="font-size:11.5px;color:var(--ink-3)">${esc(currentTeacher.email || '')}</div>
+        </div>
+        <span class="badge-role teacher" style="flex:0 0 auto">Tú</span>
+      </div>
+      <div style="font-size:11px;color:var(--ink-3);margin-top:10px;line-height:1.4">
+        ℹ️ Solo un administrador puede reasignar a este alumno a otro docente.
+      </div>
+    </div>
+
     <h3 style="font-size:12px;font-weight:800;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Detalle por nivel</h3>
-    
     ${LEVELS.map(l => {
       const levelDialogues = DIALOGUES.filter(d => d.level === l.id);
       const doneIds = p.completed.filter(id => levelDialogues.some(d => d.id === id));
+
+      const levelQuizzes = (p.quizScores || []).filter(q =>
+        levelDialogues.some(d => d.id === q.dialogueId)
+      );
+      const levelTotalScore = levelQuizzes.reduce((s,q) => s + (q.score || 0), 0);
+      const levelTotalQuiz = levelQuizzes.reduce((s,q) => s + (q.total || 0), 0);
+      const levelAcc = levelTotalQuiz ? Math.round(levelTotalScore / levelTotalQuiz * 100) : 0;
+      const accColor = levelAcc >= 70 ? 'var(--ok)' : levelAcc >= 50 ? 'var(--gold-2)' : 'var(--err)';
+
       return `
       <div class="level-detail" style="border-left:3px solid ${l.color}">
         <div class="level-detail-head">
@@ -4698,23 +4689,15 @@ async function openTeacherUserDetail(userId){
             </span>
           `).join('')}
         </div>
-        ${(() => {
-          const levelQuizzes = (p.quizScores || []).filter(q =>
-             levelDialogues.some(d => d.id === q.dialogueId)
-          );
-          if(!levelQuizzes.length) return '';
-          const totalScore = levelQuizzes.reduce((s,q) => s + (q.score || 0), 0);
-          const totalQuiz = levelQuizzes.reduce((s,q) => s + (q.total || 0), 0);
-          const levelAcc = totalQuiz ? Math.round(totalScore / totalQuiz * 100) : 0;
-          const accColor = levelAcc >= 70 ? 'var(--ok)' : levelAcc >= 50 ? 'var(--gold-2)' : 'var(--err)';
-          return `
+        ${levelQuizzes.length ? `
           <div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;font-size:12px">
             <span style="color:var(--ink-2);font-weight:600">Precisión en ${l.code}:</span>
-            <b style="color:${accColor};font-weight:800">${levelAcc}% (${totalScore}/${totalQuiz})</b>
-         </div>`;
-        })()}
+            <b style="color:${accColor};font-weight:800">${levelAcc}% (${levelTotalScore}/${levelTotalQuiz})</b>
+          </div>
+        ` : ''}
       </div>`;
     }).join('')}
+
     <div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3)">
       <span>Registro: <b style="color:var(--ink-2)">${new Date(u.created_at).toLocaleDateString('es-MX')}</b></span>
     </div>
@@ -4722,7 +4705,7 @@ async function openTeacherUserDetail(userId){
 
   $('#checkoutContent').innerHTML = content;
   $('#checkoutModal').classList.add('show');
-}
+} //end openTeacherUserDetail
   
 /* ============================================================
    16. ADMIN PANEL
