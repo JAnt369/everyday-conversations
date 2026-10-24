@@ -3249,6 +3249,9 @@ function renderPracticaTab(d){
   if(!UI.cloze || UI.clozeDlg !== d.id){
     UI.cloze = makeCloze(d);
     UI.clozeDlg = d.id;
+    UI.clozeAttempts = {};       // contador de intentos por ejercicio
+    UI.clozeFinished = false;    // evita doble guardado
+    UI.clozeSavedPoints = 0;     // puntos ya guardados
   }
   const items = UI.cloze;
   if(!items.length){
@@ -3259,6 +3262,9 @@ function renderPracticaTab(d){
   }
   return `<div class="panel">
     <h3><span class="dot"></span>Completa la palabra que falta</h3>
+    <p style="font-size:13px;color:var(--ink-2);margin-bottom:16px;line-height:1.6">
+      Tienes <b>2 intentos</b> por ejercicio. Acierta al primero: <b>1 punto</b>. Al segundo: <b>0.5 puntos</b>.
+    </p>
     ${items.map((it,i)=>`
       <div class="cloze-item">
         <div class="who">${esc(it.speaker)}</div>
@@ -3266,11 +3272,13 @@ function renderPracticaTab(d){
           <input type="text" data-i="${i}" autocomplete="off" spellcheck="false" placeholder="…">
           ${esc(it.after)}</div>
         <div class="fb" id="fb${i}"></div>
+        <div style="font-size:11.5px;color:var(--ink-3);margin-top:6px">
+          Intentos: <b id="attempts${i}">0</b> / 2
+        </div>
       </div>`).join('')}
     <div class="actions" style="margin-top:18px">
       <button class="btn b1" id="btnCheck">✅ Verificar</button>
-      <button class="btn b2" id="btnShow">👁 Mostrar</button>
-      <button class="btn b2" id="btnNew">🔄 Nuevos</button>
+      <button class="btn b2" id="btnNew">🔄 Nuevos ejercicios</button>
     </div>
     <div id="clozeScore" style="margin-top:16px;font-weight:800;color:var(--blue)"></div>
   </div>`;
@@ -4018,8 +4026,8 @@ if(e.key === 'Escape'){
     startQuiz(d.phrases);
     return;
   }
-  if(e.target.id === 'btnCheck'){ checkCloze(); return; }
-  if(e.target.id === 'btnShow'){
+  if(e.target.id === 'btnCheck'){ await checkCloze(); return; }
+  /*if(e.target.id === 'btnShow'){
     const items = UI.cloze;
     $$('.cloze-txt input').forEach(inp => {
       const i = +inp.dataset.i;
@@ -4029,7 +4037,7 @@ if(e.key === 'Escape'){
       fb.className = 'fb ok show'; fb.textContent = `→ ${items[i].full}`;
     });
     return;
-  }
+  }*/
   if(e.target.id === 'btnNew'){
     const d = getDialogue(UI.currentDialogue);
     UI.cloze = makeCloze(d);
@@ -4132,26 +4140,114 @@ document.addEventListener('keydown', e => {
     $$('.modal-backdrop').forEach(m => m.classList.remove('show'));
   }
   if(e.key === 'Enter' && e.target.matches('.cloze-txt input')){
+    e.preventDefault();
     checkCloze();
   }
 });
 
 /* Cloze check */
-function checkCloze(){
+async function checkCloze(){
   const items = UI.cloze; if(!items) return;
-  let ok = 0;
-  $$('.cloze-txt input').forEach(inp => {
-    const i = +inp.dataset.i;
-    const val = inp.value.trim().toLowerCase().replace(/[^a-z']/g,'');
-    const ans = items[i].answer.toLowerCase();
-    const fb = document.getElementById('fb'+i);
-    inp.classList.remove('ok','bad');
-    if(val === ans){ inp.classList.add('ok'); ok++; fb.className='fb ok show'; fb.textContent='✓ ¡Correcto!'; }
-    else { inp.classList.add('bad'); fb.className='fb bad show'; fb.textContent=`✗ Respuesta: "${items[i].answer}"`; }
-  });
-  $('#clozeScore').textContent = `Resultado: ${ok} / ${items.length} correctas ${ok===items.length?'🎉':''}`;
-}
+  UI.clozeAttempts = UI.clozeAttempts || {};
 
+  // Verificar el input que tiene el foco, o el primero no deshabilitado
+  const input = document.activeElement?.matches?.('.cloze-txt input')
+              ? document.activeElement
+              : document.querySelector('.cloze-txt input:not([disabled])');
+
+  if(!input) return;
+
+  const i = +input.dataset.i;
+  const val = input.value.trim().toLowerCase().replace(/[^a-z']/g,'');
+  const ans = items[i].answer.toLowerCase();
+  const fb = document.getElementById('fb'+i);
+  const attemptsEl = document.getElementById('attempts'+i);
+
+  // Incrementar intentos de este ejercicio
+  UI.clozeAttempts[i] = (UI.clozeAttempts[i] || 0) + 1;
+  if(attemptsEl) attemptsEl.textContent = UI.clozeAttempts[i];
+
+  if(val === ans){
+    // ✅ Acertó
+    const points = UI.clozeAttempts[i] === 1 ? 1 : 0.5;
+    input.classList.remove('bad');
+    input.classList.add('ok');
+    input.disabled = true;
+    fb.className = 'fb ok show';
+    fb.textContent = UI.clozeAttempts[i] === 1
+      ? '✓ Correcto al primer intento (+1 punto)'
+      : '✓ Correcto al segundo intento (+0.5 puntos)';
+
+    // Enfocar el siguiente input automáticamente
+    const next = document.querySelector(`.cloze-txt input[data-i="${i+1}"]:not([disabled])`);
+    if(next) setTimeout(() => next.focus(), 150);
+
+  } else if(UI.clozeAttempts[i] >= 2){
+    // ❌ Agotó los 2 intentos
+    input.classList.remove('bad');
+    input.classList.add('bad');
+    input.disabled = true;
+    input.value = items[i].answer;
+    fb.className = 'fb bad show';
+    fb.textContent = `✗ Sin intentos. Respuesta: "${items[i].answer}"`;
+
+    // Enfocar el siguiente
+    const next = document.querySelector(`.cloze-txt input[data-i="${i+1}"]:not([disabled])`);
+    if(next) setTimeout(() => next.focus(), 150);
+
+  } else {
+    // ❌ Falló el primer intento, quedan oportunidades
+    input.classList.remove('ok');
+    input.classList.add('bad');
+    fb.className = 'fb bad show';
+    fb.textContent = '✗ Incorrecto. Te queda 1 intento.';
+    input.select();
+    return;   // no continuar al resumen
+  }
+
+  // Verificar si todos los ejercicios están resueltos
+  const allDone = items.every((_, idx) => {
+    const inp = document.querySelector(`.cloze-txt input[data-i="${idx}"]`);
+    return inp && inp.disabled;
+  });
+
+  if(allDone && !UI.clozeFinished){
+    UI.clozeFinished = true;
+
+    // Calcular puntuación total
+    let total = 0;
+    items.forEach((_, idx) => {
+      const inp = document.querySelector(`.cloze-txt input[data-i="${idx}"]`);
+      if(inp.classList.contains('ok')){
+        total += (UI.clozeAttempts[idx] === 1 ? 1 : 0.5);
+      }
+    });
+
+    const pct = Math.round((total / items.length) * 100);
+    const scoreEl = document.getElementById('clozeScore');
+    scoreEl.textContent = `Resultado: ${total} / ${items.length} (${pct}%) ${pct === 100 ? '🎉' : ''}`;
+
+    // Guardar en Supabase (sumando al score existente)
+    try {
+      const user = await store.getUser();
+      const dialogueId = UI.currentDialogue;
+      if(user && dialogueId){
+        const prog = await store.getProgress(user.id);
+        const existing = prog.quizScores.find(q => q.dialogueId === dialogueId);
+        const newScore = (existing?.score || 0) + total;
+        const newTotal = (existing?.total || 0) + items.length;
+        await store.saveQuizScore(user.id, dialogueId, newScore, newTotal);
+        UI.clozeSavedPoints = total;
+        console.log('[Cloze] Guardado:', newScore, '/', newTotal);
+        toast('Puntuación guardada', 'ok');
+      }
+    } catch(err){
+      console.error('[Cloze] Error:', err);
+      toast('Error guardando la puntuación', 'err');
+    }
+  }
+}
+  
 /* Quiz */
 function startQuiz(phrases){
   const all = DIALOGUES.flatMap(d => d.phrases);
