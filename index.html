@@ -2569,6 +2569,11 @@ async function render(){
   // Post-render: inyectar pricing cards donde exista #pricing
   injectPricingCards();
 
+  // Conectar formularios de auth cuando se muestran vistas de auth
+  if(UI.view === 'forgot-password' || UI.view === 'reset-password'){
+     setTimeout(() => bindAuth(), 0);
+  }
+  
   // Post-render: rellenar dashBody si estamos en dashboard
   if(user && UI.view === 'dashboard'){
     const body = $('#dashBody');
@@ -3760,7 +3765,7 @@ if(e.target.closest('[data-forgot-password]')){
   e.preventDefault();
   $('#authModal').classList.remove('show');
   UI.view = 'forgot-password';
-  render();
+  render().then(() => bindAuth());
   return;
 }
   
