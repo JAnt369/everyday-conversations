@@ -4489,11 +4489,17 @@ const isRecovery = params.get('mode') === 'reset-password'
   || params.get('type') === 'recovery';
 
 if(isRecovery){
-  // Supabase procesa el token automáticamente
+  // Forzar la vista de reset ANTES de que la sesión se cargue
   UI.view = 'reset-password';
-  // Limpiar la URL para que no quede fea
+  UI._isRecoveryMode = true;
   history.replaceState(null, '', window.location.pathname);
-  render();
+
+  // Esperar un momento a que Supabase procese el token del hash
+  await new Promise(r => setTimeout(r, 500));
+
+  // Forzar el render de la vista de reset aunque haya sesión
+  $('#app').innerHTML = await renderResetPassword();
+  setTimeout(() => bindAuth(), 0);
   return;
 }
   
@@ -4509,13 +4515,45 @@ if(isRecovery){
        UI.view = 'reset-password';
        render();
     }
+    if(event === 'USER_UPDATED'){
+    // El usuario cambió su contraseña en otra pestaña
+    // Cerrar esta sesión también
+    if(!UI._isRecoveryMode){
+      await store.signOut();
+      toast('Tu contraseña cambió en otro dispositivo. Inicia sesión de nuevo.', 'ok');
+      UI.view = 'landing';
+      render();
+    }
+  }
   });
 
   const user = await store.getUser();
   if(user){
+     // Verificar que la sesión sigue siendo válida en el servidor
+     const { data: { session }, error } = await supabaseClient.auth.getSession();
+  
+     // Si el servidor dice que no hay sesión (o la sesión fue invalidada), cerrar
+    if(!session || error){
+      await store.signOut();
+      UI.view = 'landing';
+      render();
+      return;
+    }    
+    /*
+    const { data: { user: serverUser }, error } = await supabaseClient.auth.getUser();
+
+   if(user && !serverUser){
+    // El localStorage dice que hay sesión, pero el servidor la rechazó
+    await store.signOut();
+    UI.view = 'landing';
+    render();
+    return;
+   }*/    
     UI.view = 'dashboard';
   }
 
+  
+  
   // Observer para detectar cuándo se abren/cierran modales
   const modalObserver = new MutationObserver(() => {
   const anyOpen = document.querySelector('.modal-backdrop.show');
