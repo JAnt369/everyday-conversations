@@ -1919,8 +1919,16 @@ async requestPasswordReset(email){
 },
 
 async updatePassword(newPassword){
+  // 1. Cambiar la contraseña
   const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
   if(error) throw new Error(traduceError(error.message));
+
+  // 2. Cerrar sesiones en otros dispositivos (mantiene la actual)
+  try {
+    await supabaseClient.auth.signOut({ scope: 'others' });
+  } catch(err) {
+    console.warn('[updatePassword] No se pudieron cerrar otras sesiones:', err.message);
+  }
 }
   
 }; // end to object store
