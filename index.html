@@ -4551,9 +4551,17 @@ if(isRecovery){
    }*/    
     UI.view = 'dashboard';
   }
-
-  
-  
+   document.addEventListener('visibilitychange', async () => {
+  if(document.visibilityState === 'visible' && !UI._isRecoveryMode){
+    const { data: { user }, error } = await supabaseClient.auth.getUser();
+    if(error || !user){
+      await store.signOut();
+      UI.view = 'landing';
+      render();
+    }
+  }
+});
+    
   // Observer para detectar cuándo se abren/cierran modales
   const modalObserver = new MutationObserver(() => {
   const anyOpen = document.querySelector('.modal-backdrop.show');
