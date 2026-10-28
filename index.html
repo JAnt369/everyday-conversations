@@ -3603,6 +3603,7 @@ if(resetForm) resetForm.onsubmit = async e => {
   }
   try {
     await store.updatePassword(fd.get('password'));
+    localStorage.removeItem('pending_password_reset');   // ← Limpiar bandera
     toast('¡Contraseña actualizada! Ya puedes iniciar sesión.', 'ok');
     await store.signOut();
     UI.view = 'landing';
@@ -3776,7 +3777,15 @@ if(e.target.closest('[data-forgot-password]')){
   render().then(() => bindAuth());
   return;
 }
-  
+  // Cancelar recuperación de contraseña
+if(e.target.closest('[data-cancel-reset]')){
+  e.preventDefault();
+  localStorage.removeItem('pending_password_reset');
+  await store.signOut();
+  UI.view = 'landing';
+  render();
+  return;
+}  
   // Guardar asignación de docente
 if(e.target.id === 'btnSaveTeacher'){
   e.preventDefault();
@@ -4466,11 +4475,16 @@ async function renderResetPassword(){
           <div class="field">
             <label>Confirmar contraseña</label>
             <input type="password" name="confirm" required minlength="6" placeholder="••••••••" autocomplete="new-password">
-          </div>
+          </div>          
           <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" type="submit">
             Guardar nueva contraseña
-          </button>
+          </button>          
         </form>
+         <div style="text-align:center;margin-top:14px">
+           <a style="color:var(--ink-3);font-size:13px;cursor:pointer" data-cancel-reset>
+              Cancelar y volver al inicio
+           </a>
+         </div> 
       </div>
     </div>
   </div>`;
@@ -4505,6 +4519,15 @@ if(isRecovery){
   setTimeout(() => bindAuth(), 0);
   return;
 }
+
+  // Si hay una recuperación pendiente, forzar la vista de reset
+  if(localStorage.getItem('pending_password_reset') === 'true'){
+    UI.view = 'reset-password';
+    UI._isRecoveryMode = true;
+    $('#app').innerHTML = await renderResetPassword();
+    setTimeout(() => bindAuth(), 0);
+    return;
+  }
   
   // Escuchar cambios de sesión
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
@@ -4541,18 +4564,9 @@ if(isRecovery){
   }
   });
 
-  // Si hay una recuperación pendiente, forzar la vista de reset
-  if(localStorage.getItem('pending_password_reset') === 'true'){
-    UI.view = 'reset-password';
-    UI._isRecoveryMode = true;
-    $('#app').innerHTML = await renderResetPassword();
-    setTimeout(() => bindAuth(), 0);
-    return;
-  }
-  
-  const user = await store.getUser();
-  if(user){
-        
+    
+  const localUser = await store.getUser();
+  if(localUser){       
     const { data: { user: serverUser }, error } = await supabaseClient.auth.getUser();
 
    if(error || !serverUser){
