@@ -4489,6 +4489,9 @@ const isRecovery = params.get('mode') === 'reset-password'
   || params.get('type') === 'recovery';
 
 if(isRecovery){
+   // Bandera persistente que sobrevive recargas y cambios de pestaña
+  localStorage.setItem('pending_password_reset', 'true');
+  
   // Forzar la vista de reset ANTES de que la sesión se cargue
   UI.view = 'reset-password';
   UI._isRecoveryMode = true;
@@ -4505,6 +4508,17 @@ if(isRecovery){
   
   // Escuchar cambios de sesión
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
+     // Si hay una recuperación pendiente, siempre mostrar el reset
+    if(localStorage.getItem('pending_password_reset') === 'true'){
+      if(UI.view !== 'reset-password'){
+        UI.view = 'reset-password';
+        UI._isRecoveryMode = true;
+        $('#app').innerHTML = await renderResetPassword();
+        setTimeout(() => bindAuth(), 0);
+      }
+      return;
+    }
+    
     if(event === 'SIGNED_OUT'){
       store._session = null;
       store._profile = null;
@@ -4527,23 +4541,21 @@ if(isRecovery){
   }
   });
 
+  // Si hay una recuperación pendiente, forzar la vista de reset
+  if(localStorage.getItem('pending_password_reset') === 'true'){
+    UI.view = 'reset-password';
+    UI._isRecoveryMode = true;
+    $('#app').innerHTML = await renderResetPassword();
+    setTimeout(() => bindAuth(), 0);
+    return;
+  }
+  
   const user = await store.getUser();
   if(user){
-     /*
-    // Verificar que la sesión sigue siendo válida en el servidor
-     const { data: { session }, error } = await supabaseClient.auth.getSession();
-  
-     // Si el servidor dice que no hay sesión (o la sesión fue invalidada), cerrar
-    if(!session || error){
-      await store.signOut();
-      UI.view = 'landing';
-      render();
-      return;
-    }    */
-    
+        
     const { data: { user: serverUser }, error } = await supabaseClient.auth.getUser();
 
-   if(user && !serverUser){
+   if(error || !serverUser){
     // El localStorage dice que hay sesión, pero el servidor la rechazó
     await store.signOut();
     UI.view = 'landing';
