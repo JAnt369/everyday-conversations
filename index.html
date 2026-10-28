@@ -1385,7 +1385,7 @@ body.view-course .wa-float{
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true }
+    detectSessionInUrl: false }
   }); 
   window.supabaseClient = supabaseClient;
 </script>
@@ -4506,15 +4506,29 @@ if(isRecovery){
    // Bandera persistente que sobrevive recargas y cambios de pestaña
   localStorage.setItem('pending_password_reset', 'true');
   
-  // Forzar la vista de reset ANTES de que la sesión se cargue
+   // Procesar el token de Supabase manualmente
+  // (el hash contiene access_token y refresh_token)
+  const accessToken = hashParams.get('access_token');
+  const refreshToken = hashParams.get('refresh_token');
+
+  if(accessToken && refreshToken){
+    try {
+      // Crear la sesión manualmente
+      await supabaseClient.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken
+      });
+    } catch(err){
+      console.warn('[Recovery] Error al establecer sesión:', err);
+    }
+  }
+  
+  //limpiar la url
+  history.replaceState(null, '', window.location.pathname);
+  
+  // Forzar el render de la vista de reset aunque haya sesión  
   UI.view = 'reset-password';
   UI._isRecoveryMode = true;
-  history.replaceState(null, '', window.location.pathname);
-
-  // Esperar un momento a que Supabase procese el token del hash
-  await new Promise(r => setTimeout(r, 500));
-
-  // Forzar el render de la vista de reset aunque haya sesión
   $('#app').innerHTML = await renderResetPassword();
   setTimeout(() => bindAuth(), 0);
   return;
