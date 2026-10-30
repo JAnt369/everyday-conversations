@@ -3814,6 +3814,20 @@ if(e.target.closest('#btnBulkUpload')){
   if(input) input.click();
   return;
 }
+
+if(e.target.closest('#btnBulkTemplate')){
+  e.preventDefault();
+  const template = 'name,email,password,teacher_email,levels\nJuan Pérez,juan@ejemplo.com,Pass1234,profesor@ejemplo.com,b1\nMaría López,maria@ejemplo.com,Pass5678,,b1;b2\n';
+  const blob = new Blob(['\uFEFF' + template], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'plantilla-alumnos.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Plantilla descargada', 'ok');
+  return;
+}
   
 // Link de "¿Olvidaste tu contraseña?"
 if(e.target.closest('[data-forgot-password]')){
@@ -5362,6 +5376,9 @@ async function renderAdminUsers(){
         </select>  
         <button class="admin-filter" id="btnBulkUpload" style="cursor:pointer;border-color:var(--blue);color:var(--blue);font-weight:700">
               📤 Cargar alumnos CSV
+        </button>
+        <button class="admin-filter" id="btnBulkTemplate" style="cursor:pointer" title="Descargar plantilla">
+              📄 Plantilla
         </button>
       </div>
       <input type="file" id="bulkCsvInput" accept=".csv" style="display:none">
