@@ -1930,6 +1930,44 @@ async updatePassword(newPassword){
     console.warn('[updatePassword] No se pudieron cerrar otras sesiones:', err.message);
   }
 }
+/**
+ * Crea un usuario desde el panel admin (sin cerrar la sesión del admin).
+ * Usa una función RPC de Supabase (o el endpoint admin si tienes service_role).
+ * Como no tenemos service_role en el frontend, usamos signUp normal
+ * y luego actualizamos el perfil con el rol/teacher_id correspondiente.
+ */
+async createStudentFromAdmin({ name, email, password, teacherId, levels }){
+  // 1. Crear el usuario en Auth
+  const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { name, role: 'student', teacher_id: teacherId || '' },
+      emailRedirectTo: window.location.origin
+    }
+  });
+
+  if(authError) throw new Error(authError.message);
+  if(!authData.user) throw new Error('No se pudo crear el usuario');
+
+  const userId = authData.user.id;
+
+  // 2. Actualizar el perfil con los niveles y teacher_id
+  // (el trigger ya creó el perfil con valores por defecto)
+  const patch = {};
+  if(teacherId) patch.teacher_id = teacherId;
+  if(levels && Object.keys(levels).length) patch.levels = levels;
+
+  if(Object.keys(patch).length){
+    const { error: profileError } = await supabaseClient
+      .from('profiles')
+      .update(patch)
+      .eq('id', userId);
+    if(profileError) console.warn('[bulk] Error actualizando perfil:', profileError.message);
+  }
+
+  return { id: userId, email, name };
+}
   
 }; // end to object store
   
@@ -3769,6 +3807,14 @@ document.addEventListener('click', async e => {
   // Admin tabs
 const adminTab = e.target.closest('.admin-tab[data-admin]');
 
+  // Cargar alumnos CSV
+if(e.target.closest('#btnBulkUpload')){
+  e.preventDefault();
+  const input = document.getElementById('bulkCsvInput');
+  if(input) input.click();
+  return;
+}
+  
 // Link de "¿Olvidaste tu contraseña?"
 if(e.target.closest('[data-forgot-password]')){
   e.preventDefault();
@@ -4212,6 +4258,13 @@ document.addEventListener('change', async e => {
     const body = document.getElementById('adminBody');
     if(body) body.innerHTML = await renderAdminUsers();
   }
+  if(e.target.id === 'bulkCsvInput'){
+  const file = e.target.files[0];
+  if(file){
+    handleBulkCsv(file);
+    e.target.value = '';   // reset para permitir subir el mismo archivo otra vez
+  }
+}
 });
   
 document.addEventListener('change', e => {
@@ -5306,8 +5359,12 @@ async function renderAdminUsers(){
            ${teachers.map(t => `
                <option value="${t.id}" ${UI.adminFilterTeacher === t.id ? 'selected' : ''}>${esc(t.name)}</option>
            `).join('')}
-        </select>        
+        </select>  
+        <button class="admin-filter" id="btnBulkUpload" style="cursor:pointer;border-color:var(--blue);color:var(--blue);font-weight:700">
+              📤 Cargar alumnos CSV
+        </button>
       </div>
+      <input type="file" id="bulkCsvInput" accept=".csv" style="display:none">
       <div style="overflow-x:auto">
         <table class="admin-table">
           <thead>
@@ -5672,6 +5729,234 @@ async function exportTeacherProgressCSV(){
   });
   downloadCSV(rows, 'progreso-mis-alumnos-toefl.csv');
 }
+/* ============================================================
+   BULK UPLOAD DE ALUMNOS
+   ============================================================ */
+
+// Parsea un CSV simple (sin comillas complejas)
+function parseCSV(text){
+  const lines = text.trim().split(/\r?\n/);
+  if(lines.length < 2) return [];
+  
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+  const rows = [];
+  
+  for(let i = 1; i < lines.length; i++){
+    const line = lines[i].trim();
+    if(!line) continue;
+    
+    // Split por coma, respetando comillas
+    const values = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for(let c = 0; c < line.length; c++){
+      const ch = line[c];
+      if(ch === '"'){
+        inQuotes = !inQuotes;
+      } else if(ch === ',' && !inQuotes){
+        values.push(current.trim());
+        current = '';
+      } else {
+        current += ch;
+      }
+    }
+    values.push(current.trim());
+    
+    const row = {};
+    headers.forEach((h, idx) => {
+      row[h] = values[idx] || '';
+    });
+    rows.push(row);
+  }
+  
+  return rows;
+}
+
+// Convierte la lista de niveles a objeto { b1: true, b2: true, ... }
+function parseLevels(levelsStr){
+  const base = { b1:false, b2:false, c1:false, c2:false };
+  if(!levelsStr) return { ...base, b1: true };
+  
+  const parts = levelsStr.toLowerCase().split(/[;,\s]+/).filter(Boolean);
+  parts.forEach(p => {
+    if(base.hasOwnProperty(p)) base[p] = true;
+  });
+  
+  // Si no se especificó nada válido, dar b1 por defecto
+  if(!Object.values(base).some(v => v)) base.b1 = true;
+  
+  return base;
+}
+
+// Maneja el archivo seleccionado y muestra la previsualización
+async function handleBulkCsv(file){
+  const text = await file.text();
+  const rows = parseCSV(text);
+  
+  if(!rows.length){
+    toast('El archivo está vacío o no tiene el formato correcto', 'err');
+    return;
+  }
+  
+  // Validar filas
+  const teachers = await store.getTeachers();
+  const teacherMap = Object.fromEntries(teachers.map(t => [t.email.toLowerCase(), t]));
+  
+  const validated = rows.map((r, idx) => {
+    const errors = [];
+    
+    if(!r.name) errors.push('Falta nombre');
+    if(!r.email) errors.push('Falta email');
+    else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email)) errors.push('Email inválido');
+    if(!r.password) errors.push('Falta contraseña');
+    else if(r.password.length < 6) errors.push('Contraseña < 6 caracteres');
+    
+    let teacherId = null;
+    if(r.teacher_email){
+      const t = teacherMap[r.teacher_email.toLowerCase()];
+      if(!t) errors.push(`Docente no encontrado: ${r.teacher_email}`);
+      else teacherId = t.id;
+    }
+    
+    return {
+      rowNum: idx + 2,
+      data: r,
+      teacherId,
+      levels: parseLevels(r.levels),
+      errors
+    };
+  });
+  
+  showBulkPreview(validated);
+}
+
+// Muestra el modal de previsualización
+function showBulkPreview(rows){
+  const valid = rows.filter(r => r.errors.length === 0);
+  const invalid = rows.filter(r => r.errors.length > 0);
+  
+  const html = `
+    <h2>Previsualización de carga masiva</h2>
+    <p class="modal-sub">Revisa los datos antes de confirmar. Se crearán <b>${valid.length}</b> alumnos.</p>
+    
+    ${invalid.length ? `
+      <div style="background:var(--err-bg);border:1px solid #F5C6C0;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12.5px;color:#A5201A">
+        <b>⚠️ ${invalid.length} fila(s) con errores</b> (no se crearán):
+        <ul style="margin:8px 0 0 18px;line-height:1.6">
+          ${invalid.map(r => `<li>Fila ${r.rowNum}: ${r.errors.join(', ')}</li>`).join('')}
+        </ul>
+      </div>
+    ` : ''}
+    
+    ${valid.length ? `
+      <div style="max-height:300px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;margin-bottom:16px">
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+          <thead>
+            <tr style="background:#FAFCFF">
+              <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)">#</th>
+              <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)">Nombre</th>
+              <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)">Email</th>
+              <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)">Docente</th>
+              <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)">Niveles</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${valid.map((r, i) => `
+              <tr>
+                <td style="padding:7px 10px;border-bottom:1px solid var(--line-2)">${i+1}</td>
+                <td style="padding:7px 10px;border-bottom:1px solid var(--line-2)">${esc(r.data.name)}</td>
+                <td style="padding:7px 10px;border-bottom:1px solid var(--line-2)">${esc(r.data.email)}</td>
+                <td style="padding:7px 10px;border-bottom:1px solid var(--line-2)">${r.teacherId ? '✓' : '—'}</td>
+                <td style="padding:7px 10px;border-bottom:1px solid var(--line-2)">
+                  ${Object.entries(r.levels).filter(([,v])=>v).map(([k])=>k.toUpperCase()).join(', ')}
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    ` : ''}
+    
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary" id="btnConfirmBulk" ${valid.length === 0 ? 'disabled' : ''}>
+        ✅ Crear ${valid.length} alumno(s)
+      </button>
+    </div>
+  `;
+  
+  $('#checkoutContent').innerHTML = html;
+  $('#checkoutModal').classList.add('show');
+  
+  const btn = $('#btnConfirmBulk');
+  if(btn) btn.onclick = () => executeBulkUpload(valid);
+}
+
+// Ejecuta la creación masiva
+async function executeBulkUpload(rows){
+  const btn = $('#btnConfirmBulk');
+  if(btn){
+    btn.disabled = true;
+    btn.textContent = 'Creando…';
+  }
+  
+  const results = { success: 0, failed: 0, errors: [] };
+  
+  for(const r of rows){
+    try {
+      await store.createStudentFromAdmin({
+        name: r.data.name,
+        email: r.data.email,
+        password: r.data.password,
+        teacherId: r.teacherId,
+        levels: r.levels
+      });
+      results.success++;
+      
+      // Actualizar el botón con el progreso
+      if(btn){
+        btn.textContent = `Creando… ${results.success + results.failed}/${rows.length}`;
+      }
+    } catch(err){
+      results.failed++;
+      results.errors.push(`${r.data.email}: ${err.message}`);
+    }
+  }
+  
+  // Mostrar resumen
+  const html = `
+    <h2>Resultado de la carga</h2>
+    <p class="modal-sub">Proceso completado.</p>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div style="background:var(--ok-bg);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:32px;font-weight:900;color:var(--ok)">${results.success}</div>
+        <div style="font-size:12px;color:var(--ink-2);font-weight:700;margin-top:4px">Creados</div>
+      </div>
+      <div style="background:var(--err-bg);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:32px;font-weight:900;color:var(--err)">${results.failed}</div>
+        <div style="font-size:12px;color:var(--ink-2);font-weight:700;margin-top:4px">Fallidos</div>
+      </div>
+    </div>
+    
+    ${results.errors.length ? `
+      <div style="background:#FFF4D9;border:1px solid #FFE082;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12.5px;color:#8A6200">
+        <b>Errores:</b>
+        <ul style="margin:8px 0 0 18px;line-height:1.6">
+          ${results.errors.map(e => `<li>${esc(e)}</li>`).join('')}
+        </ul>
+      </div>
+    ` : ''}
+    
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-primary" data-close onclick="location.reload()">Cerrar y recargar</button>
+    </div>
+  `;
+  
+  $('#checkoutContent').innerHTML = html;
+}
+  
   
 render();
 </script>
