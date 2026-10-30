@@ -1929,7 +1929,8 @@ async updatePassword(newPassword){
   } catch(err) {
     console.warn('[updatePassword] No se pudieron cerrar otras sesiones:', err.message);
   }
-}
+},
+  
 /**
  * Crea un usuario desde el panel admin (sin cerrar la sesión del admin).
  * Usa una función RPC de Supabase (o el endpoint admin si tienes service_role).
