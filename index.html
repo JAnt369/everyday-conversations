@@ -3816,7 +3816,7 @@ if(e.target.closest('#btnBulkUpload')){
   return;
 }
 
-if(e.target.closest('#btnBulkTemplate')){
+/*if(e.target.closest('#btnBulkTemplate')){
   e.preventDefault();
   const template = 'name,email,password,teacher_email,levels\nJuan Pérez,juan@ejemplo.com,Pass1234,profesor@ejemplo.com,b1\nMaría López,maria@ejemplo.com,Pass5678,,b1;b2\n';
   const blob = new Blob(['\uFEFF' + template], { type: 'text/csv;charset=utf-8' });
@@ -3827,6 +3827,11 @@ if(e.target.closest('#btnBulkTemplate')){
   a.click();
   URL.revokeObjectURL(url);
   toast('Plantilla descargada', 'ok');
+  return;
+}*/
+  if(e.target.closest('#btnBulkTemplate')){
+  e.preventDefault();
+  await exportCurrentStudentsCSV();
   return;
 }
   
@@ -5975,6 +5980,75 @@ async function executeBulkUpload(rows){
   $('#checkoutContent').innerHTML = html;
 }
   
+/* ============================================================
+   EXPORTAR ALUMNOS ACTUALES (para re-subir o editar)
+   ============================================================ */
+async function exportCurrentStudentsCSV(){
+  try {
+    const allUsers = await store.getAllUsers();
+    const teachers = await store.getTeachers();
+    const teacherMap = Object.fromEntries(teachers.map(t => [t.id, t]));
+
+    // Filtrar solo alumnos
+    const students = allUsers.filter(u => (u.role || 'student') === 'student');
+
+    if(!students.length){
+      toast('No hay alumnos registrados todavía', 'err');
+      return;
+    }
+
+    // Encabezados del CSV (mismo formato que la carga masiva)
+    const headers = ['name', 'email', 'password', 'teacher_email', 'levels'];
+    const rows = [headers.join(',')];
+
+    students.forEach(s => {
+      // Niveles activos como string "b1;b2"
+      const levels = Object.entries(s.levels || {})
+        .filter(([, v]) => v)
+        .map(([k]) => k)
+        .join(';') || 'b1';
+
+      // Email del docente asignado (si tiene)
+      const teacherEmail = s.teacher_id 
+        ? (teacherMap[s.teacher_id]?.email || '')
+        : '';
+
+      // Escapar campos con comas o comillas
+      const esc = (v) => {
+        const str = String(v || '');
+        if(str.includes(',') || str.includes('"') || str.includes('\n')){
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      };
+
+      rows.push([
+        esc(s.name),
+        esc(s.email),
+        '',                       // password: vacío (no se puede exportar)
+        esc(teacherEmail),
+        esc(levels)
+      ].join(','));
+    });
+
+    const csv = rows.join('\n');
+    const date = new Date().toISOString().split('T')[0];   // YYYY-MM-DD
+    const filename = `alumnos-actuales-${date}.csv`;
+
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    toast(`Descargados ${students.length} alumnos en ${filename}`, 'ok');
+  } catch(err){
+    console.error('[exportCurrentStudentsCSV] Error:', err);
+    toast('Error al exportar: ' + err.message, 'err');
+  }
+}  
   
 render();
 </script>
