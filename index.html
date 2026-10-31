@@ -3661,6 +3661,71 @@ if(resetForm) resetForm.onsubmit = async e => {
    12. CHECKOUT MODAL
    ============================================================ */
 async function openCheckout(levelId){
+  const user = await store.getUser();
+  if(!user){ openAuth('register'); return; }
+  
+  const level = getLevel(levelId);
+  if(!level){ toast('Nivel no encontrado', 'err'); return; }
+
+  // Mostrar modal de carga mientras se crea la sesión de Stripe
+  $('#checkoutContent').innerHTML = `
+    <div style="text-align:center;padding:40px 20px">
+      <div style="font-size:48px;margin-bottom:16px">💳</div>
+      <h2 style="font-size:20px;font-weight:800;color:var(--navy);margin-bottom:8px">
+        Preparando tu pago…
+      </h2>
+      <p style="font-size:13.5px;color:var(--ink-2);line-height:1.6">
+        Te estamos redirigiendo a Stripe para completar la inscripción al nivel <b>${level.code}</b>.
+      </p>
+    </div>
+  `;
+  $('#checkoutModal').classList.add('show');
+
+  try {
+    // Llamar al endpoint de Stripe en tu servidor IONOS
+    const response = await fetch('https://toefl-itp.academy.sis-prep.com/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        levelId: levelId,
+        userEmail: user.email,
+        userId: user.id
+      })
+    });
+
+    if(!response.ok){
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Error al crear la sesión de pago');
+    }
+
+    const data = await response.json();
+    
+    if(!data.url){
+      throw new Error('Stripe no devolvió una URL de pago');
+    }
+
+    // Redirigir a Stripe Checkout
+    window.location.href = data.url;
+
+  } catch(err){
+    console.error('[Checkout] Error:', err);
+    $('#checkoutContent').innerHTML = `
+      <div style="text-align:center;padding:30px 20px">
+        <div style="font-size:48px;margin-bottom:16px">⚠️</div>
+        <h2 style="font-size:20px;font-weight:800;color:var(--err);margin-bottom:8px">
+          No se pudo procesar el pago
+        </h2>
+        <p style="font-size:13.5px;color:var(--ink-2);line-height:1.6;margin-bottom:20px">
+          ${esc(err.message)}
+        </p>
+        <button class="btn btn-ghost" onclick="document.getElementById('checkoutModal').classList.remove('show')">
+          Cerrar
+        </button>
+      </div>
+    `;
+  }
+}
+  /*async function openCheckout(levelId){
   //const user = store.session ? store.findUser(store.session.email) : null;
   const user = await store.getUser();
   
@@ -3705,15 +3770,15 @@ async function openCheckout(levelId){
   `;
   $('#checkoutModal').classList.add('show');
 
-  /* $('#btnPay').onclick = async () => {
-    user.levels = user.levels || {};
-    user.levels[levelId] = true;
-    await store.updateUser(user.id, {levels: user.levels, plan: 'premium'});
-    $('#checkoutModal').classList.remove('show');
-    toast(`¡${level.code} desbloqueado! Ya puedes empezar.`, 'ok');
-    UI.view = 'dashboard';
-    render();
-  }; */
+  // $('#btnPay').onclick = async () => {
+  //  user.levels = user.levels || {};
+  //  user.levels[levelId] = true;
+  //  await store.updateUser(user.id, {levels: user.levels, plan: 'premium'});
+  //  $('#checkoutModal').classList.remove('show');
+  //  toast(`¡${level.code} desbloqueado! Ya puedes empezar.`, 'ok');
+  //  UI.view = 'dashboard';
+  //  render();
+  //}; 
   
   $('#btnPay').onclick = async () => {
   const level = getLevel(levelId);
@@ -3725,7 +3790,7 @@ async function openCheckout(levelId){
     render();
   } catch(err){ toast(err.message, 'err'); }
 };
-}
+}*/
 
 /* ============================================================
    13. VOZ
