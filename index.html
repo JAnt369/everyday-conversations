@@ -2718,7 +2718,7 @@ async function renderLanding(){
           <div>
             <div class="hero-badge">TOEFL ITP · Plataforma oficial de práctica</div>
             <h1>Domina el inglés con <em>confianza real</em>.</h1>
-            <h1>Toefl IPT <em> obten tu certificado oficial</em>.</h1>
+            <h1>Toefl ITP <em> obten tu certificado oficial</em>.</h1>
             <p class="lead">
               Cuatro niveles alineados al Marco Común Europeo (B1–C2), con diálogos auténticos,
               práctica de voz, quizzes adaptativos y seguimiento personalizado de tu progreso.
@@ -3662,6 +3662,8 @@ if(resetForm) resetForm.onsubmit = async e => {
    ============================================================ */
 async function openCheckout(levelId){
   const user = await store.getUser();
+  //diagnostico temporal
+  console.log('[Checkout] User:', user?.id, '| Email:', user?.email, '| Level:', levelId);
   if(!user){ openAuth('register'); return; }
   
   const level = getLevel(levelId);
@@ -3686,13 +3688,15 @@ async function openCheckout(levelId){
     const response = await fetch('https://toefl-itp.academy.sis-prep.com/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      redirect: 'manual',
       body: JSON.stringify({
         levelId: levelId,
         userEmail: user.email,
         userId: user.id
       })
     });
-
+    //diagnostico temporal
+    console.log('[Checkout] Response status:', response.status, '| type:', response.type);
     if(!response.ok){
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.error || 'Error al crear la sesión de pago');
