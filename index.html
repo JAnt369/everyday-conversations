@@ -1968,7 +1968,51 @@ async createStudentFromAdmin({ name, email, password, teacherId, levels }){
   }
 
   return { id: userId, email, name };
-}
+},
+
+  /* ---------- PAYMENTS (admin) ---------- */
+
+async getAllPayments(){
+  const { data, error } = await supabaseClient
+    .from('payments')
+    .select(`
+      id,
+      user_id,
+      level_id,
+      amount_cents,
+      currency,
+      status,
+      stripe_session_id,
+      created_at,
+      paid_at
+    `)
+    .order('created_at', { ascending: false });
+  if(error) throw new Error('Error al cargar pagos: ' + error.message);
+  return data || [];
+},
+
+async getPaymentsStats(){
+  const payments = await this.getAllPayments();
+  const paid = payments.filter(p => p.status === 'paid');
+  
+  const now = new Date();
+  const thisMonth = paid.filter(p => {
+    const d = new Date(p.paid_at || p.created_at);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  
+  const totalCents = paid.reduce((s, p) => s + (p.amount_cents || 0), 0);
+  const monthCents = thisMonth.reduce((s, p) => s + (p.amount_cents || 0), 0);
+  const avgCents = paid.length ? Math.round(totalCents / paid.length) : 0;
+  
+  return {
+    totalRevenue: totalCents / 100,
+    monthRevenue: monthCents / 100,
+    totalPayments: paid.length,
+    avgTicket: avgCents / 100,
+    payments: payments
+  };
+} // end payments admin
   
 }; // end to object store
   
@@ -3884,21 +3928,7 @@ if(e.target.closest('#btnBulkUpload')){
   if(input) input.click();
   return;
 }
-
-/*if(e.target.closest('#btnBulkTemplate')){
-  e.preventDefault();
-  const template = 'name,email,password,teacher_email,levels\nJuan Pérez,juan@ejemplo.com,Pass1234,profesor@ejemplo.com,b1\nMaría López,maria@ejemplo.com,Pass5678,,b1;b2\n';
-  const blob = new Blob(['\uFEFF' + template], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'plantilla-alumnos.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-  toast('Plantilla descargada', 'ok');
-  return;
-}*/
-  if(e.target.closest('#btnBulkTemplate')){
+if(e.target.closest('#btnBulkTemplate')){
   e.preventDefault();
   await exportCurrentStudentsCSV();
   return;
@@ -4120,6 +4150,7 @@ if(e.target.id === 'adminRefresh'){ render(); toast('Datos actualizados', 'ok');
 // Exportar CSV (versión del docente)
 if(e.target.id === 'teacherExportUsers'){ await exportTeacherUsersCSV(); return; }
 if(e.target.id === 'teacherExportProgress'){ await exportTeacherProgressCSV(); return; }
+if(e.target.id === 'adminExportPayments'){ await exportPaymentsCSV(); return; }
   
   // navegación
   const nav = e.target.closest('[data-nav]');
@@ -5289,6 +5320,7 @@ async function renderAdmin(currentUser){
         <button class="admin-tab ${UI.adminTab==='overview'?'active':''}" data-admin="overview">Resumen</button>
         <button class="admin-tab ${UI.adminTab==='users'?'active':''}" data-admin="users">Usuarios</button>
         <button class="admin-tab ${UI.adminTab==='levels'?'active':''}" data-admin="levels">Niveles</button>
+        <button class="admin-tab ${UI.adminTab==='payments'?'active':''}" data-admin="payments">💳 Pagos</button>
       </div>
       <div id="adminBody"></div>
     </div>
@@ -5299,6 +5331,7 @@ async function renderAdminBody(){
   if(UI.adminTab === 'overview') return await renderAdminOverview();
   if(UI.adminTab === 'users')    return await renderAdminUsers();
   if(UI.adminTab === 'levels')   return await renderAdminLevels();
+  if(UI.adminTab === 'payments') return await renderAdminPayments(); 
   return '';
 }
 
@@ -5620,7 +5653,116 @@ async function renderAdminLevels(){
       }).join('')}
     </div>
   `;
-}
+}// end renderAdminLevels
+
+  async function renderAdminPayments(){
+  const stats = await store.getPaymentsStats();
+  const users = await store.getAllUsers();
+  const userMap = Object.fromEntries(users.map(u => [u.id, u]));
+
+  const payments = stats.payments;
+
+  // KPIs
+  const fmt = (n) => new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(n);
+  const fmtDate = (d) => d ? new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+
+  return `
+    <!-- KPIs -->
+    <div class="chart-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px">
+      <div class="chart-card" style="border-top:4px solid var(--ok)">
+        <h3>Ingresos totales</h3>
+        <div class="chart-sub">Suma de todos los pagos completados</div>
+        <div style="font-size:28px;font-weight:900;color:var(--ok);letter-spacing:-.03em;margin-top:12px">
+          ${fmt(stats.totalRevenue)}
+        </div>
+      </div>
+      <div class="chart-card" style="border-top:4px solid var(--blue)">
+        <h3>Ingresos del mes</h3>
+        <div class="chart-sub">Pagos completados este mes</div>
+        <div style="font-size:28px;font-weight:900;color:var(--blue);letter-spacing:-.03em;margin-top:12px">
+          ${fmt(stats.monthRevenue)}
+        </div>
+      </div>
+      <div class="chart-card" style="border-top:4px solid var(--gold)">
+        <h3>Total de pagos</h3>
+        <div class="chart-sub">Transacciones exitosas</div>
+        <div style="font-size:28px;font-weight:900;color:var(--gold-2);letter-spacing:-.03em;margin-top:12px">
+          ${stats.totalPayments}
+        </div>
+      </div>
+      <div class="chart-card" style="border-top:4px solid var(--navy)">
+        <h3>Ticket promedio</h3>
+        <div class="chart-sub">Promedio por transacción</div>
+        <div style="font-size:28px;font-weight:900;color:var(--navy);letter-spacing:-.03em;margin-top:12px">
+          ${fmt(stats.avgTicket)}
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de pagos -->
+    <div class="admin-table-wrap">
+      <div class="admin-toolbar">
+        <div style="flex:1;font-size:14px;font-weight:800;color:var(--navy)">
+          Historial de pagos (${payments.length})
+        </div>
+        <button class="admin-filter" id="adminExportPayments" style="cursor:pointer;border-color:var(--blue);color:var(--blue);font-weight:700">
+          ⬇️ Exportar CSV
+        </button>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Alumno</th>
+              <th>Nivel</th>
+              <th>Monto</th>
+              <th>Estado</th>
+              <th>Stripe Session</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${payments.length ? payments.map(p => {
+              const u = userMap[p.user_id] || { name: 'Usuario eliminado', email: '' };
+              const level = getLevel(p.level_id);
+              const amount = (p.amount_cents / 100);
+              const fmtDate2 = new Date(p.paid_at || p.created_at).toLocaleDateString('es-MX');
+              
+              const statusBadge = {
+                paid: `<span class="badge-plan premium" style="background:var(--ok-bg);color:#0A6B3E">✓ Pagado</span>`,
+                pending: `<span class="badge-plan free" style="background:var(--gold-light);color:var(--gold-2)">⏳ Pendiente</span>`,
+                failed: `<span class="badge-plan free" style="background:var(--err-bg);color:var(--err)">✗ Fallido</span>`,
+                refunded: `<span class="badge-plan free" style="background:#F0F4FA;color:#5A6B85">↩ Reembolsado</span>`,
+                cancelled: `<span class="badge-plan free" style="background:#F0F4FA;color:#8494AB">✗ Cancelado</span>`
+              }[p.status] || `<span class="badge-plan free">${p.status}</span>`;
+
+              return `<tr>
+                <td style="font-size:12.5px;color:var(--ink-2)">${fmtDate2}</td>
+                <td>
+                  <div class="cell-user">
+                    <div class="admin-avatar">${initials(u.name || '??')}</div>
+                    <div class="cell-user-info">
+                      <b>${esc(u.name || 'Desconocido')}</b>
+                      <small>${esc(u.email || '')}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  ${level ? `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:800;background:${level.color}22;color:${level.color}">${level.code}</span>` : p.level_id}
+                </td>
+                <td style="font-weight:800;color:var(--navy)">${fmt(amount)}</td>
+                <td>${statusBadge}</td>
+                <td style="font-size:10.5px;color:var(--ink-3);font-family:monospace">${(p.stripe_session_id || '').substring(0, 20)}…</td>
+              </tr>`;
+            }).join('') : `
+              <tr><td colspan="6"><div class="admin-empty"><div class="big">💳</div><p>Aún no hay pagos registrados.</p></div></td></tr>
+            `}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+} // end renderAdminPayments
 
 async function openUserDetail(userId){
   // Guardar el userId en variable global para que el handler del botón Guardar lo lea
@@ -5817,6 +5959,30 @@ async function exportProgressCSV(){
   });
 
   downloadCSV(rows, 'progreso-toefl.csv');
+}
+
+async function exportPaymentsCSV(){
+  const stats = await store.getPaymentsStats();
+  const users = await store.getAllUsers();
+  const userMap = Object.fromEntries(users.map(u => [u.id, u]));
+
+  const rows = [['Fecha','Alumno','Email','Nivel','Monto (MXN)','Estado','Stripe Session ID']];
+
+  stats.payments.forEach(p => {
+    const u = userMap[p.user_id] || { name: 'Desconocido', email: '' };
+    const level = getLevel(p.level_id);
+    rows.push([
+      new Date(p.paid_at || p.created_at).toLocaleDateString('es-MX'),
+      u.name,
+      u.email,
+      level ? level.code : p.level_id,
+      (p.amount_cents / 100).toFixed(2),
+      p.status,
+      p.stripe_session_id || ''
+    ]);
+  });
+
+  downloadCSV(rows, `pagos-toefl-${new Date().toISOString().split('T')[0]}.csv`);
 }
 
 function downloadCSV(rows, filename){
