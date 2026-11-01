@@ -6039,26 +6039,34 @@ async function executeBulkUpload(rows){
   
   const results = { success: 0, failed: 0, errors: [] };
   
-  for(const r of rows){
-    try {
-      await store.createStudentFromAdmin({
+for(const r of rows){
+  try {
+    const res = await fetch('https://toefl-itp.academy.sis-prep.com/api/create-student', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         name: r.data.name,
         email: r.data.email,
         password: r.data.password,
         teacherId: r.teacherId,
         levels: r.levels
-      });
-      results.success++;
-      
-      // Actualizar el botón con el progreso
-      if(btn){
-        btn.textContent = `Creando… ${results.success + results.failed}/${rows.length}`;
-      }
-    } catch(err){
-      results.failed++;
-      results.errors.push(`${r.data.email}: ${err.message}`);
+      })
+    });
+
+    if(!res.ok){
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || 'Error al crear el alumno');
     }
+
+    results.success++;
+    if(btn){
+      btn.textContent = `Creando… ${results.success + results.failed}/${rows.length}`;
+    }
+  } catch(err){
+    results.failed++;
+    results.errors.push(`${r.data.email}: ${err.message}`);
   }
+}
   
   // Mostrar resumen
   const html = `
