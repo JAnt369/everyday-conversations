@@ -1647,6 +1647,16 @@ const store = {
     return data;
   },
 
+async getMyPaymentsDetailed(userId){
+  const { data, error } = await supabaseClient
+    .from('payments')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  if(error){ console.warn(error); return []; }
+  return data || [];
+},
+  
   /* ---------- ADMIN ---------- */
 
   async getAllUsers(){
@@ -3124,6 +3134,7 @@ async function renderDashboard(user){
       <div class="dash-tabs">
         <button class="dash-tab active" data-dash="levels">Mis niveles</button>
         <button class="dash-tab" data-dash="inscripciones">Inscripciones</button>
+        <button class="dash-tab" data-dash="payments">💳 Mis pagos</button>
       </div>
       <div id="dashBody"></div>
     </div>
@@ -3221,6 +3232,107 @@ function renderDashInscripciones(user){
   `;
 }
 
+  async function renderDashPayments(user){
+  const payments = await store.getMyPaymentsDetailed(user.id);
+
+  // KPIs
+  const paid = payments.filter(p => p.status === 'paid');
+  const totalSpent = paid.reduce((s, p) => s + (p.amount_cents || 0), 0) / 100;
+  const totalPurchases = paid.length;
+  const fmt = (n) => new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(n);
+
+  return `
+    <!-- KPIs del alumno -->
+    <div class="chart-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:22px">
+      <div class="chart-card" style="border-top:4px solid var(--ok)">
+        <h3>Total invertido</h3>
+        <div class="chart-sub">Suma de tus compras completadas</div>
+        <div style="font-size:28px;font-weight:900;color:var(--ok);letter-spacing:-.03em;margin-top:12px">
+          ${fmt(totalSpent)}
+        </div>
+      </div>
+      <div class="chart-card" style="border-top:4px solid var(--blue)">
+        <h3>Niveles comprados</h3>
+        <div class="chart-sub">Cantidad de niveles desbloqueados</div>
+        <div style="font-size:28px;font-weight:900;color:var(--blue);letter-spacing:-.03em;margin-top:12px">
+          ${totalPurchases}
+        </div>
+      </div>
+      <div class="chart-card" style="border-top:4px solid var(--gold)">
+        <h3>Tu plan actual</h3>
+        <div class="chart-sub">Estado de tu cuenta</div>
+        <div style="font-size:22px;font-weight:900;color:var(--gold-2);letter-spacing:-.03em;margin-top:12px;text-transform:capitalize">
+          ${user.plan}
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de pagos -->
+    <div class="admin-table-wrap">
+      <div class="admin-toolbar">
+        <div style="flex:1;font-size:14px;font-weight:800;color:var(--navy)">
+          Historial de pagos (${payments.length})
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Nivel</th>
+              <th>Monto</th>
+              <th>Estado</th>
+              <th style="text-align:right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${payments.length ? payments.map(p => {
+              const level = getLevel(p.level_id);
+              const amount = (p.amount_cents / 100);
+              const date = new Date(p.paid_at || p.created_at).toLocaleDateString('es-MX', { 
+                day: '2-digit', month: 'short', year: 'numeric' 
+              });
+              
+              const statusBadge = {
+                paid: `<span class="badge-plan premium" style="background:var(--ok-bg);color:#0A6B3E">✓ Pagado</span>`,
+                pending: `<span class="badge-plan free" style="background:var(--gold-light);color:var(--gold-2)">⏳ Pendiente</span>`,
+                failed: `<span class="badge-plan free" style="background:var(--err-bg);color:var(--err)">✗ Fallido</span>`,
+                refunded: `<span class="badge-plan free" style="background:#F0F4FA;color:#5A6B85">↩ Reembolsado</span>`,
+                cancelled: `<span class="badge-plan free" style="background:#F0F4FA;color:#8494AB">✗ Cancelado</span>`
+              }[p.status] || `<span class="badge-plan free">${p.status}</span>`;
+
+              return `<tr>
+                <td style="font-size:12.5px;color:var(--ink-2)">${date}</td>
+                <td>
+                  ${level 
+                    ? `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:800;background:${level.color}22;color:${level.color}">${level.code}</span>`
+                    : p.level_id}
+                </td>
+                <td style="font-weight:800;color:var(--navy)">${fmt(amount)}</td>
+                <td>${statusBadge}</td>
+                <td style="text-align:right">
+                  ${p.status === 'paid' && p.stripe_session_id 
+                    ? `<button class="row-btn" data-receipt="${p.id}" title="Ver recibo">📄</button>` 
+                    : '—'}
+                </td>
+              </tr>`;
+            }).join('') : `
+              <tr><td colspan="5">
+                <div class="admin-empty">
+                  <div class="big">💳</div>
+                  <p>Aún no has comprado ningún nivel.</p>
+                  <button class="btn btn-primary" style="margin-top:16px" data-dash-jump="inscripciones">
+                    Ver niveles disponibles
+                  </button>
+                </div>
+              </td></tr>
+            `}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
 /* ============================================================
    9. COURSE VIEW (diálogo dentro de un nivel)
    ============================================================ */
@@ -3950,7 +4062,15 @@ if(e.target.closest('[data-cancel-reset]')){
   UI.view = 'landing';
   render();
   return;
-}  
+}
+  // Botón "Ver niveles disponibles" desde "Mis pagos"
+if(e.target.closest('[data-dash-jump]')){
+  e.preventDefault();
+  const targetTab = e.target.closest('[data-dash-jump]').dataset.dashJump;
+  const tabBtn = document.querySelector(`.dash-tab[data-dash="${targetTab}"]`);
+  if(tabBtn) tabBtn.click();
+  return;
+}
   // Guardar asignación de docente
 if(e.target.id === 'btnSaveTeacher'){
   e.preventDefault();
@@ -4203,10 +4323,13 @@ if(e.target.id === 'adminExportPayments'){ await exportPaymentsCSV(); return; }
   
   const body = $('#dashBody');
   if(body){
-    if(dashTab.dataset.dash === 'inscripciones'){
+    const tab = dashTab.dataset.dash;
+    if(tab === 'inscripciones'){
       body.innerHTML = renderDashInscripciones(user);
+    } else if(tab === 'payments'){
+      body.innerHTML = await renderDashPayments(user);   // user payments
     } else {
-      body.innerHTML = await renderDashLevels(user);   // ← AQUÍ el await
+      body.innerHTML = await renderDashLevels(user);
     }
   }
   return;
