@@ -4639,6 +4639,45 @@ async function renderResetPassword(){
 (async function init(){
   // Detectar retorno desde email de recuperación
 const params = new URLSearchParams(window.location.search);
+
+  // Detectar retorno desde Stripe Checkout
+const paymentStatus = params.get('payment');
+if(paymentStatus === 'success'){
+  const levelId = params.get('level');
+  const level = levelId ? getLevel(levelId) : null;
+  
+  // Limpiar la URL
+  history.replaceState(null, '', window.location.pathname);
+  
+  // Refrescar el perfil (invalidar caché para que traiga los datos nuevos de Supabase)
+  store._profile = null;
+  
+  // Esperar un momento a que Supabase y el webhook terminen
+  setTimeout(async () => {
+    const user = await store.getUser();
+    if(user){
+      UI.view = 'dashboard';
+      render();
+      toast(`¡Pago exitoso! Nivel ${level?.code || ''} desbloqueado 🎉`, 'ok');
+    } else {
+      UI.view = 'landing';
+      render();
+    }
+  }, 1500);
+  
+  return;   // no seguir con el render normal
+}
+
+if(paymentStatus === 'cancelled'){
+  history.replaceState(null, '', window.location.pathname);
+  setTimeout(() => {
+    toast('Pago cancelado. Puedes intentarlo de nuevo cuando quieras.', 'err');
+    UI.view = 'landing';
+    render();
+  }, 500);
+  return;
+}
+  
 const hashParams = new URLSearchParams(window.location.hash.substring(1));
 const isRecovery = params.get('mode') === 'reset-password'
   || hashParams.get('type') === 'recovery'
