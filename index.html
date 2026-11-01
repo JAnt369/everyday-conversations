@@ -3512,6 +3512,7 @@ async function renderCourse(user){
               <button class="tool" data-tab="notas">📘 Notas</button>
               <button class="tool" data-tab="frases">💬 Frases</button>
               <button class="tool" data-tab="practica">✏️ Práctica</button>
+              <button class="tool" data-tab="reading">📖 Reading</button>  
             </div>
 
             <div id="tabContent">${renderTabContent(d)}</div>
@@ -3530,6 +3531,7 @@ function renderTabContent(d){
   if(UI.tab === 'notas')    return renderNotasTab(d);
   if(UI.tab === 'frases')   return renderFrasesTab(d);
   if(UI.tab === 'practica') return renderPracticaTab(d);
+  if(UI.tab === 'reading')  return renderReadingTab(d);  
   return '';
 }
 
@@ -3615,7 +3617,52 @@ function renderPracticaTab(d){
     </div>
     <div id="clozeScore" style="margin-top:16px;font-weight:800;color:var(--blue)"></div>
   </div>`;
-}
+} //end renderPracticaTab
+function renderReadingTab(d){
+  // Si el diálogo no tiene reading asociado, mostrar mensaje
+  if(!d.reading){
+    return `<div class="panel">
+      <h3><span class="dot"></span>Reading</h3>
+      <p style="color:var(--ink-2);line-height:1.6">
+        Este módulo aún no tiene lectura asociada. Prueba las otras pestañas (Diálogo, Notas, Frases o Práctica).
+      </p>
+    </div>`;
+  }
+  
+  const r = d.reading;
+  
+  return `<div class="panel">
+    <h3><span class="dot"></span>${esc(r.title || 'Reading')}</h3>
+    <p style="font-size:11.5px;color:var(--ink-3);margin-bottom:16px">
+      ${r.words || '—'} palabras · Nivel ${d.level.toUpperCase()} · ~${r.minutes || 3} min de lectura
+    </p>
+    
+    <div style="font-size:15px;line-height:1.8;color:#0A1E3D;margin-bottom:24px;padding:18px 20px;background:var(--blue-50);border-radius:12px;border-left:3px solid var(--blue)">
+      ${r.text.split('\n\n').map(p => `<p style="margin-bottom:12px">${esc(p)}</p>`).join('')}
+    </div>
+    
+    ${r.glossary && r.glossary.length ? `
+      <h4 style="font-size:12px;font-weight:800;color:var(--navy);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:8px">
+        📚 Glosario
+      </h4>
+      <div style="display:grid;gap:8px;margin-bottom:24px">
+        ${r.glossary.map(g => `
+          <div style="display:flex;justify-content:space-between;padding:9px 13px;background:#FBFDFF;border:1px solid var(--line-2);border-radius:9px;font-size:13.5px">
+            <b style="color:var(--navy)">${esc(g.word)}</b>
+            <span style="color:var(--ink-2)">${esc(g.def)}</span>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+    
+    ${r.questions && r.questions.length ? `
+      <button class="btn b1" id="btnReadingQuiz" style="width:100%;justify-content:center">
+        🎯 Quiz de comprensión (${r.questions.length} preguntas)
+      </button>
+    ` : ''}
+  </div>`;
+}// end renderReadingTab
+  
 
 function makeCloze(d){
   const items = [];
@@ -4741,6 +4788,15 @@ if(e.key === 'Escape'){
     startQuiz(d.phrases);
     return;
   }
+ // reading Quiz
+  if(e.target.id === 'btnReadingQuiz'){
+  const d = getDialogue(UI.currentDialogue);
+  if(d && d.reading && d.reading.questions){
+    startQuiz(d.reading.questions);
+  }
+  return;
+}
+  
   // say buttons
   const say = e.target.closest('.say');
   if(say){
