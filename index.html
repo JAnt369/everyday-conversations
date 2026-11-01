@@ -3883,7 +3883,7 @@ function renderQuiz(){
     </div>
     <div class="qbar"><div style="width:${pct}%"></div></div>
     <div class="qtext">${esc(q.q)}</div>
-    <div class="qsub">¿Qué significa esta expresión?</div>
+    <div class="qsub">${z.isReading ? esc(q.sub || 'Elige la respuesta correcta') : '¿Qué significa esta expresión?'}</div>
     <div class="opts">
       ${q.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}<span class="mark"></span></button>`).join('')}
     </div>
@@ -4792,7 +4792,7 @@ if(e.key === 'Escape'){
   if(e.target.id === 'btnReadingQuiz'){
   const d = getDialogue(UI.currentDialogue);
   if(d && d.reading && d.reading.questions){
-    startQuiz(d.reading.questions);
+   startReadingQuiz(d.reading.questions); 
   }
   return;
 }
@@ -5040,7 +5040,25 @@ function startQuiz(phrases){
   UI.quiz = { questions, index:0, score:0, answered:false };
   render();
 }
-
+// startReadingQuiz
+  function startReadingQuiz(questions){
+  // Las preguntas ya vienen con formato {q, es, options, answer}
+  const formatted = shuffle(questions).map(q => ({
+    q: q.q,
+    sub: q.es || 'Elige la respuesta correcta',
+    options: q.options,
+    answer: q.answer
+  }));
+  UI.quiz = { 
+    questions: formatted, 
+    index: 0, 
+    score: 0, 
+    answered: false,
+    isReading: true   // flag para distinguir el tipo de quiz
+  };
+  render();
+}
+  
 async function answerQuiz(btn){
   const z = UI.quiz; if(z.answered) return;
   z.answered = true;
