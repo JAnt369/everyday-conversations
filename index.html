@@ -1338,6 +1338,9 @@ body.view-course .wa-float{
   stroke-linecap:round;
   stroke-linejoin:round;
 }
+@media(max-width:760px){
+  .account-grid{grid-template-columns:1fr !important}
+}
   
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2022,7 +2025,42 @@ async getPaymentsStats(){
     avgTicket: avgCents / 100,
     payments: payments
   };
-} // end payments admin
+}, // end payments admin
+
+/* ---------- CUENTA DEL USUARIO ---------- */
+
+async changePassword(currentPassword, newPassword){
+  // 1. Verificar la contraseña actual reautenticando
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if(!user) throw new Error('No hay sesión activa');
+  
+  const { error: signInError } = await supabaseClient.auth.signInWithPassword({
+    email: user.email,
+    password: currentPassword
+  });
+  
+  if(signInError) throw new Error('La contraseña actual es incorrecta');
+  
+  // 2. Cambiar a la nueva contraseña
+  const { error: updateError } = await supabaseClient.auth.updateUser({ 
+    password: newPassword 
+  });
+  if(updateError) throw new Error(traduceError(updateError.message));
+  
+  // 3. Cerrar otras sesiones por seguridad
+  try {
+    await supabaseClient.auth.signOut({ scope: 'others' });
+  } catch(e){ /* ignorar */ }
+},
+
+async updateUserName(userId, newName){
+  const { error } = await supabaseClient
+    .from('profiles')
+    .update({ name: newName })
+    .eq('id', userId);
+  if(error) throw new Error('Error al actualizar nombre: ' + error.message);
+  if(this._profile?.id === userId) this._profile.name = newName;
+} //end changePassword
   
 }; // end to object store
   
@@ -2663,6 +2701,7 @@ async function render(){
   else if(UI.view === 'pricing')   app.innerHTML = await renderPricing(user);
   else if(UI.view === 'admin')     app.innerHTML = await renderAdmin(user);
   else if(UI.view === 'teacher')   app.innerHTML = await renderTeacher(user);
+  else if(UI.view === 'account')   app.innerHTML = await renderAccount(user); 
   else if(UI.view === 'forgot-password') app.innerHTML = await renderForgotPassword();
   else if(UI.view === 'reset-password')  app.innerHTML = await renderResetPassword();
   else                             app.innerHTML = await renderLanding();
@@ -2946,6 +2985,7 @@ async function renderTopNav(){
           <button data-nav="teacher" style="color:var(--gold-2);font-weight:800">👨‍🏫 Docente </button>
         ` : ''}
         <button data-nav="dashboard">Mi panel</button>
+        <button data-nav="account">Mi cuenta</button>
         <button data-nav="pricing">Inscripciones</button>
         <button data-logout>Cerrar sesión</button>
       ` : `
@@ -2966,6 +3006,9 @@ async function renderTopNav(){
       ${user ? `
         <button data-nav="dashboard">
           <span class="icon">📊</span> Mi panel
+        </button>
+        <button data-nav="account">
+           <span class="icon">👤</span> Mi cuenta
         </button>
         ${isAdmin ? `
           <button data-nav="admin" class="admin">
@@ -3536,6 +3579,180 @@ function renderRoleBadge(role){
   if(r === 'admin')   return `<span class="badge-role admin">★ Admin</span>`;
   if(r === 'teacher') return `<span class="badge-role teacher">👨‍🏫 Docente</span>`;
   return `<span class="badge-role student">🎓 Estudiante</span>`;
+}
+
+/* ============================================================
+   CUENTA DEL USUARIO
+   ============================================================ */
+async function renderAccount(user){
+  const prog = await store.getProgress(user.id);
+  const payments = await store.getMyPaymentsDetailed(user.id);
+  
+  const totalModules = DIALOGUES.length;
+  const completedModules = prog.completed.length;
+  const accuracy = prog.quizScores.length
+    ? Math.round(prog.quizScores.reduce((s,q)=>s+q.score,0) / prog.quizScores.reduce((s,q)=>s+q.total,0) * 100)
+    : 0;
+  
+  const ownedLevels = Object.entries(user.levels || {})
+    .filter(([,v]) => v)
+    .map(([k]) => getLevel(k))
+    .filter(Boolean);
+  
+  const totalSpent = payments
+    .filter(p => p.status === 'paid')
+    .reduce((s,p) => s + (p.amount_cents || 0), 0) / 100;
+  
+  const fmt = (n) => new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(n);
+  const fmtDate = (d) => new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+  
+  return `
+  <div class="app-shell">
+    ${await renderTopNav()}
+    
+    <div class="dash-hero">
+      <div class="dash-hero-inner">
+        <h1>Mi cuenta</h1>
+        <p>Gestiona tus datos personales, tu plan y tu seguridad.</p>
+        <div class="dash-kpis">
+          <div class="kpi">
+            <div class="kpi-label">Niveles activos</div>
+            <div class="kpi-value">${ownedLevels.length}<small> / 4</small></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Módulos completados</div>
+            <div class="kpi-value">${completedModules}<small> / ${totalModules}</small></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Precisión en quizzes</div>
+            <div class="kpi-value">${accuracy}<small>%</small></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Total invertido</div>
+            <div class="kpi-value" style="font-size:18px">${fmt(totalSpent)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="dash-content">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" class="account-grid">
+        
+        <!-- Datos personales -->
+        <div class="panel">
+          <h3><span class="dot"></span>Datos personales</h3>
+          
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+            <div class="admin-avatar ${user.role==='admin'?'admin':user.role==='teacher'?'teacher':''}" 
+                 style="width:64px;height:64px;flex-basis:64px;font-size:20px;border-radius:18px">
+              ${initials(user.name)}
+            </div>
+            <div>
+              <div style="font-size:18px;font-weight:800;color:var(--navy)">${esc(user.name)}</div>
+              <div style="font-size:13px;color:var(--ink-2);margin-top:2px">${esc(user.email)}</div>
+              <div style="margin-top:8px">${renderRoleBadge(user.role)}</div>
+            </div>
+          </div>
+          
+          <form id="accountNameForm">
+            <div class="field">
+              <label>Nombre completo</label>
+              <input type="text" name="name" value="${esc(user.name)}" required minlength="2">
+            </div>
+            <button class="btn btn-primary btn-sm" type="submit" style="width:100%;justify-content:center">
+              💾 Guardar nombre
+            </button>
+          </form>
+          
+          <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--line-2);font-size:12.5px;color:var(--ink-3);line-height:1.8">
+            <div><b style="color:var(--ink-2)">Miembro desde:</b> ${fmtDate(user.created_at)}</div>
+            <div><b style="color:var(--ink-2)">ID:</b> <span style="font-family:monospace;font-size:11px">${user.id.substring(0,16)}…</span></div>
+            <div><b style="color:var(--ink-2)">Plan:</b> <span style="text-transform:capitalize">${user.plan}</span></div>
+          </div>
+        </div>
+        
+        <!-- Niveles activos -->
+        <div class="panel">
+          <h3><span class="dot"></span>Mis niveles activos</h3>
+          ${ownedLevels.length ? `
+            <div style="display:flex;flex-direction:column;gap:10px">
+              ${ownedLevels.map(l => {
+                const levelDialogues = DIALOGUES.filter(d => d.level === l.id);
+                const done = levelDialogues.filter(d => prog.completed.includes(d.id)).length;
+                const pct = levelDialogues.length ? Math.round(done/levelDialogues.length*100) : 0;
+                return `
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--blue-50);border-radius:11px">
+                    <div style="width:40px;height:40px;border-radius:11px;background:${l.color};color:#fff;display:grid;place-items:center;font-weight:900;font-size:14px">
+                      ${l.code}
+                    </div>
+                    <div style="flex:1">
+                      <div style="font-size:13.5px;font-weight:700;color:var(--navy)">${esc(l.name)}</div>
+                      <div class="progress-mini" style="margin-top:6px">
+                        <div class="pm-bar"><div style="width:${pct}%;background:linear-gradient(90deg,${l.color},${l.color}CC)"></div></div>
+                        <div class="pm-val" style="font-size:11px">${pct}%</div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          ` : `
+            <div style="text-align:center;padding:20px 0;color:var(--ink-2)">
+              <div style="font-size:36px;margin-bottom:10px">🔒</div>
+              <p style="font-size:13.5px;line-height:1.6">Aún no tienes niveles activos.</p>
+              <button class="btn btn-primary btn-sm" style="margin-top:16px" data-nav="pricing">
+                Ver niveles disponibles
+              </button>
+            </div>
+          `}
+        </div>
+        
+        <!-- Cambiar contraseña -->
+        <div class="panel" style="grid-column:1 / -1">
+          <h3><span class="dot"></span>Cambiar contraseña</h3>
+          <p style="font-size:13px;color:var(--ink-2);margin-bottom:20px;line-height:1.6">
+            Por seguridad, te pediremos tu contraseña actual antes de cambiarla. Al guardar, se cerrarán las sesiones en otros dispositivos.
+          </p>
+          
+          <div id="accountAlert"></div>
+          
+          <form id="accountPasswordForm" style="max-width:500px">
+            <div class="field">
+              <label>Contraseña actual</label>
+              <div class="password-wrap">
+                <input type="password" name="current" id="accCurrentPwd" required placeholder="••••••••">
+                <button type="button" class="password-toggle" data-toggle-password="accCurrentPwd" aria-label="Mostrar">
+                  <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="field">
+              <label>Nueva contraseña</label>
+              <div class="password-wrap">
+                <input type="password" name="new" id="accNewPwd" required minlength="6" placeholder="Mínimo 6 caracteres">
+                <button type="button" class="password-toggle" data-toggle-password="accNewPwd" aria-label="Mostrar">
+                  <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="field">
+              <label>Confirmar nueva contraseña</label>
+              <div class="password-wrap">
+                <input type="password" name="confirm" id="accConfirmPwd" required minlength="6" placeholder="Repite la nueva contraseña">
+                <button type="button" class="password-toggle" data-toggle-password="accConfirmPwd" aria-label="Mostrar">
+                  <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+            <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;margin-top:8px">
+              🔒 Cambiar contraseña
+            </button>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>`;
 }
   
 /* ============================================================
@@ -4278,6 +4495,7 @@ if(e.target.id === 'adminExportPayments'){ await exportPaymentsCSV(); return; }
     const dest = nav.dataset.nav;
     if(dest === 'landing'){ UI.view='landing'; render(); }
     if(dest === 'dashboard'){ UI.view='dashboard'; render(); }
+    if(dest === 'account'){ UI.view='account'; render(); }   
     if(dest === 'pricing'){ UI.view='pricing'; render(); }
     if(dest === 'admin'){ UI.view='admin'; UI.adminTab='overview'; render(); }
     if(dest === 'teacher'){ UI.view='teacher'; UI.teacherTab='overview'; render(); }
@@ -4472,6 +4690,59 @@ if(e.key === 'Escape'){
   }
 });
 
+  document.addEventListener('submit', async e => {
+  // Formulario: guardar nombre
+  if(e.target.id === 'accountNameForm'){
+    e.preventDefault();
+    const newName = new FormData(e.target).get('name').trim();
+    if(!newName || newName.length < 2){
+      toast('El nombre debe tener al menos 2 caracteres', 'err');
+      return;
+    }
+    try {
+      const user = await store.getUser();
+      await store.updateUserName(user.id, newName);
+      store._profile = null;  // invalidar caché
+      toast('Nombre actualizado correctamente', 'ok');
+      render();
+    } catch(err){ toast(err.message, 'err'); }
+    return;
+  }
+  
+  // Formulario: cambiar contraseña
+  if(e.target.id === 'accountPasswordForm'){
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const current = fd.get('current');
+    const newPwd = fd.get('new');
+    const confirm = fd.get('confirm');
+    const alertEl = document.getElementById('accountAlert');
+    
+    if(newPwd !== confirm){
+      alertEl.className = 'alert err show';
+      alertEl.textContent = 'Las contraseñas nuevas no coinciden.';
+      return;
+    }
+    if(newPwd.length < 6){
+      alertEl.className = 'alert err show';
+      alertEl.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+      return;
+    }
+    
+    try {
+      await store.changePassword(current, newPwd);
+      alertEl.className = 'alert ok show';
+      alertEl.textContent = '¡Contraseña actualizada! Se cerraron las sesiones en otros dispositivos.';
+      e.target.reset();
+      setTimeout(() => { alertEl.classList.remove('show'); }, 5000);
+    } catch(err){
+      alertEl.className = 'alert err show';
+      alertEl.textContent = err.message;
+    }
+    return;
+  }
+}); //end EventListener submit
+  
 document.addEventListener('input', async e => {
   if(e.target.id === 'adminSearchInput'){
     UI.adminSearch = e.target.value;
