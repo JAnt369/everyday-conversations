@@ -1344,6 +1344,8 @@ body.view-course .wa-float{
   
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.0.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -3193,6 +3195,7 @@ async function renderDashLevels(user){
         const levelDialogues = DIALOGUES.filter(d => d.level === l.id);
         const doneCount = levelDialogues.filter(d => prog.completed.includes(d.id)).length;
         const pct = levelDialogues.length ? Math.round(doneCount/levelDialogues.length*100) : 0;
+        const levelComplete = pct === 100 && owned;
 
         return `
         <div class="dash-level ${owned?'':'locked'}" style="--level-color:${l.color};--level-color2:${l.color2}">
@@ -3227,6 +3230,12 @@ async function renderDashLevels(user){
                   + ${levelDialogues.length - 4} módulos más
                 </li>` : ''}
             </ul>
+            ${levelComplete ? `
+             <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:14px" 
+                 data-cert-level="${l.id}">
+                 🏆 Descargar Certificado
+             </button>
+             ` : ''}
           ` : `
             <div style="font-size:13px;color:var(--ink-2);line-height:1.6;margin-top:8px">
               Desbloquea este nivel para acceder a los ${levelDialogues.length} módulos,
@@ -4262,7 +4271,14 @@ if(e.target.closest('#btnBulkTemplate')){
   await exportCurrentStudentsCSV();
   return;
 }
-  
+// link genera certificate
+if(e.target.closest('[data-cert-level]')){
+  e.preventDefault();
+  const levelId = e.target.closest('[data-cert-level]').dataset.certLevel;
+  const user = await store.getUser();
+  if(user) await generateCertificate(user, levelId);
+  return;
+}
 // Link de "¿Olvidaste tu contraseña?"
 if(e.target.closest('[data-forgot-password]')){
   e.preventDefault();
@@ -6730,6 +6746,94 @@ async function exportCurrentStudentsCSV(){
     toast('Error al exportar: ' + err.message, 'err');
   }
 }  
+/* ============================================================
+   CERTIFICADOS PDF
+   ============================================================ */
+async function generateCertificate(user, levelId){
+  const level = getLevel(levelId);
+  const prog = await store.getProgress(user.id);
+  const levelDialogues = DIALOGUES.filter(d => d.level === levelId);
+  const completed = levelDialogues.filter(d => prog.completed.includes(d.id)).length;
+  
+  if(completed < levelDialogues.length){
+    toast('Aún no completas todos los módulos de este nivel', 'err');
+    return;
+  }
+
+  const accuracy = prog.quizScores.length
+    ? Math.round(prog.quizScores.reduce((s,q)=>s+q.score,0) / prog.quizScores.reduce((s,q)=>s+q.total,0) * 100)
+    : 0;
+  
+  const date = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+  const certId = `TOEFL-${levelId.toUpperCase()}-${user.id.substring(0,8)}-${Date.now().toString(36).toUpperCase()}`;
+
+  // 1. Crear el HTML del certificado (oculto)
+  const certDiv = document.createElement('div');
+  certDiv.style.cssText = `
+    position: fixed; left: -9999px; top: 0;
+    width: 1122px; height: 794px; /* A4 horizontal a 96dpi */
+    background: linear-gradient(135deg, #001B41 0%, #0A2E5C 100%);
+    padding: 40px; font-family: 'Inter', sans-serif;
+  `;
+  
+  certDiv.innerHTML = `
+    <div style="width:100%;height:100%;background:#fff;border-radius:20px;padding:50px 60px;box-sizing:border-box;position:relative;display:flex;flex-direction:column;justify-content:center;text-align:center;border:6px solid #FFB81C">
+      <div style="font-size:14px;font-weight:800;color:#0072CE;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px">TOEFL ITP English Academy</div>
+      <div style="font-size:40px;font-weight:900;color:#001B41;letter-spacing:-1px;margin-bottom:8px">CERTIFICADO</div>
+      <div style="font-size:16px;color:#8494AB;font-weight:600;margin-bottom:40px">DE FINALIZACIÓN</div>
+      
+      <div style="font-size:15px;color:#4A5B76;margin-bottom:8px">Se otorga el presente certificado a</div>
+      <div style="font-size:48px;font-weight:800;color:#001B41;letter-spacing:-1px;margin-bottom:30px;border-bottom:2px solid #E1E9F3;padding-bottom:15px;display:inline-block;margin-left:auto;margin-right:auto">${esc(user.name)}</div>
+      
+      <div style="font-size:15px;color:#4A5B76;margin-bottom:8px">por haber completado satisfactoriamente el nivel</div>
+      <div style="font-size:36px;font-weight:900;color:${level.color};margin-bottom:30px">${level.code} · ${level.name}</div>
+      
+      <div style="display:flex;justify-content:center;gap:60px;margin-bottom:30px;font-size:14px;color:#4A5B76">
+        <div><b style="color:#001B41">Precisión:</b> ${accuracy}%</div>
+        <div><b style="color:#001B41">Módulos:</b> ${completed}/${levelDialogues.length}</div>
+        <div><b style="color:#001B41">Fecha:</b> ${date}</div>
+      </div>
+      
+      <div style="position:absolute;bottom:40px;left:60px;right:60px;display:flex;justify-content:space-between;align-items:flex-end;font-size:11px;color:#8494AB">
+        <div style="text-align:left">
+          <div style="font-weight:700;color:#001B41;font-size:13px">ID del certificado</div>
+          <div style="font-family:monospace">${certId}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:700;color:#001B41;font-size:13px">Verificar en</div>
+          <div>toefl-itp.academy.sis-prep.com</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(certDiv);
+
+  try {
+    // 2. Convertir el HTML a imagen
+    const canvas = await html2canvas(certDiv, { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL('image/png');
+
+    // 3. Crear el PDF (A4 horizontal)
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    pdf.addImage(imgData, 'PNG', 0, (pageHeight - imgHeight) / 2, imgWidth, imgHeight);
+    pdf.save(`Certificado_${level.code}_${user.name.replace(/\s+/g, '_')}.pdf`);
+    
+    toast('¡Certificado descargado! 🎉', 'ok');
+  } catch (err) {
+    console.error('[Certificado] Error:', err);
+    toast('Error al generar el certificado', 'err');
+  } finally {
+    // 4. Limpiar el div temporal
+    document.body.removeChild(certDiv);
+  }
+} // end generateCertificate
   
 render();
 </script>
