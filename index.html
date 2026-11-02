@@ -2089,7 +2089,9 @@ function traduceError(msg){
    de este objeto y el resto de la app sigue funcionando igual.
    ============================================================ 
 */
-
+// Módulos gratuitos de B1 (los primeros 3)
+const B1_FREE_MODULES = ['d1-1', 'd1-2', 'd1-3'];
+  
 /* ============================================================
    2. CATÁLOGO · Niveles CEFR + Diálogos
    ------------------------------------------------------------
@@ -2344,7 +2346,39 @@ In conclusion, formal introductions are a valuable skill that can open doors in 
       {en:"Didn't you meet her at Steve's party?", es:"¿No la conociste en la fiesta de Steve?"},
       {en:"Let me introduce you to her.", es:"Déjame presentártela."},
       {en:"Would you like a drink?", es:"¿Quieres algo de tomar?"}
-    ]
+    ],
+    reading:{
+  title:'Making Friends at a Party',
+  words: 280,
+  minutes: 3,
+  text:`Parties are a great place to meet new people and make friends. But for many people, walking into a room full of strangers can be intimidating. How do you approach someone you don't know? How do you start a conversation without feeling awkward?
+
+The first step is to look approachable. Smile, make eye contact, and have open body language. If you are standing with your arms crossed or looking at your phone, people may think you don't want to be disturbed. Instead, stand in a relaxed posture and look around the room with interest.
+
+When you approach someone, start with a simple, friendly comment. You might say something about the event itself: "This is a great party, isn't it?" or "Have you tried the food?" These comments are easy to respond to and don't put pressure on the other person.
+
+Introducing yourself is also important. A simple "Hi, I'm [your name]. I don't think we've met" works well. If the other person seems interested, you can ask a follow-up question: "How do you know the host?" or "What do you do?"
+
+It's also helpful to introduce people to each other. If you are talking to two people who don't know each other, you can say: "Have you met? Sarah, this is Mike. Mike, this is Sarah." This is a friendly gesture that helps everyone feel included.
+
+Finally, remember that not every conversation will lead to a friendship, and that's okay. The goal is to be open, curious, and kind. Some of the best friendships start with a simple conversation at a party.`,
+  glossary:[
+    {word:'intimidating', def:'intimidante'},
+    {word:'approachable', def:'accesible, fácil de abordar'},
+    {word:'body language', def:'lenguaje corporal'},
+    {word:'posture', def:'postura'},
+    {word:'follow-up question', def:'pregunta de seguimiento'},
+    {word:'gesture', def:'gesto'},
+    {word:'curious', def:'curioso/a'}
+  ],
+  questions:[
+    {q:'What is the main idea of the reading?', es:'La idea principal del texto es…', options:['Que las fiestas son aburridas','Que hacer amigos en una fiesta requiere ser accesible, iniciar conversaciones simples e incluir a otros','Que solo los extrovertidos hacen amigos','Que no se debe hablar con extraños'], answer:'Que hacer amigos en una fiesta requiere ser accesible, iniciar conversaciones simples e incluir a otros'},
+    {q:'What is the first step to approach someone at a party?', es:'¿Cuál es el primer paso para acercarse a alguien en una fiesta?', options:['Mirar el teléfono','Parecer accesible con una sonrisa, contacto visual y lenguaje corporal abierto','Cruzar los brazos','Gritar'], answer:'Parecer accesible con una sonrisa, contacto visual y lenguaje corporal abierto'},
+    {q:'What kind of comment is good to start a conversation?', es:'¿Qué tipo de comentario es bueno para iniciar una conversación?', options:['Un comentario sobre política','Un comentario simple y amistoso sobre el evento o la comida','Una pregunta personal','Un chiste ofensivo'], answer:'Un comentario simple y amistoso sobre el evento o la comida'},
+    {q:'How can you introduce two people to each other?', es:'¿Cómo puedes presentar a dos personas entre sí?', options:['Ignorándolos','Diciendo "Have you met? Sarah, this is Mike. Mike, this is Sarah"','Solo hablando con uno','No se debe hacer'], answer:'Diciendo "Have you met? Sarah, this is Mike. Mike, this is Sarah"'},
+    {q:'What is the goal of approaching someone at a party?', es:'¿Cuál es el objetivo de acercarse a alguien en una fiesta?', options:['Ganar algo','Ser abierto, curioso y amable, sin presión de que surja una amistad','Hablar solo de ti','Evitar a la gente'], answer:'Ser abierto, curioso y amable, sin presión de que surja una amistad'}
+  ]
+}
   },
   {
     id:'d1-5', level:'b1', module:'Daily Life',
@@ -2363,7 +2397,40 @@ In conclusion, formal introductions are a valuable skill that can open doors in 
       {en:"It's a quarter after seven.", es:"Son las siete y cuarto."},
       {en:"Don't panic.", es:"No entres en pánico."},
       {en:"Rush hour is almost over.", es:"La hora punta ya casi termina."}
-    ]
+    ],
+    reading:{
+  title:'The Importance of Being on Time',
+  words: 290,
+  minutes: 3,
+  text:`Punctuality is the habit of being on time. In many cultures, it is considered a sign of respect and professionalism. Being late, on the other hand, can be seen as rude or careless. But attitudes toward time vary widely around the world.
+
+In countries like Germany, Switzerland, and Japan, punctuality is highly valued. Being even a few minutes late can be considered unacceptable. People arrive early for meetings, and appointments start exactly on time. In these cultures, time is seen as a precious resource that should not be wasted.
+
+In other cultures, such as those in Latin America, Southern Europe, and the Middle East, time is viewed more flexibly. A meeting scheduled for 10:00 might not start until 10:15 or later, and this is not considered a problem. In these cultures, relationships and conversation are often valued more than strict adherence to schedules.
+
+In the United States, punctuality is generally important, especially in business settings. Arriving late for a job interview or a business meeting can seriously damage your reputation. However, social gatherings are often more relaxed, and guests may arrive anytime within a certain window.
+
+Technology has changed the way we think about time. With smartphones and digital calendars, it is easier than ever to keep track of appointments and reminders. But it has also created a culture of constant availability, where people are expected to respond to messages immediately, at any time of day.
+
+In conclusion, punctuality is not just about following rules. It is about respecting other people's time and showing that you value their presence. Whether you are in a culture that values strict punctuality or one that is more relaxed, being aware of these differences can help you avoid misunderstandings and build better relationships.`,
+  glossary:[
+    {word:'punctuality', def:'puntualidad'},
+    {word:'punctual', def:'puntual'},
+    {word:'professionalism', def:'profesionalismo'},
+    {word:'flexibly', def:'flexiblemente'},
+    {word:'adherence', def:'cumplimiento'},
+    {word:'reputation', def:'reputación'},
+    {word:'constant availability', def:'disponibilidad constante'},
+    {word:'misunderstandings', def:'malentendidos'}
+  ],
+  questions:[
+    {q:'What is the main idea of the reading?', es:'La idea principal del texto es…', options:['Que la puntualidad es lo mismo en todas las culturas','Que la puntualidad varía según la cultura y es importante para respetar el tiempo de los demás','Que llegar tarde es siempre malo','Que la tecnología nos hace impuntuales'], answer:'Que la puntualidad varía según la cultura y es importante para respetar el tiempo de los demás'},
+    {q:'In which countries is punctuality highly valued?', es:'¿En qué países se valora mucho la puntualidad?', options:['En todos los países','En Alemania, Suiza y Japón','Solo en Estados Unidos','En América Latina'], answer:'En Alemania, Suiza y Japón'},
+    {q:'How is time viewed in some Latin American cultures?', es:'¿Cómo se ve el tiempo en algunas culturas latinoamericanas?', options:['De forma estricta','De forma más flexible, valorando las relaciones y la conversación','No se valora','Solo importa en el trabajo'], answer:'De forma más flexible, valorando las relaciones y la conversación'},
+    {q:'What is the importance of punctuality in the US?', es:'¿Cuál es la importancia de la puntualidad en EE.UU.?', options:['No es importante','Es importante en el trabajo y puede dañar la reputación si llegas tarde','Solo importa en las fiestas','Es igual que en todos los países'], answer:'Es importante en el trabajo y puede dañar la reputación si llegas tarde'},
+    {q:'What does the reading say about technology and time?', es:'¿Qué dice el texto sobre la tecnología y el tiempo?', options:['No tiene relación','Ha hecho más fácil gestionar el tiempo pero ha creado una cultura de disponibilidad constante','Nos hace más puntuales','Nos hace impuntuales'], answer:'Ha hecho más fácil gestionar el tiempo pero ha creado una cultura de disponibilidad constante'}
+  ]
+}
   },
   {
     id:'d1-6', level:'b1', module:'Daily Life',
@@ -2384,7 +2451,42 @@ In conclusion, formal introductions are a valuable skill that can open doors in 
       {en:"Hi, it's John.", es:"Hola, soy John."},
       {en:"I was wondering if you'd like to go to a movie.", es:"Me preguntaba si te gustaría ir al cine."},
       {en:"What's playing?", es:"¿Qué película están dando?"}
-    ]
+    ],
+    reading:{
+  title:'Telephone Etiquette',
+  words: 290,
+  minutes: 3,
+  text:`Telephone etiquette refers to the rules of polite behavior when making or receiving phone calls. Although the telephone has been around for over a century, the way we use it has changed dramatically in recent years, especially with the rise of mobile phones and video calls.
+
+When making a call, it is polite to introduce yourself first. Instead of saying "Who is this?", you should say "Hello, this is [your name]." If you are calling a business, you might say "Good morning, this is [your name] calling from [your company]." This helps the person on the other end know who they are speaking to.
+
+When receiving a call, answer promptly. If you can't answer, let it go to voicemail and call back as soon as possible. When you call back, apologize for the delay: "I'm sorry I missed your call. How can I help you?"
+
+During the call, it's important to listen actively and not interrupt. If you don't understand something, ask for clarification: "Could you repeat that, please?" or "Could you speak a little slower?"
+
+One of the most important rules of telephone etiquette is to be mindful of the other person's time. Don't make calls late at night unless it's an emergency. Don't call during meals or other personal time unless you have a good reason. And if you're in a public place, keep your voice down so you don't disturb others.
+
+Texting has also changed telephone etiquette. Many people prefer to text rather than call, especially for quick questions or updates. But texting has its own rules: don't text while driving, don't send multiple messages in a row, and don't expect an immediate response.
+
+In conclusion, telephone etiquette is about respect and consideration. By following these simple rules, you can communicate more effectively and build stronger relationships with the people you talk to.`,
+  glossary:[
+    {word:'etiquette', def:'etiqueta, normas de cortesía'},
+    {word:'promptly', def:'rápidamente, sin demora'},
+    {word:'voicemail', def:'buzón de voz'},
+    {word:'clarification', def:'aclaración'},
+    {word:'mindful', def:'consciente, atento/a'},
+    {word:'emergency', def:'emergencia'},
+    {word:'disturb', def:'molestar'},
+    {word:'consideration', def:'consideración'}
+  ],
+  questions:[
+    {q:'What is the main idea of the reading?', es:'La idea principal del texto es…', options:['Que el teléfono es obsoleto','Que la etiqueta telefónica se basa en el respeto y la consideración hacia los demás','Que solo importa hablar rápido','Que no hay reglas para el teléfono'], answer:'Que la etiqueta telefónica se basa en el respeto y la consideración hacia los demás'},
+    {q:'What is polite when making a call?', es:'¿Qué es educado al hacer una llamada?', options:['Preguntar "¿Quién es?"','Presentarte primero con tu nombre','Colgar','Hablar rápido'], answer:'Presentarte primero con tu nombre'},
+    {q:'What should you do if you can\'t answer a call?', es:'¿Qué debes hacer si no puedes contestar una llamada?', options:['Ignorarla','Dejarla ir al buzón de voz y devolver la llamada lo antes posible','Contestar y colgar','Bloquear el número'], answer:'Dejarla ir al buzón de voz y devolver la llamada lo antes posible'},
+    {q:'What is important during a call?', es:'¿Qué es importante durante una llamada?', options:['Interrumpir','Escuchar activamente y pedir aclaraciones si no entiendes','Hablar sin parar','No escuchar'], answer:'Escuchar activamente y pedir aclaraciones si no entiendes'},
+    {q:'What has texting changed about telephone etiquette?', es:'¿Qué ha cambiado el texting en la etiqueta telefónica?', options:['Nada','Muchas personas prefieren enviar mensajes en lugar de llamar, pero el texting tiene sus propias reglas','Ha eliminado las llamadas','Ha hecho todo más fácil'], answer:'Muchas personas prefieren enviar mensajes en lugar de llamar, pero el texting tiene sus propias reglas'}
+  ]
+}
   },
   {
   id:'d1-7', level:'b1', module:'Family & Friends',
@@ -4969,6 +5071,19 @@ async function renderDashLevels(user){
         const pct = levelDialogues.length ? Math.round(doneCount/levelDialogues.length*100) : 0;
         const levelComplete = pct === 100 && owned;
 
+        // ⬇️ LÓGICA DE B1 GRATIS (3 módulos)
+        const isB1 = l.id === 'b1';
+        const hasPaidB1 = user.b1_paid === true;
+        const showOnlyFree = isB1 && !hasPaidB1;
+        
+        const visibleModules = showOnlyFree
+          ? levelDialogues.filter(d => B1_FREE_MODULES.includes(d.id))
+          : levelDialogues;
+        
+        const lockedCount = showOnlyFree
+          ? levelDialogues.length - visibleModules.length
+          : 0;
+
         return `
         <div class="dash-level ${owned?'':'locked'}" style="--level-color:${l.color};--level-color2:${l.color2}">
           <div class="dash-level-head">
@@ -4987,9 +5102,10 @@ async function renderDashLevels(user){
             </div>
             <div class="dash-bar"><div style="width:${pct}%"></div></div>
           </div>
+          
           ${owned ? `
             <ul class="dash-modules">
-              ${levelDialogues.slice(0,4).map(d => {
+              ${visibleModules.slice(0,6).map(d => {
                 const done = prog.completed.includes(d.id);
                 return `<li class="dash-module ${done?'done':''}">
                   <span class="mod-dot">${done?'✓':'○'}</span>
@@ -4997,12 +5113,22 @@ async function renderDashLevels(user){
                   <button class="mod-btn" data-open="${d.id}">Abrir</button>
                 </li>`;
               }).join('')}
-              ${levelDialogues.length > 4 ? `
+              ${lockedCount > 0 ? `
+                <li class="dash-module" style="color:var(--ink-3);font-style:italic;justify-content:center">
+                  🔒 ${lockedCount} módulos más requieren B1 completo
+                </li>` : (visibleModules.length < levelDialogues.length ? `
                 <li class="dash-module" style="color:var(--ink-3);font-style:italic">
-                  + ${levelDialogues.length - 4} módulos más
-                </li>` : ''}
+                  + ${levelDialogues.length - visibleModules.length} módulos más
+                </li>` : '')}
             </ul>
-            ${levelComplete ? `
+            
+            ${showOnlyFree ? `
+              <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:14px" data-buy="b1">
+                🔓 Desbloquear B1 completo · $${l.price}
+              </button>
+            ` : ''}
+            
+            ${levelComplete && !showOnlyFree ? `
              <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:14px" 
                  data-cert-level="${l.id}">
                  🏆 Descargar Certificado
@@ -5021,7 +5147,7 @@ async function renderDashLevels(user){
       }).join('')}
     </div>
   `;
-}
+} //end renderDashLevels
 
 function renderDashInscripciones(user){
   return `
@@ -6389,17 +6515,29 @@ if(e.target.id === 'adminExportPayments'){ await exportPaymentsCSV(); return; }
 }
   
   // abrir curso
-  const openBtn = e.target.closest('[data-open]');
-  if(openBtn){
-    UI.currentDialogue = openBtn.dataset.open;
-    UI.view = 'course';
-    UI.tab = 'dialogo';
-    UI.quiz = null;
-    UI.cloze = null;
-    closeCourseSide();  //  line to fis closeSideBar
-    render();
+  const openBtn = e.target.closest('[data-open]');  
+if(openBtn){
+  const dialogueId = openBtn.dataset.open;
+  const user = await store.getUser();
+  const dialogue = getDialogue(dialogueId);
+  
+  if(dialogue && dialogue.level === 'b1' && 
+     !user.b1_paid && !B1_FREE_MODULES.includes(dialogueId)){
+    toast('Este módulo requiere B1 completo. Desbloquéalo por $29.', 'err');
+    openCheckout('b1');
     return;
   }
+  
+  UI.currentDialogue = dialogueId;
+  UI.view = 'course';
+  UI.tab = 'dialogo';
+  UI.quiz = null;
+  UI.cloze = null;
+  closeCourseSide();
+  render();
+  return;
+}
+  
 // Drawer de módulos (móvil)
 if(e.target.id === 'courseSideToggle'){
   document.getElementById('courseSide').classList.add('open');
