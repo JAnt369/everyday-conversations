@@ -67,10 +67,7 @@ a{color:inherit;text-decoration:none}
   object-fit:contain;
   display:block;
 }
-/* Quitar el puntito dorado del logo-icon */
-.logo-icon::after{
-  display:none;
-}
+
 .topnav.dark .logo-icon::after{border-color:var(--navy-3)}
 .logo small{display:block;font-size:10.5px;color:var(--ink-3);font-weight:600;letter-spacing:.03em;text-transform:uppercase}
 .topnav.dark .logo small{color:#7A93B8}
@@ -4879,7 +4876,7 @@ async function renderTopNav(){
   <nav class="topnav ${dark?'dark':''}">
     <div class="logo" style="cursor:pointer" data-nav="landing">
     <div class="logo-icon">
-      <img src="/logo.png" alt="TOEFL ITP Academy">
+      <img src="/logo.jpg" alt="TOEFL ITP Academy">
     </div>
     <div>
       <div>TOEFL ITP Academy</div>
