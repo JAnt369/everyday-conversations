@@ -1341,6 +1341,11 @@ body.view-course .wa-float{
 @media(max-width:760px){
   .account-grid{grid-template-columns:1fr !important}
 }
+.badge-plan.deleted{
+  background:#F0F4FA;
+  color:#8494AB;
+  text-decoration:line-through;
+}
   
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2063,6 +2068,28 @@ async updateUserName(userId, newName){
   if(error) throw new Error('Error al actualizar nombre: ' + error.message);
   if(this._profile?.id === userId) this._profile.name = newName;
 } //end changePassword
+
+  async restoreUser(userId){
+  // 1. Verificar si el usuario tiene pagos para saber si era premium
+  const { data: payments } = await supabaseClient
+    .from('payments')
+    .select('level_id, status')
+    .eq('user_id', userId)
+    .eq('status', 'paid');
+  
+  const hasPaid = payments && payments.length > 0;
+  const newPlan = hasPaid ? 'premium' : 'free';
+  
+  // 2. Restaurar el plan
+  const { error } = await supabaseClient
+    .from('profiles')
+    .update({ plan: newPlan })
+    .eq('id', userId);
+  
+  if(error) throw new Error('Error al restaurar usuario: ' + error.message);
+  
+  return { newPlan, paymentsCount: payments?.length || 0 };
+} //end restoreUser
   
 }; // end to object store
   
@@ -6361,18 +6388,39 @@ if(deleteUserBtn){
     const u = users.find(x => x.id === userId);
     if(!u){ toast('Usuario no encontrado', 'err'); return; }
 
-    if(confirm(`¿Eliminar permanentemente a "${u.name}"? Esta acción no se puede deshacer.`)){
-      await store.deleteUser(u.id);
-      toast(`Usuario "${u.name}" eliminado`, 'ok');
-      render();
+    if(confirm(`¿Eliminar a "${u.name}"? Esta acción se puede deshacer (soft delete). El usuario no podrá iniciar sesión pero sus datos se conservan.`)){
+       await store.deleteUser(u.id);
+       toast(`Usuario "${u.name}" eliminado (se puede restaurar)`, 'ok');
+       render();
     }
   } catch(err){
     console.error('[deleteUser] Error:', err);
     toast('Error al eliminar: ' + err.message, 'err');
   }
   return;
-}
-
+} 
+  
+// Restaurar usuario eliminado
+const adminRestore = e.target.closest('[data-admin-restore]');
+if(adminRestore){
+  const userId = adminRestore.dataset.adminRestore;
+  try {
+    const users = await store.getAllUsers();
+    const u = users.find(x => x.id === userId);
+    if(!u){ toast('Usuario no encontrado', 'err'); return; }
+    
+    if(confirm(`¿Restaurar a "${u.name}"? Volverá a poder iniciar sesión con todo su progreso y pagos intactos.`)){
+      const result = await store.restoreUser(u.id);
+      toast(`✅ ${u.name} restaurado (plan: ${result.newPlan}, ${result.paymentsCount} pagos)`, 'ok');
+      render();
+    }
+  } catch(err){
+    console.error('[restoreUser] Error:', err);
+    toast('Error al restaurar: ' + err.message, 'err');
+  }
+  return;
+} //end adminRestore
+  
 // Cambiar rol (ciclo: student → teacher → admin → student)
 const adminRole = e.target.closest('[data-admin-role]');
 if(adminRole){
@@ -7909,6 +7957,7 @@ async function renderAdminUsers(){
           <option value="all" ${planFilter==='all'?'selected':''}>Todos los planes</option>
           <option value="free" ${planFilter==='free'?'selected':''}>Free</option>
           <option value="premium" ${planFilter==='premium'?'selected':''}>Premium</option>
+          <option value="deleted" ${planFilter==='deleted'?'selected':''}>🗑 Eliminados</option>
         </select>
         
         <select class="admin-filter" id="adminFilterTeacher">
@@ -7957,7 +8006,7 @@ async function renderAdminUsers(){
                 </td>    
                 
                 <td>${renderRoleBadge(role)}</td>                
-                <td><span class="badge-plan ${u.plan}">${u.plan === 'deleted' ? 'eliminado' : u.plan}</span></td>
+                <td><span class="badge-plan ${u.plan}">${u.plan === 'deleted' ? '🗑 Eliminado' : u.plan}</span></td>
                 
                 <td>
                   <div class="level-pips">
@@ -7989,7 +8038,10 @@ async function renderAdminUsers(){
                   <div class="row-actions" style="justify-content:flex-end">
                     <button class="row-btn" data-admin-user="${u.id}" title="Ver detalle">👁</button>                    
                     <button class="row-btn gold" data-admin-role="${u.id}" title="Cambiar rol (actual: ${u.role || 'student'})">★</button>
-                    <button class="row-btn danger" data-admin-delete="${u.id}" title="Eliminar">🗑</button>
+                    ${u.plan === 'deleted' 
+                          ? `<button class="row-btn" style="background:var(--ok-bg);color:var(--ok)" data-admin-restore="${u.id}" title="Restaurar usuario">♻️</button>`
+                          : `<button class="row-btn danger" data-admin-delete="${u.id}" title="Eliminar">🗑</button>`
+                     }
                   </div>
                 </td>
                 
