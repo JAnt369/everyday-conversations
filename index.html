@@ -2067,7 +2067,7 @@ async updateUserName(userId, newName){
     .eq('id', userId);
   if(error) throw new Error('Error al actualizar nombre: ' + error.message);
   if(this._profile?.id === userId) this._profile.name = newName;
-} //end changePassword
+}, //end changePassword
 
   async restoreUser(userId){
   // 1. Verificar si el usuario tiene pagos para saber si era premium
