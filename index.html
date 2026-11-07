@@ -5092,10 +5092,14 @@ async function renderDashboard(user){
 
 async function renderDashLevels(user){
   const prog = await store.getProgress(user.id);
+  const isAdmin = user.role === 'admin';
+  const displayLevels = isAdmin 
+    ? { b1: true, b2: true, c1: true, c2: true } 
+    : (user.levels || {});
   return `
     <div class="dash-levels">
       ${LEVELS.map(l => {
-        const owned = user.levels?.[l.id];
+        const owned = displayLevels[l.id];
         const levelDialogues = DIALOGUES.filter(d => d.level === l.id);
         const doneCount = levelDialogues.filter(d => prog.completed.includes(d.id)).length;
         const pct = levelDialogues.length ? Math.round(doneCount/levelDialogues.length*100) : 0;
@@ -6022,6 +6026,12 @@ async function openCheckout(levelId){
   //diagnostico temporal
   console.log('[Checkout] User:', user?.id, '| Email:', user?.email, '| Level:', levelId);
   if(!user){ openAuth('register'); return; }
+
+  // Si es admin, no necesita comprar
+  if(user.role === 'admin'){
+    toast('Como administrador ya tienes acceso a todos los niveles.', 'ok');
+    return;
+  }
   
   const level = getLevel(levelId);
   if(!level){ toast('Nivel no encontrado', 'err'); return; }
